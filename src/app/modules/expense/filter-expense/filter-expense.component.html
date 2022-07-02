@@ -1,0 +1,60 @@
+    <div #containerMenuFilterMain class="st_container_expenses_filter" 
+        [ngClass]="showTranslateMenuFilterMain === true?
+                'st_container_expenses_filter_hidden'
+                :'st_container_expenses_filter'"> 
+        
+        <div class="st_block_expense" >
+            <i class="fas fa-times" (click)="translateHiddenMenuFilterSecundary()" ></i>
+            <h6>FILTROS</h6>
+            <div class="st_block_items">
+                <div (click)="showFilterMenuSecundaryByOptionSelect('Categorías')" class="st_aside_dropdown_wrkspc d-flex justify-content-between align-items-center">
+                    <div class="st_b_items_left">
+                        <i class="fas fa-ballot-check"></i>
+                        <span>Categorías</span>
+                    </div>
+                    <i class="fas fa-caret-right"></i>
+                </div>
+                <div (click)="showFilterMenuSecundaryByOptionSelect('Acuerdos')" class="st_aside_dropdown_wrkspc d-flex justify-content-between align-items-center">
+                    <div class="st_b_items_left">
+                        <i class="fas fa-handshake"></i>
+                        <span>Acuerdos</span>
+                    </div>
+                    <i class="fas fa-caret-right"></i>
+                </div>
+                <div (click)="showFilterMenuSecundaryByOptionSelect('Métodos de Pago')" class="st_aside_dropdown_wrkspc d-flex justify-content-between align-items-center">
+                    <div class="st_b_items_left">
+                        <i class="fas fa-credit-card"></i>                
+                        <span>Medios de pago</span>
+                    </div>
+                    <i class="fas fa-caret-right"></i>
+                </div>
+                <div (click)="showFilterMenuSecundaryByOptionSelect('Tags')" class="st_aside_dropdown_wrkspc d-flex justify-content-between align-items-center">
+                    <div class="st_b_items_left">
+                        <i class="fas fa-ballot-check"></i>
+                        <span>Tag</span>
+                    </div>
+                    <i class="fas fa-caret-right"></i>
+                </div>
+            </div>
+
+            <!-- *ngIf="showMenuFilterSecundary"  -->
+            <div class="st_formulario_filter" 
+                *ngIf="showMenuFilterSecundary"
+                [ngClass]="{'st_formulario_filter_show': 
+                    showTranslateMenuFilterSecundary === true}"
+                >
+                <app-filter-by-item-shared 
+                    [title]="sendTitleMenuSecundary"
+                    [active_menu]="showMenuFilterSecundary"
+                    (reditectToMenu)="ReceivingHiddenMenuFilterSecundary($event)"> 
+                </app-filter-by-item-shared>
+            </div>
+
+
+        </div>
+        
+        
+
+    </div>
+
+
