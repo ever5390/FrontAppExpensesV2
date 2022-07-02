@@ -30,9 +30,14 @@
     padding-left: 10px;
 }
 
-.fa-search {
+.fa-search, .fa-sort-amount-down{
     margin-right: 5px;
 }
+
+.fa-search:hover, .fa-sort-amount-down:hover{
+   cursor: pointer;
+}
+
 
 input{
     width: 100%;

@@ -1,11 +1,13 @@
 .st_block_expense {
-    width: 95%;
-    margin: auto;
-    border-radius: 10px;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100vh;
     border: 1px solid #ccc;
     padding: 20px;
     font-size: .9rem;
-    background-color: #fff;
+    background-color: rgb(255, 255, 255);
 }
 
 label {

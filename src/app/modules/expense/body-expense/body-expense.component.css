@@ -1,6 +1,9 @@
 .st_container_list_expense {
     width: 100%;
+    overflow-x: hidden;
     margin-top: 15px;
+    /* outline: 1px solid green; */
+
 }
 
 .st_tag_filters {

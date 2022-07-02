@@ -1,3 +1,8 @@
+/* .cst_container_list {
+    width: calc(95% +10px );
+    outline: 1px solid red;
+} */
+
 .st_block_expense {
     width: 95%;
     margin: auto;

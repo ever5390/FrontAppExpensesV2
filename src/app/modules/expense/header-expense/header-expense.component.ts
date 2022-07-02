@@ -7,8 +7,15 @@ import { Component, ElementRef, EventEmitter, OnInit, Output, Renderer2, ViewChi
 })
 export class HeaderExpenseComponent implements OnInit {
 
-  heightHeader: number = 0;
+  
 
+
+
+  //Show component menu
+  sendFlagShowMenuFilterMain: boolean = false;
+
+  //Catching & send height header component
+  heightHeader: number = 0;
   @ViewChild("container_header") container_header : ElementRef | any;
   @Output() emitterHeight= new EventEmitter();
   
@@ -18,6 +25,18 @@ export class HeaderExpenseComponent implements OnInit {
   }
 
   ngOnInit(): void {
+  }
+
+
+
+
+  //Show and catching menu y height
+  showMenuOptions() {
+    this.sendFlagShowMenuFilterMain = true;
+  }
+
+  receivingFlagHiddenMenuFilterMain(hidden: boolean) {
+    this.sendFlagShowMenuFilterMain = hidden;
   }
 
   ngAfterViewInit() {
