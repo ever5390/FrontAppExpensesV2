@@ -1,0 +1,19 @@
+.st_container_list_expense {
+    width: 100%;
+    margin-top: 15px;
+}
+
+.st_tag_filters {
+    width: 95%;
+    margin: auto;
+}
+
+span {
+    padding: 0 10px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    border-radius: 10px;
+    color: #fff;
+    background-color: rgb(138, 138, 138);
+    font-size: .6rem;
+}

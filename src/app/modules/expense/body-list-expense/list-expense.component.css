@@ -1,0 +1,113 @@
+.st_block_expense {
+    width: 95%;
+    margin: auto;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    padding-left: 20px;
+    padding-right: 20px;
+    font-size: .9rem;
+    margin-bottom: 10px;
+}
+
+.st_expense_header, .st_expense_footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.st_body_header, .st_body_footer{
+    display: flex;
+    justify-content: flex-start;
+}
+
+.st_expense_header label:first-child {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+
+.st_body_body {
+    margin: 10px 0;
+}
+
+    .st_footer_tag {
+        display: flex;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .st_footer_vouchers {
+        padding: 5px 0 ;
+        display: flex;
+        justify-content: flex-end;
+    }
+        .st_footer_vouchers img {
+            margin-left: 5px;
+        }
+
+
+    span {
+        padding: 0 10px;
+        margin-right: 5px;
+        margin-bottom: 5px;
+        border-radius: 10px;
+        color: #fff;
+    }
+
+    .st_body_header span:nth-child(1) {
+        background-color: #47B152;
+    }
+
+    .st_body_header span:nth-child(2) {
+        background-color: #14BCBC;
+    }
+
+    .st_body_footer span:nth-child(1) {
+        background-color: #972D05;
+    }
+
+    .st_body_footer span:nth-child(2) {
+        background-color: #760B7A;
+    }
+
+    .st_footer_tag span{
+        color: rgb(21, 67, 136);
+        padding: 0 5px;
+        margin: 0;
+    }
+
+textarea {
+    /* border: 1px solid #BCBCBC; */
+    border-radius: 10px;
+    font-size: .9rem;
+    outline: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+}
+
+img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+
+@media (max-width: 480px) {
+
+    .st_expense_footer {
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+
+    .st_block_expense {
+        font-size: .7rem;
+    }
+
+    .st_block_expense {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+}

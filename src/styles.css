@@ -1,1 +1,26 @@
 /* You can add global styles to this file, and also import other style files */
+
+html, body{
+    box-sizing: border-box;
+}
+
+
+h1,h2, h3, p, img {
+    display: block;
+    padding: 0;
+    margin: 0;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+.fa-plus {
+    color: rgb(110, 110, 110);;
+}
+
+.fa-plus:hover {
+    cursor: pointer;
+    color: black
+}

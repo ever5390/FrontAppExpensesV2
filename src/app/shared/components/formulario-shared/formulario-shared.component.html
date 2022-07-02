@@ -1,0 +1,56 @@
+<ng-container *ngIf="show__popup">
+    <div class="container-fluid" #popup__formulario>
+        <div class="container_form">
+            <i class="far fa-times" (click)="hiddenPopUp()"></i>
+            <i *ngIf="btnText==='Editar'" class="far fa-minus-circle" (click)="hiddenPopUp()" ></i>
+            <div>
+                <div class="st_form_control_header">
+                    <img src="https://firebasestorage.googleapis.com/v0/b/usuarios-8190a.appspot.com/o/default%2Fdefault_image_options.JPG?alt=media&token=aaa9d207-c32f-40ae-8c3e-6131f21bcced" alt="" srcset="">
+                    <div class="st_form_header">
+                        <label>{{title}}</label>
+                        <input *ngIf="flagInputNameFormulario" type="text" placeholder="-- Inserta descripción">
+                    </div>
+                </div>
+                <div class="form_control" *ngIf="flagGroupSelectFormulario">
+                    <label>Grupo</label>
+                    <select name="cars" id="cars" class="st_aside_dropdown_wrkspc">
+                        <option value="volvo">Volvo</option>
+                        <option value="saab">Saab</option>
+                        <option value="mercedes">Mercedes</option>
+                        <option value="audi">Audi</option>
+                    </select>
+                </div>
+                <div class="form_control" *ngIf="flagBlockTransferFormulario">
+                    <label>Destino</label>
+                    <div class="st_form_destiny d-flex justify-content-between align-items-center">
+                        <span>Seleccione</span>
+                        <span>S/ 0.00</span>
+                    </div>
+                </div>
+                <div class="form_control" *ngIf="flagBlockTransferFormulario && title != 'Transferencia externa'">
+                    <label>Origen</label>
+                    <div class="st_aside_dropdown_wrkspc d-flex justify-content-between align-items-center">
+                        <span>Seleccione</span>
+                        <i class="fas fa-sort"></i>
+                    </div>
+                </div>
+                <div class="form_control" *ngIf="flagBlockTransferFormulario || flagBlockAmountAccountFormulario">
+                    <label>Monto</label>
+                    <div class="st_block_amount d-flex align-items-center">
+                        <span>S/</span>
+                        <input type="text" placeholder="0.00">
+                    </div>
+                </div>
+
+                <div class="st_container_categories" *ngIf="flagBlockAmountAccountFormulario">
+                    <app-lista-shared [onlyListItems]="false"></app-lista-shared>
+                </div>
+                
+            </div>
+            <button>{{btnText}}</button>
+        </div>
+       
+    </div>
+</ng-container>
+
+

@@ -1,0 +1,33 @@
+<div class="st_block_expense">
+    <h6><i (click)="redirectToMenuExpense()" class="fas fa-chevron-double-left"></i> {{title}}</h6>
+    <div class="st_block_items">
+        <!-- Search block -->
+        <div *ngIf="flagShowSearch" class="form_control" >
+            <div  class="st_block_search d-flex align-items-center">
+                <i class="far fa-search" ></i>
+                <input type="text" placeholder=" Search">
+            </div>
+        </div>
+        <div>
+            <div *ngIf="flagShowSelectGroup" class="st_aside_dropdown_wrkspc d-flex justify-content-between align-items-center">
+                <div class="st_b_items_left d-flex flex-row align-items-center">
+                    <i class="fas fa-layer-group"></i>
+                    <span>Grupo</span>
+                </div>
+                <i class="fas fa-angle-down"></i>
+            </div>
+            <div *ngFor="let i of [1,2,3,4]" class="st_aside_dropdown_wrkspc item d-flex justify-content-between align-items-center">
+                <div class="st_block_detail d-flex justify-content-start align-items-center">
+                    <input type="checkbox" name="asda" id="">
+                    <img src="https://firebasestorage.googleapis.com/v0/b/usuarios-8190a.appspot.com/o/default%2Fdefault_image_options.JPG?alt=media&token=aaa9d207-c32f-40ae-8c3e-6131f21bcced" alt="" srcset="">
+                    <div class="st_b_items_left">
+                        <label>Gustitos</label>
+                        <span>36 items</span>
+                    </div>
+                </div>
+                
+                <span>S/ 120.36</span>
+            </div>
+        </div>
+    </div>
+</div>

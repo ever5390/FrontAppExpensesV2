@@ -1,0 +1,68 @@
+<div class="container-fluid">
+    <div #containerlistAccount class="st_container_list_account">
+        <div class="st_account_principal">
+            <div class="st_acc_principal_header">
+                <span>Principal</span>
+                <span class="icons">
+                    <i class="far fa-plus" (click)="redirectToAccount('Registrar')"></i>
+                    <i class="far fa-exchange-alt" (click)="redirectToTransfer('Transferencia externa')"></i>
+                    <i class="fas fa-edit" (click)="redirectToAccount('Actualizar')"></i>
+                    <i class="fas fa-minus-circle"></i>
+                </span>
+            </div>
+            <div class="st_acc_principal_body">
+                <div class="st_acc_data">
+                    <label for="">S/2600</label>
+                    <span style="color:rgb(99, 99, 99);">Disponible</span>
+                </div>
+                <span style="color:rgb(99, 99, 99);">S/ 120.32</span>
+            </div>
+        </div>
+        <div #listAccount class="st_list_account">
+            <div class="st_card_account" *ngFor="let i of [1,213,4,5,6]">
+
+                <span class="icons icons-float-card">
+                    <i class="fas fa-edit" (click)="redirectToAccount('Actualizar')"></i>
+                    <i class="far fa-exchange-alt" (click)="redirectToTransfer('Transferencia interna')"></i>
+                    <i class="fas fa-minus-circle"></i>
+                </span>
+
+                <p>Compras mercado</p>
+                <div class="st_account_actual">
+                    <div class="st_acc_act_data">
+                        <label>Actual</label>
+                        <span>S/ 620.00</span>
+                    </div>
+                    <div class="st_acc_act_data">
+                        <label>Disponible</label>
+                        <span>S/ 20.00</span>
+                    </div>
+                </div>
+                <div class="st_account_estimated">
+                    <div class="st_acc_act_data">
+                        <label>Estimación inicial</label>
+                        <span>S/ 500.00</span>
+                    </div>
+                    <div class="st_acc_act_data">
+                        <div>
+                            <span>T: S/ 120.00</span>
+                            <i style="color: rgb(202, 41, 41);" class="far fa-arrow-down"></i>
+                            <i style="color: rgb(66, 170, 66);" class="far fa-arrow-up"></i>
+                        </div>
+                        <div>
+                            <span>G: S/ 600.00</span>
+                            <i style="color: rgb(202, 41, 41);" class="fas fa-caret-down"></i>
+                            <i style="color: rgb(66, 170, 66);" class="fas fa-caret-up"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+'<app-formulario-shared *ngIf="flagFormulario" 
+    (responseToFatherComponent)="receiveToSonComponent($event)" 
+    [title]="title" 
+    [btnText]="sendBtnText"
+    [imagen]="'imagen'">
+</app-formulario-shared>

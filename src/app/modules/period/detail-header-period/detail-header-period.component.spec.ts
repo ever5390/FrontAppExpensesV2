@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AsideComponent } from './aside.component';
+import { DetailHeaderPeriodComponent } from './detail-header-period.component';
 
-describe('AsideComponent', () => {
-  let component: AsideComponent;
-  let fixture: ComponentFixture<AsideComponent>;
+describe('DetailHeaderPeriodComponent', () => {
+  let component: DetailHeaderPeriodComponent;
+  let fixture: ComponentFixture<DetailHeaderPeriodComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AsideComponent ]
+      declarations: [ DetailHeaderPeriodComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AsideComponent);
+    fixture = TestBed.createComponent(DetailHeaderPeriodComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

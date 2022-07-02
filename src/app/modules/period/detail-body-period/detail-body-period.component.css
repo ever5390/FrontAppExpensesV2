@@ -1,0 +1,179 @@
+/* .container-fluid {
+    width: 100%;
+} */
+
+.st_container_list_account {
+    width: 80%;
+    margin: auto;
+    outline: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    padding-bottom: 10px;
+}
+
+    .st_account_principal {
+        display: flex;
+        flex-direction: column;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #ccc;
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: rgb(63, 63, 63);
+    }
+   
+        .st_acc_principal_header, .st_acc_principal_body {
+            display: flex;
+            justify-content: space-between;
+        }
+
+            .st_acc_data {
+                display: flex;
+                flex-direction: column;
+            }
+            
+            .st_acc_principal_body {
+                font-size: 1rem;
+            }
+
+            .st_acc_principal_body span {
+                display: flex;
+                align-items: flex-end;
+            }
+
+
+    .st_list_account {
+        padding: 20px 0;
+        padding-bottom: 0px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .st_card_account {
+            position: relative;
+            font-size: .9rem;
+            padding: 10px;
+            outline: 1px solid #ccc;
+            width: 300px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+        }
+
+            .st_card_account p {
+                font-weight: 600;
+            }
+
+            .st_account_actual,  .st_account_estimated{
+                display: flex;
+                justify-content: space-between;
+            }
+
+                .st_acc_act_data, .st_acc_act_data {
+                    display: flex;
+                    flex-direction: column;
+                }
+
+                .st_account_actual .st_acc_act_data:nth-child(1) {
+                    text-align: left;
+                }
+
+                .st_account_actual .st_acc_act_data:nth-child(2) {
+                    text-align: right;
+                }
+
+                .fa-caret-down, .fa-caret-up {
+                    font-size: 1.5rem;
+                }
+
+                .fa-arrow-down, .fa-caret-down {
+                    margin-left: 3px;
+                }
+
+                .st_acc_act_data div {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+
+                .icons.icons-float-card{
+                    display: none;
+                }
+                
+                .st_card_account:hover {
+                    cursor: pointer;
+                    outline: 2px inset rgba(199, 199, 199, 0.445);
+                }
+
+                .st_card_account:hover .icons-float-card{
+                    display: block;
+                }
+
+.icons {
+    display: flex;
+    align-items: center;
+}
+
+.fa-plus, 
+.fa-edit, 
+.fa-minus-circle,
+.fa-exchange-alt {
+    font-size: .9rem;
+    margin: 6px;
+    color: rgb(134, 133, 133);
+} 
+
+.fa-plus:hover, 
+.fa-edit:hover, 
+.fa-minus-circle:hover,
+.fa-exchange-alt:hover{
+    cursor: pointer;
+    color: #000;
+}
+
+.icons-float-card  .fa-plus, 
+.icons-float-card  .fa-edit, 
+.icons-float-card  .fa-minus-circle,
+.icons-float-card  .fa-exchange-alt{
+    font-size: .8rem;
+}
+
+.icons-float-card {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+
+@media (max-width: 860px) {
+
+    .container-fluid {
+        width: 100%;
+    }
+    .st_container_list_account {
+        width: 100%;
+    }
+
+}
+
+@media (max-width: 680px) {
+
+    .st_container_list_account {
+        padding: 10px;
+    }
+
+    .st_card_account {
+        width: 98%;
+        margin: auto;
+        margin-bottom: 10px;
+    }
+
+    .st_account_principal {
+        font-size: 1rem;
+    }
+
+    .st_acc_principal_body {
+        font-size: .8rem;
+    }
+
+}

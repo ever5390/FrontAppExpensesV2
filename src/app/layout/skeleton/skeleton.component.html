@@ -1,1 +1,12 @@
-<p>skeleton works!</p>
+<app-header 
+    (showMenuNow)="ReceivedshowMenuNow($event)">
+</app-header>
+
+<div class="container-fluid">
+    <router-outlet></router-outlet>
+</div>
+
+<app-aside *ngIf="showAside" 
+    (hiddenMenuNow)="ReceivedgHiddenMenuNow($event)" 
+    [active_menu]="active_menu_click">
+</app-aside>

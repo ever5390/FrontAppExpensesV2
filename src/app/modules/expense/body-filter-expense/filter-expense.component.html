@@ -1,0 +1,49 @@
+<div class="st_container_expenses_filter"> 
+    <div class="st_block_expense" >
+        <h6>FILTROS</h6>
+        <div class="st_block_items">
+            <div (click)="showFormFilter('Categorías')" class="st_aside_dropdown_wrkspc d-flex justify-content-between align-items-center">
+                <div class="st_b_items_left">
+                    <i class="fas fa-ballot-check"></i>
+                    <span>Categorías</span>
+                </div>
+                <i class="fas fa-caret-right"></i>
+            </div>
+            <div (click)="showFormFilter('Acuerdos')" class="st_aside_dropdown_wrkspc d-flex justify-content-between align-items-center">
+                <div class="st_b_items_left">
+                    <i class="fas fa-handshake"></i>
+                    <span>Acuerdos</span>
+                </div>
+                <i class="fas fa-caret-right"></i>
+            </div>
+            <div (click)="showFormFilter('Métodos de Pago')" class="st_aside_dropdown_wrkspc d-flex justify-content-between align-items-center">
+                <div class="st_b_items_left">
+                    <i class="fas fa-credit-card"></i>                
+                    <span>Medios de pago</span>
+                </div>
+                <i class="fas fa-caret-right"></i>
+            </div>
+            <div (click)="showFormFilter('Tags')" class="st_aside_dropdown_wrkspc d-flex justify-content-between align-items-center">
+                <div class="st_b_items_left">
+                    <i class="fas fa-ballot-check"></i>
+                    <span>Tag</span>
+                </div>
+                <i class="fas fa-caret-right"></i>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- *ngIf="showFormularioFilter"  -->
+    <div class="st_formulario_filter" *ngIf="showFormularioFilter" 
+    [ngClass]="{'st_formulario_filter_show': showTranslate === true}"
+        >
+        <app-filter-by-item-shared 
+            [title]="title"
+            [active_menu]="active_menu_click"
+            (reditectToMenu)="ReceivedgHiddenMenuNow($event)"> 
+        </app-filter-by-item-shared>
+    </div>
+
+</div>
+

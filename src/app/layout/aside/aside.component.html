@@ -1,1 +1,46 @@
-<p>aside works!</p>
+<div id="aside" #aside class="st_aside_container" [ngClass]="active_menu === true?'st_aside_show':'st_aside_container'">
+    <div  class="st_aside">
+        <div class="st_aside_header">
+            <div class="d-flex justify-content-start align-items-center">
+                <img width="30" src="https://www.disneyplusinformer.com/wp-content/uploads/2021/09/The-Simpsons-Profile-Icons-8.png" alt="img_prof" srcset="">
+                <span class="px-2">Ever Rosales</span>
+            </div>
+            <i class="far fa-times" (click)="this.active_menu=false;this.hiddenMenuNow.emit(false);"></i>
+        </div>
+        <div class="st_aside_body">
+            <div class="st_body_header">
+                <div class="st_aside_dropdown_wrkspc d-flex justify-content-between align-items-center" (click)="redirectRoutes('expense')">
+                    <span>Workspace</span>
+                    <i class="fas fa-sort"></i>
+                </div>
+                <div class="st_aside_option_menu d-flex justify-content-start align-items-center" (click)="redirectRoutes('expense-register')">
+                    <i class="far fa-plus"></i>
+                    <span class="px-2">IR registrar gastos</span>
+                </div>
+                <div class="st_aside_option_menu d-flex justify-content-start align-items-center" (click)="redirectRoutes('period')">
+                    <i class="far fa-calendar-day"></i>
+                    <span class="px-2">Periodos</span>
+                </div>
+            </div>
+            <div class="st_body_footer">
+                <div class="st_aside_option_menu d-flex justify-content-start align-items-center" (click)="redirectRoutes('according')">
+                    <i class="fas fa-handshake"></i>
+                    <span class="px-2" >Acuerdo</span>
+                </div>
+                <div class="st_aside_option_menu d-flex justify-content-start align-items-center" (click)="redirectRoutes('category')">
+                    <i class="fas fa-ballot-check"></i>
+                    <span class="px-2" >Categorías</span>
+                </div>
+                <div class="st_aside_option_menu d-flex justify-content-start align-items-center" (click)="redirectRoutes('paymentmethod')">
+                    <i class="fas fa-credit-card"></i>
+                    <span class="px-2" >Medio de pago</span>
+                </div>
+            </div>
+        </div>
+        <div class="st_aside_footer">
+            <i class="far fa-sign-out"></i>
+            <span class="px-2">Cerrar sessión</span>
+        </div>
+    </div>
+</div>
+

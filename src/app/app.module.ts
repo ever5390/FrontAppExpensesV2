@@ -5,11 +5,19 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
+import { AsideComponent } from './layout/aside/aside.component';
+import { HeaderComponent } from './layout/header/header.component';
+import { SkeletonComponent } from './layout/skeleton/skeleton.component';
 import { SharedModule } from './shared/shared.module';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+
+    //components
+    SkeletonComponent,
+    AsideComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule,

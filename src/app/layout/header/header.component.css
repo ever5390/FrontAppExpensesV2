@@ -1,0 +1,39 @@
+.st_header {
+    width: 100%;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* border: 1px solid red; */
+}
+
+    .st_btns_header {
+        min-width: 110px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+        .st_icon_notification, 
+        .st_btn_register_expense {
+            border: 1px solid #ccc;
+            padding: 3px 8px;
+            border-radius: 5px;
+        }
+
+        .st_icon_notification {
+            background-color: rgb(78, 78, 78);
+            color: #fff;
+            font-size: .8rem;
+        }
+
+        .fa-calendar-alt {
+            font-size: 1.9rem;
+        }
+
+.st_icon_notification:hover, 
+.st_btn_register_expense:hover,
+.fa-calendar-alt:hover ,
+.fa-bars:hover {
+    cursor: pointer;
+}

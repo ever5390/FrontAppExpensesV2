@@ -1,0 +1,80 @@
+.st_aside_container {
+    transition: all .5s;
+    position: fixed;
+    width: 360px;
+    height: 100vh;
+    left: -400px;
+    top: 0;
+    /* background-color: #bbb8b8; */
+}
+
+.st_aside {
+    color: #6A6A6A;
+    background-color: #fff;
+    max-width: 360px;
+    /* border: 1px solid red; */
+    height: 100vh;
+    border-right: 1px solid #6a6a6a4b;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+
+.st_aside_show{
+    
+    left: 0;
+    width: 100%;
+}
+
+    .st_aside_header, 
+    .st_aside_footer {
+        padding: 10px;
+        background-color: #EEEEEE;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+
+    .st_aside_header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+
+    .st_aside_body {
+        height: calc(100vh - 97px);
+        /* border: 1px solid green; */
+        padding: 10px 5px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+
+    .st_aside_dropdown_wrkspc {
+        border: 2px solid #6a6a6a86;
+        border-radius: 5px;
+        padding: 10px;
+    }
+
+    .st_aside_option_menu {
+        border: 1px solid #EEEEEE;
+        border-radius: 5px;
+        padding: 10px;
+        margin: 5px 0;
+    }
+
+/* hover */
+
+.st_aside_option_menu:hover,
+.st_aside_dropdown_wrkspc:hover
+{
+    cursor: pointer;
+    /* outline: 2px solid #f1f1f1; */
+    background-color: #EEEEEE;
+}
+
+.st_aside_header span:hover,
+.st_aside_footer span:hover,
+.fa-times
+ {
+    cursor: pointer;
+}

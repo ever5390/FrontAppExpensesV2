@@ -20,14 +20,14 @@
     "lib": [
       "es2018",
       "dom"
-    ]
-  },
-  // Mejora la escritura de rutas
-  "paths": {
-    "@core/*": ["app/core/*"],
-    "@layout/*": ["app/layout/*"],
-    "@modules/*": ["app/modules/*"],
-    "@shared/*": ["app/shared/*"]
+    ],
+      // Mejora la escritura de rutas
+    "paths": {
+      "@core/*": ["app/core/*"],
+      "@layout/*": ["app/layout/*"],
+      "@modules/*": ["app/modules/*"],
+      "@shared/*": ["app/shared/*"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

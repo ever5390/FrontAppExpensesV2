@@ -1,0 +1,7 @@
+.container-fluid {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 45px);
+    background-color: rgba(204, 204, 204, 0.123);
+}

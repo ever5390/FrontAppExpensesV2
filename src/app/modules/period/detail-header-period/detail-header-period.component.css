@@ -1,0 +1,154 @@
+.container_form {
+    margin: 0 auto;
+    position: relative;
+    width: 500px;
+    max-width: 500px;
+    border-bottom: 1px solid #BCBCBC;
+}
+
+.form_control {
+    font-size: .75rem;
+    padding-bottom: 15px;
+}
+
+.form_control h1{
+    font-size: 1.2rem;
+}
+    .st_fc_header {
+        font-size: 1.1rem;        
+    }
+    
+    .st_fc_header span {
+        font-weight: bold;
+        font-size: 1rem;
+    }
+    
+        .st_fc_subheader {
+            color: #a12626;
+            font-weight: 600;
+        }
+    
+    .st_resume_data {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        width: 33.33%;
+    }
+
+    .st_resume_data label {
+        font-size: 1.1rem;
+    }
+
+    .st_resume_data span {
+        font-size: .8rem;
+        font-weight: bold;
+        color: #6A6A6A;
+    }
+
+    .st_resume_data span:nth-child(2) {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .fa-caret-down, .fa-caret-up {
+        font-size: 1.3rem;
+        margin-right: 4px;
+    }
+    
+    .fa-minus-circle {
+        position: absolute;
+        right: 15px;
+        top: 12px;
+    }
+
+    .linkLista {
+        position: absolute;
+        right: 15px;
+        top: 12px;
+    }
+
+img {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+}
+
+input{
+    width: 100%;
+    outline: none;
+    border: none;
+    padding-left: 5px;
+}
+
+label {
+    font-weight: bold;
+}
+
+.fa-times {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+}
+
+.fa-times:hover {
+    cursor: pointer;
+}
+
+.fa-search {
+    margin-right: 5px;
+}
+
+@media (max-width: 580px) {
+
+    .container-fluid {
+        /* padding-right: 0 !important;
+        padding-left: 0 !important; */
+        margin: 0 !important;
+    }
+
+    .container_form {
+        padding: 0;
+        margin: 0;
+        width: 100%;
+    }
+
+    .form_control {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .form_control h1{
+        font-size: .9rem;
+    }
+        .st_fc_header span {
+            font-size: .8rem;
+        }
+
+        img {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+        }
+
+        .st_resume_data label {
+            font-size: .7rem;
+        }
+
+        .st_resume_data span {
+            font-size: .6rem;
+        }
+
+        .form_control:nth-child(1) {
+            padding-bottom: 2px;
+        }
+}
+
+@media (max-width: 370px) {
+
+
+    .container_form {
+        width: 100%;
+    }
+
+}

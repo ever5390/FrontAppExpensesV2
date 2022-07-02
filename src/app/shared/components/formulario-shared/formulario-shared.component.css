@@ -1,0 +1,165 @@
+.container-fluid {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: rgba(150, 149, 149, 0.226);
+}
+
+.fa-times {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+}
+
+.fa-minus-circle {
+    position: absolute;
+    right: 40px;
+    top: 20px;
+}
+
+.fa-times:hover, .fa-minus-circle:hover {
+    cursor: pointer;
+}
+
+.container_form {
+    position: relative;
+    background-color: #fff;
+    margin: 0 auto;
+    width: 400px;
+    max-width: 400px;
+    border: 1px solid #BCBCBC;
+    padding: 30px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, 
+                rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+    border-radius: 10px;
+    /* height: calc(100vh - 100px); */
+}
+
+.st_form_control_header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+    .st_form_control_header img{
+        width: 55px;
+        height: 55px;
+    }
+    
+    /* Agregar este estilo para el caso de Transferencia*/
+    .st_form_control_header_trans img{
+        width: 40px;
+        height: 40px;
+    }
+
+    .st_form_header {
+        margin-left: 10px;
+        width: 80%;
+    }
+
+        .st_form_header label {
+            padding-left: 5px;
+        }
+
+        .st_form_header input {
+            border-bottom: 1px solid #BCBCBC;
+        }
+
+.form_control {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 10px;
+}
+
+button {
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px;
+    border: none;
+    outline: none;
+    color: #fff;
+    border-radius: 10px;
+    background-color: #2EBF8D;
+}
+
+.container-vouchers img {
+    padding: 5px;
+}
+
+img {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.st_block_amount {
+    width: 100%;
+    border: 1px solid #BCBCBC;
+    border-radius: 10px;
+    height: 50px;
+    padding-left: 10px;
+}
+
+input{
+    width: 100%;
+    outline: none;
+    border: none;
+    padding-left: 5px;
+}
+
+label {
+    font-weight: bold;
+    color: #BCBCBC;
+}
+
+.st_aside_dropdown_wrkspc, .st_form_destiny {
+    border: 1px solid #BCBCBC;
+    border-radius: 10px;
+    padding: 10px;
+    outline: none;
+}
+
+.st_aside_dropdown_wrkspc:hover,
+select:hover
+{
+    cursor: pointer;
+    background-color: #eeeeee;
+    font-weight: bold;
+}
+
+@media (max-width: 370px) {
+
+    .container-fluid {
+        padding: 0;
+        margin: 0;
+    }
+
+    .container_form {
+        width: 95%;
+        padding: 10px;
+        /* height: calc(100vh - 50px); */
+    }
+
+    .st_form_header {
+        margin-left: 10px;
+        width: 70%;
+    }
+
+    .form_control {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    img {
+        width: 40px;
+        height: 40px;
+    }
+
+}
