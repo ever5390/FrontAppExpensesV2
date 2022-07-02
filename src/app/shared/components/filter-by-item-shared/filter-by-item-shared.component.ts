@@ -21,10 +21,11 @@ export class FilterByItemSharedComponent implements OnInit {
     this.showBlockSearchOrGroupSelect();
   }
 
-
-
-  redirectToMenuExpense() {
-    this.reditectToMenu.emit(false);
+  translateHiddenMenuFilterSecundary() {
+    this.active_menu = false;
+    setTimeout(()=> {
+      this.reditectToMenu.emit(false);
+    },300);
   }
 
   showBlockSearchOrGroupSelect() {

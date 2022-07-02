@@ -4,8 +4,7 @@
                 :'st_container_expenses_filter'"> 
         
         <div class="st_block_expense" >
-            <i class="fas fa-times" (click)="translateHiddenMenuFilterSecundary()" ></i>
-            <h6>FILTROS</h6>
+            <h6><i (click)="translateHiddenMenuFilterMain()" class="fas fa-chevron-double-left"></i> FILTROS</h6>
             <div class="st_block_items">
                 <div (click)="showFilterMenuSecundaryByOptionSelect('Categorías')" class="st_aside_dropdown_wrkspc d-flex justify-content-between align-items-center">
                     <div class="st_b_items_left">
@@ -37,19 +36,13 @@
                 </div>
             </div>
 
-            <!-- *ngIf="showMenuFilterSecundary"  -->
-            <div class="st_formulario_filter" 
+            <app-filter-by-item-shared 
                 *ngIf="showMenuFilterSecundary"
-                [ngClass]="{'st_formulario_filter_show': 
-                    showTranslateMenuFilterSecundary === true}"
-                >
-                <app-filter-by-item-shared 
-                    [title]="sendTitleMenuSecundary"
-                    [active_menu]="showMenuFilterSecundary"
-                    (reditectToMenu)="ReceivingHiddenMenuFilterSecundary($event)"> 
-                </app-filter-by-item-shared>
-            </div>
-
+                [title]="sendTitleMenuSecundary"
+                [active_menu]="showMenuFilterSecundaryTranslate"
+                (reditectToMenu)="ReceivingHiddenMenuFilterSecundary($event)"
+            > 
+            </app-filter-by-item-shared>
 
         </div>
         

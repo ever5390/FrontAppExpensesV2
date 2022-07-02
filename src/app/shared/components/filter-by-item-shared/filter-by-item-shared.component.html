@@ -1,5 +1,6 @@
-<div class="st_block_expense">
-    <h6><i (click)="redirectToMenuExpense()" class="fas fa-chevron-double-left"></i> {{title}}</h6>
+<div class="st_block_expense" [ngClass]="{'st_formulario_filter_show': 
+active_menu === true}">
+    <h6><i (click)="translateHiddenMenuFilterSecundary()" class="fas fa-chevron-double-left"></i> {{title}}</h6>
     <div class="st_block_items">
         <!-- Search block -->
         <div *ngIf="flagShowSearch" class="form_control" >

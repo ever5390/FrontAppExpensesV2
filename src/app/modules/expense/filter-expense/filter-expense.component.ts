@@ -15,6 +15,7 @@ export class FilterExpenseComponent implements OnInit {
   showTranslateMenuFilterMain: boolean = false;
   showTranslateMenuFilterSecundary: boolean = false;
   showMenuFilterSecundary:boolean=false;
+  showMenuFilterSecundaryTranslate:boolean=false;
 
   @Input("receivedFlagShowMenuFilterMain") receivedFlagShowMenuFilterMain:boolean = false;
   @Output() emitterFlagHiddenMenuFilterMain= new EventEmitter();
@@ -26,14 +27,14 @@ export class FilterExpenseComponent implements OnInit {
 
     this._renderer.listen("window","click",(e: Event)=> {
       if( this.containerMenuFilterMain && e.target === this.containerMenuFilterMain.nativeElement){
-        this.translateHiddenMenuFilterSecundary();
+        this.translateHiddenMenuFilterMain();
       }
     });
 
    }
 
   ngOnInit(): void {
-    this.showMenuFilterMain();   
+    this.showMenuFilterMain();
   }
 
 
@@ -44,10 +45,10 @@ export class FilterExpenseComponent implements OnInit {
   showMenuFilterMain() {
     setTimeout(()=> {
       this.showTranslateMenuFilterMain = true;
-    },50); 
+    },50);
   }
 
-  translateHiddenMenuFilterSecundary() {
+  translateHiddenMenuFilterMain() {
     this.showTranslateMenuFilterMain = false;
     setTimeout(()=> {
       this.receivedFlagShowMenuFilterMain = false;
@@ -56,19 +57,19 @@ export class FilterExpenseComponent implements OnInit {
   }
 
   ReceivingHiddenMenuFilterSecundary(e:any) {
-      this.showTranslateMenuFilterSecundary = false;
+      this.showMenuFilterSecundaryTranslate = false;
       setTimeout(()=> {
         this.showMenuFilterSecundary = false;
-      },500);
+      },100);
   }
 
   showFilterMenuSecundaryByOptionSelect(titleMenuSecundaryToSend: string) {
     this.sendTitleMenuSecundary = titleMenuSecundaryToSend;
     this.showMenuFilterSecundary = true;
-
     setTimeout(()=> {
-      this.showTranslateMenuFilterSecundary = true;
+      this.showMenuFilterSecundaryTranslate = true;
     },100);
+    
   }
 
 }
