@@ -6,14 +6,21 @@
         <span class="st_icon_notification">
             15
         </span>
-        <span class="st_btn_register_expense" routerLink="/expense-detail" >
+        <!-- <span class="st_btn_register_expense" 
+            (click)="show__popup.showPopUp()" >
+            <i class="far fa-plus" ></i>
+        </span> -->
+        <span class="st_btn_register_expense" 
+            (click)="showFormRegisterExpense()" >
             <i class="far fa-plus" ></i>
         </span>
         <i class="fas fa-calendar-alt"></i>
     </div>
 </div>
+<app-manage-expense *ngIf="showFormRgister" 
+    [show__popup]="showFormRgister"
+    (sendHiddenFormRegister)="receivedHiddenFormRegister()"
+    >
+</app-manage-expense>
+<!-- <app-formulary-register-expense-shared #show__popup></app-formulary-register-expense-shared> -->
 
-<!-- <span class="st_btn_register_expense" (click)="show__popup.showPopUp()">
-    <i class="far fa-plus" ></i>
-</span>
-<app-formulario-shared #show__popup></app-formulario-shared> -->

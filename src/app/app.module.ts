@@ -1,6 +1,7 @@
-import { LocationStrategy, PathLocationStrategy } from '@angular/common';
+import { CommonModule, LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { ManageExpenseComponent } from '@modules/expense/manage-expense/manage-expense.component';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -17,7 +18,9 @@ import { SharedModule } from './shared/shared.module';
     //components
     SkeletonComponent,
     AsideComponent,
-    HeaderComponent
+    HeaderComponent,
+    
+    ManageExpenseComponent
   ],
   imports: [
     BrowserModule,
@@ -25,7 +28,7 @@ import { SharedModule } from './shared/shared.module';
     //Core
     CoreModule,
     SharedModule,
-
+    CommonModule,
     AppRoutingModule
   ],
   providers: [

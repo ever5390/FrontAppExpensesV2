@@ -27,6 +27,10 @@
     overflow-x: hidden;
 }
 
+    .st_block_expense .title_filter {
+        margin-bottom: 20px;
+    }
+
 .fa-times {
     position: absolute;
     top: 20px;

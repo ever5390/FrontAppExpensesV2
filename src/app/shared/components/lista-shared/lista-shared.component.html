@@ -3,9 +3,9 @@
       <div>
         <ng-container *ngIf="onlyListItems">
             <div class="st_form_control_header">
-                <img src="{{imagen}}"  alt="" srcset="">
+                <img src="{{dataStructureReceived.imagen}}"  alt="" srcset="">
                 <div class="st_form_header">
-                    <label>Configuración de {{title}}</label>
+                    <label>{{dataStructureReceived.title}}</label>
                 </div>
             </div>
             <div class="form_control st_frm_search" >
@@ -23,6 +23,7 @@
                   <i class="far fa-plus"  (click)="redirectToFormulario('Registrar')"></i>
                   <label>Crear Nuevo</label>
               </div>
+              <!-- ,3,4,5,6,7,8,9,10,11,12,13,14,15 -->
               <ng-container *ngFor="let item of [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]" >
                   <div class="st_item_category" [ngClass]="{'st_item_category_account': onlyListItems === false}"
                      (click)="redirectToFormulario('Actualizar')">
@@ -38,8 +39,7 @@
 
 <app-formulario-shared *ngIf="flagFormulario"
     (responseToFatherComponent)="receiveToSonComponent($event)"
-    [title]="title"
     [btnText]="sendBtnText"
-    [imagen]="imagen" 
+    [dataStructureReceived]="dataStructureReceived" 
 >
 </app-formulario-shared>

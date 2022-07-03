@@ -20,7 +20,7 @@ export class DetailPeriodComponent implements OnInit {
     let windowHeight = window.innerHeight;
     let heightidPeriod = this.idPeriod.nativeElement.clientHeight;
     if(heightidPeriod > (windowHeight-100)){
-      this._renderer.setStyle(this.idPeriod.nativeElement,"height",(windowHeight-40)+"px");
+      this._renderer.setStyle(this.idPeriod.nativeElement,"height",(windowHeight-50)+"px");
       this._renderer.setStyle(this.idPeriod.nativeElement,"overflow-y","scroll");
     }
 

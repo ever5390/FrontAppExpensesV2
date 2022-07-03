@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { CONSTANTES } from 'app/data/constantes';
+import { DataStructure } from 'app/data/models/data.model';
 
 @Component({
   selector: 'app-list-payment-method',
@@ -7,6 +9,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ListPaymentMethodComponent implements OnInit {
 
+  dataStructure: DataStructure = {
+    item:CONSTANTES.CONST_MEDIOSDEPAGO,
+    title:CONSTANTES.CONST_TITLE_CONFIGURACION_DE_MEDIOSDEPAGO, 
+    imagen:CONSTANTES.CONST_IMAGEN_MEDIOSDEPAGO};
+    
   constructor() { }
 
   ngOnInit(): void {

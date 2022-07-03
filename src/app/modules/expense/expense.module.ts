@@ -3,7 +3,7 @@ import { SkeletonExpenseComponent } from './skeleton-expense/skeleton-expense.co
 import { BodyExpenseComponent } from './body-expense/body-expense.component';
 import { ListExpenseComponent } from './body-list-expense/list-expense.component';
 import { FilterExpenseComponent } from './filter-expense/filter-expense.component';
-import { ManageExpenseComponent } from './manage-expense/manage-expense.component';
+// import { ManageExpenseComponent } from './manage-expense/manage-expense.component';
 import { HeaderExpenseComponent } from './header-expense/header-expense.component';
 import { ExpenseRoutingModule } from './expense-routing.module';
 import { SharedModule } from 'app/shared/shared.module';
@@ -14,7 +14,7 @@ import { SharedModule } from 'app/shared/shared.module';
     BodyExpenseComponent,
     ListExpenseComponent,
     FilterExpenseComponent,
-    ManageExpenseComponent,
+    // ManageExpenseComponent,
     HeaderExpenseComponent
   ],
   imports: [

@@ -1,4 +1,5 @@
 import { Component, ElementRef, Input, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { DataStructure } from 'app/data/models/data.model';
 
 @Component({
   selector: 'app-lista-shared',
@@ -10,9 +11,8 @@ export class ListaSharedComponent implements OnInit {
   flagFormulario: boolean = false;
   sendBtnText: string = '';
 
-  @Input() title: string = '';
-  @Input() imagen: string = '';
-  @Input() onlyListItems: boolean = true; 
+  @Input() onlyListItems: boolean = true;
+  @Input() dataStructureReceived: DataStructure = new DataStructure();
 
   @ViewChild('idList') idList: ElementRef | any;
   @ViewChild('idFormShared') idFormShared: ElementRef | any;
@@ -38,11 +38,17 @@ export class ListaSharedComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // console.log(this.dataStructureReceived);
+    // console.log(this.dataStructureReceived.title);
   }
 
   redirectToFormulario(textBtn: string) {
     this.sendBtnText = textBtn;
     this.flagFormulario = true;
+
+    if(textBtn != 'Registrar') {
+      // service method to get info from DB
+    }
   }
 
   receiveToSonComponent(e:any) {

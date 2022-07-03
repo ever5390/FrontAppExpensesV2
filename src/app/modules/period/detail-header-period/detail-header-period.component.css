@@ -102,14 +102,11 @@ label {
 @media (max-width: 580px) {
 
     .container-fluid {
-        /* padding-right: 0 !important;
-        padding-left: 0 !important; */
         margin: 0 !important;
     }
 
     .container_form {
         padding: 0;
-        margin: 0;
         width: 100%;
     }
 

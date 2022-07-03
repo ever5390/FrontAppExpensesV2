@@ -1,7 +1,7 @@
 <ng-container *ngIf="show__popup">
     <div class="container-fluid" #popup__formulario>
         <div class="container_form">
-            <i class="far fa-times" (click)="this.sendHiddenFormRegister.emit(false);this.show__popup = false;"></i>
+            <i class="far fa-times" (click)="this.show__popup = false;"></i>
             <div class="container_form_controls">
                 <div class="form_control pt-1">
                     <label>Monto</label>
@@ -18,17 +18,17 @@
                 </div>
                 <div class="form_control">
                     <div class="st_content_aditionals_items d-flex justify-content-between">
-                        <div class="st_item" (click)="showListCategories()">
+                        <div class="st_item">
                             <img src="https://firebasestorage.googleapis.com/v0/b/usuarios-8190a.appspot.com/o/default%2Fdefault_image_options.JPG?alt=media&token=aaa9d207-c32f-40ae-8c3e-6131f21bcced" alt="" srcset="">
                             <label>Category</label>
                             <span>Servicios Departamento</span>
                         </div>
-                        <div class="st_item" (click)="showListAccording()">
+                        <div class="st_item">
                             <img src="https://firebasestorage.googleapis.com/v0/b/usuarios-8190a.appspot.com/o/default%2Fdefault_image_options.JPG?alt=media&token=aaa9d207-c32f-40ae-8c3e-6131f21bcced" alt="" srcset="">
                             <label>Acuerdo</label>
                             <span>Con Reposición</span>
                         </div>
-                        <div class="st_item" (click)="showListPaymentMethods()">
+                        <div class="st_item">
                             <img src="https://firebasestorage.googleapis.com/v0/b/usuarios-8190a.appspot.com/o/default%2Fdefault_image_options.JPG?alt=media&token=aaa9d207-c32f-40ae-8c3e-6131f21bcced" alt="" srcset="">
                             <label>Medio de Pago</label>
                             <span>Tarjeta de Crédito</span>
@@ -46,21 +46,8 @@
                 </div>
             </div>
             <button>Registrar</button>
-
-
-
-            <!-- Lista de items POP-UP-->
-            <div class="st_lista_items_select" *ngIf="show__list__items">
-                <i class="fas fa-times" (click)="show__list__items=false"></i>
-                <app-lista-shared 
-                    [dataStructureReceived]="dataStructure"
-                    ></app-lista-shared>
-                    <!-- [onlyListItems]="false" -->
-            </div>
-
         </div>
     
     </div>
 </ng-container>
-
 

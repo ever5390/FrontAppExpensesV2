@@ -7,7 +7,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 })
 export class HeaderComponent implements OnInit {
 
-  show__popup: boolean = false;
+  showFormRgister: boolean = false;
   @Output() showMenuNow: EventEmitter<boolean> = new EventEmitter();
   constructor() { }
 
@@ -19,5 +19,12 @@ export class HeaderComponent implements OnInit {
     this.showMenuNow.emit(true);
   }
 
+  showFormRegisterExpense() {
+    this.showFormRgister = true;
+  }
+
+  receivedHiddenFormRegister() {
+    this.showFormRgister = false;
+  }
 
 }

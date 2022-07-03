@@ -22,6 +22,7 @@
     box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, 
                 rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
     border-radius: 10px;
+    /* height: calc(100vh - 100px); */
 }
 
 .fa-times {
@@ -115,24 +116,6 @@
         color: #BCBCBC;
     }
 
-
-
-/* list pop up items */
-
-.st_lista_items_select {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 10px;
-    padding: 0 10px;
-    background-color: rgba(204, 204, 204, 0.178);
-}
-
 @media (max-width: 480px) {
 
 .container-fluid {
@@ -144,6 +127,10 @@
     width: 95%;
     padding: 10px;
     /* height: calc(100vh - 50px); */
+}
+
+.container_form_controls {
+    /* height: calc(100vh - 130px); */
 }
 
 .form_control {

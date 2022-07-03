@@ -5,9 +5,9 @@
             <i *ngIf="btnText==='Editar'" class="far fa-minus-circle" (click)="hiddenPopUp()" ></i>
             <div>
                 <div class="st_form_control_header">
-                    <img src="https://firebasestorage.googleapis.com/v0/b/usuarios-8190a.appspot.com/o/default%2Fdefault_image_options.JPG?alt=media&token=aaa9d207-c32f-40ae-8c3e-6131f21bcced" alt="" srcset="">
+                    <img src="{{dataStructureReceived.imagen}}" alt="" srcset="">
                     <div class="st_form_header">
-                        <label>{{title}}</label>
+                        <label>{{dataStructureReceived.titleDos}}</label>
                         <input *ngIf="flagInputNameFormulario" type="text" placeholder="-- Inserta descripción">
                     </div>
                 </div>
@@ -27,7 +27,7 @@
                         <span>S/ 0.00</span>
                     </div>
                 </div>
-                <div class="form_control" *ngIf="flagBlockTransferFormulario && title != 'Transferencia externa'">
+                <div class="form_control" *ngIf="flagBlockTransferFormulario && this.dataStructureReceived.title != 'Transferencia externa'">
                     <label>Origen</label>
                     <div class="st_aside_dropdown_wrkspc d-flex justify-content-between align-items-center">
                         <span>Seleccione</span>

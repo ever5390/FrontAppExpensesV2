@@ -62,7 +62,6 @@
 </div>
 '<app-formulario-shared *ngIf="flagFormulario" 
     (responseToFatherComponent)="receiveToSonComponent($event)" 
-    [title]="title" 
-    [btnText]="sendBtnText"
-    [imagen]="'imagen'">
+    [dataStructureReceived]="dataStructure" 
+    [btnText]="sendBtnText" >
 </app-formulario-shared>
