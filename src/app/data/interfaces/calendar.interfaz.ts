@@ -1,4 +1,4 @@
 export interface ICalendar {
-    itemHTML: string;
+    itemHTML?: Element;
     dateSelected: Date;
 }
