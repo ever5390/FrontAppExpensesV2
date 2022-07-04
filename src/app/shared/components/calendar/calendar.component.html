@@ -34,9 +34,7 @@
                 <div #hashCOntentCalendar class="days">
 
                     <div class="prev-date" *ngFor="let day of daysMonthPrev; " >{{day}}</div>
-                    <div   class="today_select" (click)="getDateByDaySelected(day)"
-                          id="{{i+1}}" 
-                          *ngFor="let day of daysMonthCurrent;let i = index">
+                    <div   class="today_select" (click)="getDateByDaySelected(day)"                          *ngFor="let day of daysMonthCurrent;let i = index">
                         <!-- <span  [ngClass]="today === day && date.getMonth() == month? 'today' : ''"> -->
                         {{day}}
                     <!-- </span> -->

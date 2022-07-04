@@ -65,27 +65,34 @@ export class CalendarComponent implements OnInit {
     this._renderer.listen(this.hashCOntentCalendar.nativeElement,'click', (e: Event)=> {    
       //painting to select item      
      
-      console.log("LISTEN");
-      //catching to target select   
-      if(this.countClick == 1) {
-        this.initial = e.target;
-        this._renderer.setStyle( this.initial ,"background-color","#88beb2");
-        this._renderer.setStyle( this.initial ,"border-radius","50%");
+      var lista =  document.querySelectorAll(".today_select");
+      for (let index = 0; index < lista.length; index++) {
+        if(e.target == lista[index]) {
+            //catching to target select   
+            if(this.countClick == 1) {
+              this.initial = e.target;
+              this._renderer.setStyle( this.initial ,"background-color","#88beb2");
+              this._renderer.setStyle( this.initial ,"border-radius","50%");
 
-        this.dateSelectedInitial.itemHTML = this.initial;
-        console.log("INIT");
-        console.log(this.dateSelectedInitial);
+              this.dateSelectedInitial.itemHTML = this.initial;
+              console.log("INIT");
+              console.log(this.dateSelectedInitial);
+            }
+
+            if(this.countClick == 2) {
+              this.final = e.target;
+              this._renderer.setStyle(this.final ,"background-color","#88beb2");
+              this._renderer.setStyle(this.final ,"border-radius","50%");
+              this.dateSelectedFinal.itemHTML = this.final;
+              console.log("FINAL");
+              console.log(this.dateSelectedFinal);
+
+            }
+            break;
+        }
+        
       }
-
-      if(this.countClick == 2) {
-        this.final = e.target;
-        this._renderer.setStyle(this.final ,"background-color","#88beb2");
-        this._renderer.setStyle(this.final ,"border-radius","50%");
-        this.dateSelectedFinal.itemHTML = this.final;
-        console.log("FINAL");
-        console.log(this.dateSelectedFinal);
-
-      }
+      
     });
   }
 
@@ -147,61 +154,34 @@ export class CalendarComponent implements OnInit {
 
   getDateByDaySelected(daySelected: any) {
     
-          console.log("LISTEN2");
-          var lista =  document.querySelectorAll(".today_select");
-          if(this.countClick>1) {
-            this.limpiarItems(lista);
-            this.initial = null;
-            this.final = null;
-            this.countClick = 0;
-          }
-          this.countClick++;
-          console.log(this.countClick);
+    var lista =  document.querySelectorAll(".today_select");
+    
+    if(this.countClick>1) {
+      this.resetDateRange(lista);
+    }
 
-          if(this.countClick > 1){
-            console.log("DAY3: " + daySelected);
-            this.dateSelectedFinal.dateSelected = new Date(
-              this.date.getFullYear(),
-              this.date.getMonth(),
-              daySelected);
+    //Imcrement count click
+    this.countClick++;
 
-              //Consulta mesFinal == mesInicial
-              this.validIfMonthInitialIsEqualsMonthFinal(lista);
+    if(this.countClick > 1){
+      this.dateSelectedFinal.dateSelected = new Date(
+        this.date.getFullYear(),
+        this.date.getMonth(),
+        daySelected);
 
-          } else {
-            console.log("DAY: " + daySelected);
-            this.dateSelectedInitial.dateSelected = new Date(
-              this.date.getFullYear(),
-              this.date.getMonth(),
-              daySelected);
-          }
-          
-      
-          // setTimeout(()=> {
-          //   if(this.countClick>1) {
-          //     for (let index = 0; index < lista.length; index++) {
-          //       if(this.initial == lista[index]){
-          //         this.indiceDesde = index;
-          //         break;
-          //       }
-          //     }
-      
-          //     for (let index = this.indiceDesde; index < lista.length; index++) {
-                
-          //       // this._renderer.removeStyle( this.initial ,"border-radius");
-          //       // this._renderer.removeStyle( this.final ,"border-radius");
-          //       this._renderer.setStyle(lista[index] ,"background-color","#dadada73");
-          //       this._renderer.setStyle( this.initial ,"background-color","#88beb2");
-          //       this._renderer.setStyle( this.final ,"background-color","#88beb2");
-          //       // this._renderer.setStyle(this.initial ,"border-radius","50% 30% 0 50%");
-          //       // this._renderer.setStyle(this.final ,"border-radius"," 0 50% 50% 0");
-          //       if(this.final == lista[index]){
-          //           break;
-          //         }  
-          //     }
-          //   }
-      
-          // },50);
+        //Validate date Range, less to Major
+        if(this.validateIfFinalDateIsLessThanInitialDate()) 
+          return;
+        
+        //Begin to select range
+        this.validIfMonthInitialIsEqualsMonthFinal(lista);
+        
+    } else {
+      this.dateSelectedInitial.dateSelected = new Date(
+        this.date.getFullYear(),
+        this.date.getMonth(),
+        daySelected);
+    }
 
     
    // console.log(this.hashCOntentCalendar.nativeElement);
@@ -237,38 +217,79 @@ export class CalendarComponent implements OnInit {
     // }
 
   }
+  resetDateRange(lista: any) {
+    this.limpiarItems(lista);
+    this.dateSelectedFinal = new Calendar();
+    this.dateSelectedInitial = new Calendar();
+    this.initial = null;
+    this.final = null;
+    this.countClick = 0;
+  }
+
+  validateIfFinalDateIsLessThanInitialDate(): boolean {
+    if(this.dateSelectedFinal.dateSelected < this.dateSelectedInitial.dateSelected){
+      this._renderer.removeStyle(this.initial ,"background-color");
+      this._renderer.removeStyle(this.initial ,"border-radius");
+      this.dateSelectedInitial.dateSelected = this.dateSelectedFinal.dateSelected;
+      this.countClick = 1;
+      return true;
+    }
+
+    return false;
+  }
 
   flagMonthInitialIsEqualsMonthSelected: boolean = false;
   validChangeIfMonthInitialIsEqualsMonthSelected(lista: NodeListOf<Element>) {
+    console.log(this.dateSelectedInitial.itemHTML);
+    console.log(this.dateSelectedFinal.itemHTML);
 
-    if(this.date.getMonth() == this.dateSelectedInitial.dateSelected.getMonth()) {
+    if(this.dateSelectedInitial.itemHTML == undefined) return;
 
-      if(this.date.getMonth() == this.dateSelectedFinal.dateSelected.getMonth()) {
+    //if(this.date.getMonth() == this.dateSelectedInitial.dateSelected.getMonth()) {
+    if(this.validateMonthAndYearINITIALWithDateSelected()) {
+      if(this.dateSelectedFinal.itemHTML == undefined) {
+        this._renderer.setStyle(this.initial ,"background-color","#88beb2");
+        this._renderer.setStyle(this.initial ,"border-radius","50%");
+        return;
+      }
+      //if(this.date.getMonth() == this.dateSelectedFinal.dateSelected.getMonth()) {
+      if(this.validateMonthAndYearFINALWithDateSelected()) {
         this.initial = this.dateSelectedInitial.itemHTML;
         this.final = this.dateSelectedFinal.itemHTML;
         this.getColorItemsByFromTo(lista);
       } else {
+        this._renderer.removeStyle(this.initial ,"background-color");
+        this._renderer.removeStyle(this.initial ,"border-radius");
         this.limpiarItems(lista);
+        
+        if(this.dateSelectedFinal.itemHTML == undefined) return;
+
         this.initial = this.dateSelectedInitial.itemHTML;
         this.final = lista[lista.length-1];
         this.getColorItemsByFromTo(lista);
       }
 
     } else {
+      
       //Delete style WHEN change MONTH
       this._renderer.removeStyle(this.initial ,"background-color");
       this._renderer.removeStyle(this.initial ,"border-radius");
-
-      if(this.date.getMonth() == this.dateSelectedFinal.dateSelected.getMonth()) {
-        this.limpiarItems(lista);
+      this.limpiarItems(lista);
+      //if(this.date.getMonth() == this.dateSelectedFinal.dateSelected.getMonth()) {
+      if(this.validateMonthAndYearFINALWithDateSelected()) {
+       // this.limpiarItems(lista);
         this.initial = lista[0];
         this.final = this.dateSelectedFinal.itemHTML;
         this.getColorItemsByFromTo(lista);
       } else {
-        this.limpiarItems(lista);
-        if(this.date.getMonth() > this.dateSelectedInitial.dateSelected.getMonth() && 
-           this.date.getMonth() < this.dateSelectedFinal.dateSelected.getMonth()) {
-
+        //this.limpiarItems(lista);
+        if(this.dateSelectedFinal.itemHTML == undefined) return;
+        //if(this.date.getMonth() > this.dateSelectedInitial.dateSelected.getMonth() && 
+          // this.date.getMonth() < this.dateSelectedFinal.dateSelected.getMonth()) {
+        console.log("init"+this.dateSelectedInitial.dateSelected);
+        console.log("ifin"+this.dateSelectedFinal.dateSelected);
+        if(this.validateIfMonthSelectedBETWEENMonthAndYearINITIALandFINAL()){
+         // alert("entrre");
           this.initial = lista[0];
           this.final = lista[lista.length-1];
           this.getColorItemsByFromTo(lista);
@@ -284,7 +305,10 @@ export class CalendarComponent implements OnInit {
   }
 
   validIfMonthInitialIsEqualsMonthFinal(lista: NodeListOf<Element>) {
-    if(this.dateSelectedFinal.dateSelected.getMonth() == this.dateSelectedInitial.dateSelected.getMonth()) {
+    
+    //if(this.dateSelectedFinal.dateSelected.getMonth() == this.dateSelectedInitial.dateSelected.getMonth()) {
+    if(this.validateFINALMonthAndYearWithINITIALMonthAndYear()){
+      this.limpiarItems(lista);
       this.initial = this.dateSelectedInitial.itemHTML;
       this.final = this.dateSelectedFinal.itemHTML;
       this.getColorItemsByFromTo(lista);
@@ -310,7 +334,6 @@ export class CalendarComponent implements OnInit {
       
             this._renderer.setStyle(lista[index] ,"background-color","#dadada73");
             if(this.final == lista[index]){
-              //alert("sss");
                 if(this.validateIfFinalIsInNextMonth()){
                   this._renderer.setStyle(this.final ,"background-color","#88beb2");
                   this._renderer.setStyle(this.final ,"border-radius","50%");
@@ -326,14 +349,16 @@ export class CalendarComponent implements OnInit {
   }
 
   validateIfFinalIsInNextMonth(): boolean {
-    if(this.date.getMonth() == this.dateSelectedFinal.dateSelected.getMonth()) {
+    //if(this.date.getMonth() == this.dateSelectedFinal.dateSelected.getMonth()) {
+    if(this.validateMonthAndYearFINALWithDateSelected()) {
       return true;
     }
     return false;
   }
   
   validateIfInitialIsInNextMonth(): boolean {
-    if(this.date.getMonth() == this.dateSelectedInitial.dateSelected.getMonth()) {
+    //if(this.date.getMonth() == this.dateSelectedInitial.dateSelected.getMonth()) {
+    if(this.validateMonthAndYearINITIALWithDateSelected()) {
       return true;
     }
     return false;
@@ -357,13 +382,63 @@ export class CalendarComponent implements OnInit {
 
   }
 
+  validateFINALMonthAndYearWithINITIALMonthAndYear(): boolean{
+    if(this.dateSelectedFinal.dateSelected.getMonth() == this.dateSelectedInitial.dateSelected.getMonth() &&
+    this.dateSelectedFinal.dateSelected.getFullYear() == this.dateSelectedInitial.dateSelected.getFullYear())
+      return true;
 
-  // validateMonthAndYearINITIALWithDateSelected(): boolean{
-  //   if(this.date.getMonth() == this.dateSelectedInitial.dateSelected.getMonth())
-  //     return true;
+    return false;
+  }
 
-  //   return false;
-  // }
+  validateMonthAndYearINITIALWithDateSelected(): boolean{
+    if(this.date.getMonth() == this.dateSelectedInitial.dateSelected.getMonth() &&
+      this.date.getFullYear() == this.dateSelectedInitial.dateSelected.getFullYear())
+      return true;
+
+    return false;
+  }
+
+  validateMonthAndYearFINALWithDateSelected(): boolean{
+    if(this.date.getMonth() == this.dateSelectedFinal.dateSelected.getMonth() &&
+      this.date.getFullYear() == this.dateSelectedFinal.dateSelected.getFullYear())
+      return true;
+
+    return false;
+  }
+
+  validateIfMonthSelectedBETWEENMonthAndYearINITIALandFINAL(): boolean{
+
+    // if(this.date.getMilliseconds() > this.dateSelectedInitial.dateSelected.getMilliseconds()
+    //   && this.date.getMilliseconds() < this.dateSelectedFinal.dateSelected.getMilliseconds()){
+    //     return true;
+    //   }
+    if(this.date.getFullYear() == this.dateSelectedInitial.dateSelected.getFullYear()){
+      if(this.date.getFullYear() == this.dateSelectedFinal.dateSelected.getFullYear()){
+        if(this.date.getMonth() > this.dateSelectedInitial.dateSelected.getMonth() && 
+            this.date.getMonth() < this.dateSelectedFinal.dateSelected.getMonth()){
+          return true;
+        }
+      } else {
+        if(this.date.getMonth() > this.dateSelectedInitial.dateSelected.getMonth()){
+          return true;
+        }
+      }
+      
+    } else {
+      if(this.date.getFullYear() == this.dateSelectedFinal.dateSelected.getFullYear()){
+        if(this.date.getMonth() < this.dateSelectedFinal.dateSelected.getMonth()){
+          return true;
+        }
+      } 
+    }
+
+    if(this.date.getFullYear() > this.dateSelectedInitial.dateSelected.getFullYear() &&
+       this.date.getFullYear() < this.dateSelectedFinal.dateSelected.getFullYear()){
+        return true;
+    }
+      
+    return false;
+  }
 
 
 
