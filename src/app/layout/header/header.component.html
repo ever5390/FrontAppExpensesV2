@@ -3,7 +3,7 @@
         <i class="fas fa-bars" (click)="showMenu()"></i>
     </div>
     <div class="st_btns_header">
-        <span class="st_icon_notification">
+        <span class="st_icon_notification" (click)="showNotificationpPopUp()">
             15
         </span>
         <!-- <span class="st_btn_register_expense" 
@@ -22,5 +22,11 @@
     (sendHiddenFormRegister)="receivedHiddenFormRegister()"
     >
 </app-manage-expense>
+
+<app-list-notification *ngIf="flagNotificationpPopUp">
+
+</app-list-notification>
+
+<app-calendar></app-calendar>
 <!-- <app-formulary-register-expense-shared #show__popup></app-formulary-register-expense-shared> -->
 

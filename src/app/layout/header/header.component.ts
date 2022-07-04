@@ -7,6 +7,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 })
 export class HeaderComponent implements OnInit {
 
+  flagNotificationpPopUp: boolean= false;
   showFormRgister: boolean = false;
   @Output() showMenuNow: EventEmitter<boolean> = new EventEmitter();
   constructor() { }
@@ -25,6 +26,10 @@ export class HeaderComponent implements OnInit {
 
   receivedHiddenFormRegister() {
     this.showFormRgister = false;
+  }
+
+  showNotificationpPopUp() {
+    this.flagNotificationpPopUp = !this.flagNotificationpPopUp;
   }
 
 }

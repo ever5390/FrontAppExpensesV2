@@ -2,6 +2,8 @@ import { CommonModule, LocationStrategy, PathLocationStrategy } from '@angular/c
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { ManageExpenseComponent } from '@modules/expense/manage-expense/manage-expense.component';
+import { ListNotificationComponent } from '@modules/notification/list-notification/list-notification.component';
+import { CalendarComponent } from '@shared/components/calendar/calendar.component';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -20,7 +22,9 @@ import { SharedModule } from './shared/shared.module';
     AsideComponent,
     HeaderComponent,
     
-    ManageExpenseComponent
+    ManageExpenseComponent,
+    ListNotificationComponent,
+    CalendarComponent
   ],
   imports: [
     BrowserModule,

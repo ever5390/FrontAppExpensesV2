@@ -1,0 +1,47 @@
+.st_container_notification {
+    position: absolute;
+    top: 40px;
+    right: 9px;
+    max-width: 400px;
+    /* width: 400px; */
+    border-radius: 5px;
+    background-color: rgb(255, 255, 255);
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, 
+                rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em,
+                rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
+    font-size: .8rem;
+    color: rgb(41, 40, 40);
+    z-index: 1;
+}
+.st_title_notification {
+    padding-bottom: 10px;
+    padding: 20px;
+    border-bottom: 1px solid rgba(177, 177, 177, 0.377);
+}
+
+.st_item_notification:hover {
+    cursor: pointer;
+    color: black;
+    background-color: rgba(236, 236, 236, 0.534);
+}
+
+
+.st_item_notification img {
+    border-radius: 50%;
+    margin-right: 10px;
+    /* background-color: #ccc; */
+}
+
+.st_title_notification img:nth-child(1) {
+    display: inline-block;
+}
+
+@media (max-width: 480px) {
+    .st_container_notification {
+       
+        right: 5px;
+        max-width: 98%;
+        margin: auto;
+       
+    }
+}
