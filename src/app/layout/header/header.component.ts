@@ -9,6 +9,7 @@ export class HeaderComponent implements OnInit {
 
   flagNotificationpPopUp: boolean= false;
   showFormRgister: boolean = false;
+  flagCalendarpPopUp: boolean = false;
   @Output() showMenuNow: EventEmitter<boolean> = new EventEmitter();
   constructor() { }
 

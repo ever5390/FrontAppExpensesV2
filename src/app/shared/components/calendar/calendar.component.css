@@ -1,38 +1,23 @@
 
-.select_item_initial {
-  background-color: #dadada73;
-  border-radius: 50%;
-  /* z-index: 2; */
+.st_btn_goto_today {
+  color: #3a5e56;
 }
 
-.select_item_final {
-  background-color: #ca3434;
-  border-radius: 50%;
-  /* z-index: 2; */
+.st_btn_goto_today:hover {
+  cursor: pointer;
+  color: #4c796f;
 }
-
-/* .select_item_final {
-  background-color: rgb(131, 131, 131);
-  border-radius: 0 50% 50% 0;
-} */
 
 .calendar {
-    max-width: 300px;
-    padding-bottom: 10px;
+    position: absolute;
+    top: 45px;
+    right: 5px;
+    width: 290px;
+    max-width: 290px;
+    background-color: #fff;
     box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;    
     font-size: .9rem;
-    position: relative;
-}
-
-
-.calendartWO {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  color: aqua;
-  background-color: #ca3434;
+    z-index: 1;
 }
   
   .month {
@@ -77,8 +62,7 @@
     padding: 10px;
     display: inline-grid;
     grid-template-columns: repeat(7, calc(100%/7));
-    grid-template-rows: repeat(7, 40px);
-    /* background-color: rgb(253, 139, 139); */
+    grid-template-rows: repeat(6, 38px);
   }
   
       .days div {
@@ -87,8 +71,6 @@
         align-items: center;
         justify-content: center;
         margin-bottom: 4px;
-        /* outline: 1px solid red; */
-        /* transition: background-color 0.1s; */
       }
         
         .days div:hover {
@@ -96,11 +78,12 @@
         }
 
   
-  /* .days div:hover:not(.today) {
-    background-color: #262626;
+  /* .days div:hover:not(.todayS) {
+    background-color: #88beb2;
     border: 0.2rem solid #777;
-    color: #fff;
+    color: #000;
     cursor: pointer;
+    z-index: 3;
   } */
   
   .prev-date,
@@ -108,10 +91,44 @@
     opacity: 0.5;
   }
   
-  .today {
-    background-color: #f1e8de;
+  .todayS {
+    border: 2px solid #88beb2;
     border-radius: 50%;
   }
+  
+
+  .st_content_days_weeks {
+    position: relative;
+    overflow-y: hidden;
+  }
+
+  .st_fast_filters {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    transition: all .5s;
+  }
+
+  .st_fast_filters_show {
+    top: 0;
+  }
+
+    .st_fast_filters div {
+      padding: 5px 10px;
+      border-bottom: 1px solid rgba(204, 204, 204, 0.349);
+    }
+
+    .st_fast_filters div:hover, .ft_hover:hover {
+     cursor: pointer;
+     background-color: rgb(236, 236, 236);
+    }
+
+
+
+
 
   .actions__filter {
     width: 100%;
@@ -142,6 +159,7 @@
 
   .form__control, .form__control input:hover {
     cursor: pointer;
+    color: #88beb2;
   }
 
  .form__control {
@@ -171,4 +189,13 @@
 
 .form__control i{
   margin-right: 5px;
+}
+
+
+@media (max-width:300px) {
+
+  .calendar {
+    width: 100%;
+  }
+
 }

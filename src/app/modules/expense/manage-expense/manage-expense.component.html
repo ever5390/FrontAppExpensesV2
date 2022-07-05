@@ -2,7 +2,7 @@
     <div class="container-fluid" #popup__formulario>
         <div class="container_form">
             <i class="far fa-times" (click)="this.sendHiddenFormRegister.emit(false);this.show__popup = false;"></i>
-            <div class="container_form_controls">
+            <div #formRegister class="container_form_controls">
                 <div class="form_control pt-1">
                     <label>Monto</label>
                     <div class="st_block_amount d-flex align-items-center">
@@ -32,6 +32,15 @@
                             <img src="https://firebasestorage.googleapis.com/v0/b/usuarios-8190a.appspot.com/o/default%2Fdefault_image_options.JPG?alt=media&token=aaa9d207-c32f-40ae-8c3e-6131f21bcced" alt="" srcset="">
                             <label>Medio de Pago</label>
                             <span>Tarjeta de Crédito</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form_control pt-1">
+                    <div class="st_content_attach">
+                        <button>Subir voucher(opcional)</button>
+                        <div class="container-vouchers">
+                            <img src="https://firebasestorage.googleapis.com/v0/b/usuarios-8190a.appspot.com/o/default%2Fdefault_image_options.JPG?alt=media&token=aaa9d207-c32f-40ae-8c3e-6131f21bcced" alt="" srcset="">
+                            <img src="https://firebasestorage.googleapis.com/v0/b/usuarios-8190a.appspot.com/o/default%2Fdefault_image_options.JPG?alt=media&token=aaa9d207-c32f-40ae-8c3e-6131f21bcced" alt="" srcset="">
                         </div>
                     </div>
                 </div>

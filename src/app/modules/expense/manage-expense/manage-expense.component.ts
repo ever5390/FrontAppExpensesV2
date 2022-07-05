@@ -21,7 +21,9 @@ export class ManageExpenseComponent implements OnInit {
   @Input() show__popup: boolean = false;
   @Output() sendHiddenFormRegister: EventEmitter<boolean> = new EventEmitter();
   @ViewChild('popup__formulario') popup__formulario: ElementRef | any;
+  @ViewChild('formRegister') formRegister: ElementRef | any;
 
+  
   constructor(
     private _renderer: Renderer2,
     private _router: Router
@@ -33,6 +35,19 @@ export class ManageExpenseComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  ngAfterViewInit() {
+    let windowHeight = window.innerHeight;
+    let heightForm = this.formRegister.nativeElement.clientHeight;
+
+    //IF onlyListItems is FALSE :: Viene desde una cuenta para anadir categorias
+    //Definiendo valores de acuerdo a de donde es llamado este componente
+
+    if(heightForm > windowHeight -100){
+      this._renderer.setStyle(this.formRegister.nativeElement,"height",(windowHeight*0.8)+"px");
+      this._renderer.setStyle(this.formRegister.nativeElement,"overflow-y","scroll");
+    }
+
+  }
 
 
   showListCategories() {

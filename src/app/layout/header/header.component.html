@@ -14,7 +14,7 @@
             (click)="showFormRegisterExpense()" >
             <i class="far fa-plus" ></i>
         </span>
-        <i class="fas fa-calendar-alt"></i>
+        <i class="fas fa-calendar-alt" (click)="flagCalendarpPopUp=!flagCalendarpPopUp"></i>
     </div>
 </div>
 <app-manage-expense *ngIf="showFormRgister" 
@@ -24,9 +24,8 @@
 </app-manage-expense>
 
 <app-list-notification *ngIf="flagNotificationpPopUp">
-
 </app-list-notification>
 
-<app-calendar></app-calendar>
+<app-calendar *ngIf="flagCalendarpPopUp"></app-calendar>
 <!-- <app-formulary-register-expense-shared #show__popup></app-formulary-register-expense-shared> -->
 
