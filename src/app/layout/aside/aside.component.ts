@@ -18,7 +18,6 @@ export class AsideComponent implements OnInit {
   ) {
 
     this._renderer.listen('window','click', (e: Event)=> {
-      console.log(e.target);
       if( this.aside && e.target === this.aside.nativeElement){
        
         this.hiddenMenu();

@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { CONSTANTES } from 'app/data/constantes';
-import { DataStructure } from 'app/data/models/data.model';
+import { DataStructureListShared } from 'app/data/models/data.model';
 
 @Component({
   selector: 'app-detail-body-period',
@@ -14,7 +14,7 @@ export class DetailBodyPeriodComponent implements OnInit {
   sendBtnText:string='';
   flagFormulario: boolean = false;
 
-  dataStructure: DataStructure = new DataStructure();
+  dataStructure: DataStructureListShared = new DataStructureListShared();
 
   constructor(
     private _route: Router,
@@ -23,13 +23,12 @@ export class DetailBodyPeriodComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dataStructure.item
   }
 
   redirectToAccount(btnText: string) {
     this.flagFormulario = true;
     this.dataStructure.title = "Cuentas";
-    this.dataStructure.item = "Cuentas";
+    this.dataStructure.component = "Cuentas";
     this.dataStructure.imagen = CONSTANTES.CONST_IMAGEN_CUENTAS;
     this.sendBtnText = btnText;
   }
@@ -37,7 +36,7 @@ export class DetailBodyPeriodComponent implements OnInit {
   redirectToTransfer(titleTransferInternOrExtern: string) {
     this.flagFormulario = true;
     this.dataStructure.title = titleTransferInternOrExtern;
-    this.dataStructure.item = titleTransferInternOrExtern;
+    this.dataStructure.component = titleTransferInternOrExtern;
     this.dataStructure.imagen = CONSTANTES.CONST_IMAGEN_TRANSFERENCIA;
     this.sendBtnText = 'Transferir';
   }

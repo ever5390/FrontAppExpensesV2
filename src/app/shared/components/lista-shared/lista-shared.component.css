@@ -8,6 +8,7 @@
 
 
 
+
 .fa-times {
     position: absolute;
     right: 20px;
@@ -86,15 +87,28 @@
 }
 
     .st_item_category {
-        font-size: .8rem;
+        font-size: .7rem;
         width: 100px;
-        /* outline: 1px solid red; */
         text-align: center;
         display: flex;
         flex-direction: column;
-        /* justify-content: space-between; */
         align-items: center;
         margin-bottom: 20px;
+        position: relative;
+        /* outline: 1px solid red; */
+        overflow-x: hidden;
+    }
+
+        .st_item_category:hover {
+            cursor: pointer;
+            border-bottom: 2px solid gainsboro;
+            overflow-x: visible;
+        }
+
+    .check_item_list {
+        position: absolute;
+        top: 8px;
+        left: 20px;
     }
 
     .fa-plus {
@@ -124,7 +138,7 @@ img {
 }
 
 
-input{
+input[type=text]{
     width: 100%;
     outline: none;
     border: none;

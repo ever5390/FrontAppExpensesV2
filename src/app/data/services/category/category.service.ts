@@ -1,0 +1,43 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { URL_BASE_COMPLEMENT, URL_BASE_HOST } from 'app/config/global.url';
+import { CategoryModel } from 'app/data/models/business/category.model';
+import { GroupModel } from 'app/data/models/business/group.model';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/internal/operators/map';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class CategoryService {
+
+  private URLCOMPL: string = URL_BASE_COMPLEMENT;
+  private httpHeaders =  new HttpHeaders({'Content-type':'application/json'});
+
+  constructor(
+    private _http: HttpClient
+  ) { }
+
+  getAllCategories(): Observable<CategoryModel[]>  {
+    return this._http.get(`${this.URLCOMPL}/category/owner/1`)
+    .pipe(
+      map(response => response as CategoryModel[])
+    );
+  }
+
+  create(categoryObject: CategoryModel) : Observable<any> {
+    return this._http.post<CategoryModel>(`${this.URLCOMPL}/category`,categoryObject,{ headers: this.httpHeaders})
+  }
+
+  update(categoryObject: CategoryModel, id: number) : Observable<any> {
+    return this._http.put<CategoryModel>(`${this.URLCOMPL}/category/${id}`,categoryObject,{ headers: this.httpHeaders})
+  }
+  
+  getAllGroups(): Observable<GroupModel[]>  {
+    return this._http.get(`${this.URLCOMPL}/groupcategory/owner/1`)
+    .pipe(
+      map(response => response as GroupModel[])
+    );
+  }
+
+}

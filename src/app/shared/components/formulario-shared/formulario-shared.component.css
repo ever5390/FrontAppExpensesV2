@@ -12,8 +12,8 @@
 
 .fa-times {
     position: absolute;
-    right: 20px;
-    top: 20px;
+    left: 10px;
+    top: 10px;
 }
 
 .fa-minus-circle {
@@ -24,6 +24,10 @@
 
 .fa-times:hover, .fa-minus-circle:hover {
     cursor: pointer;
+}
+
+.st_content {
+    position: relative
 }
 
 .container_form {
@@ -45,6 +49,7 @@
     flex-direction: row;
     align-items: center;
     margin-bottom: 10px;
+    justify-content: space-between;
 }
 
     .st_form_control_header img{
@@ -65,11 +70,15 @@
 
         .st_form_header label {
             padding-left: 5px;
+            margin-bottom: 10px;
         }
 
         .st_form_header input {
             border-bottom: 1px solid #BCBCBC;
+            padding-left: 10px;
         }
+
+        
 
 .form_control {
     display: flex;
@@ -110,8 +119,9 @@ img {
 input{
     width: 100%;
     outline: none;
-    border: none;
+    border: 1px solid #ccc;
     padding-left: 5px;
+    border-radius: 10px ;
 }
 
 label {
@@ -149,7 +159,7 @@ select:hover
 
     .st_form_header {
         margin-left: 10px;
-        width: 70%;
+        width: 75%;
     }
 
     .form_control {

@@ -20,11 +20,17 @@ export class CONSTANTES {
     public static CONST_TITLE_REGISTRAR_ITEM_ACUERDO = 'Registre nuevo Acuerdo';
     public static CONST_TITLE_REGISTRAR_ITEM_MEDIOSDEPAGO = 'Registre nuevo Medio de Pago';
 
+    public static CONST_IMAGEN_DEFAULT = 'https://firebasestorage.googleapis.com/v0/b/usuarios-8190a.appspot.com/o/default%2Fdefault_image_options.JPG?alt=media&token=aaa9d207-c32f-40ae-8c3e-6131f21bcced';
     public static CONST_IMAGEN_CATEGORIAS = 'https://firebasestorage.googleapis.com/v0/b/usuarios-8190a.appspot.com/o/default%2Fdefault_image_options.JPG?alt=media&token=aaa9d207-c32f-40ae-8c3e-6131f21bcced';
     public static CONST_IMAGEN_ACUERDOS = 'https://firebasestorage.googleapis.com/v0/b/usuarios-8190a.appspot.com/o/default%2Fdefault_image_options.JPG?alt=media&token=aaa9d207-c32f-40ae-8c3e-6131f21bcced';
     public static CONST_IMAGEN_MEDIOSDEPAGO = 'https://firebasestorage.googleapis.com/v0/b/usuarios-8190a.appspot.com/o/default%2Fdefault_image_options.JPG?alt=media&token=aaa9d207-c32f-40ae-8c3e-6131f21bcced';
     public static CONST_IMAGEN_TRANSFERENCIA = 'https://firebasestorage.googleapis.com/v0/b/usuarios-8190a.appspot.com/o/default%2Fdefault_image_options.JPG?alt=media&token=aaa9d207-c32f-40ae-8c3e-6131f21bcced';
     public static CONST_IMAGEN_CUENTAS = 'https://firebasestorage.googleapis.com/v0/b/usuarios-8190a.appspot.com/o/default%2Fdefault_image_options.JPG?alt=media&token=aaa9d207-c32f-40ae-8c3e-6131f21bcced';
 
+
+
+    public static CONST_TEXT_BTN_REGISTRAR = 'Registrar';
+    public static CONST_TEXT_BTN_ACTUALIZAR = 'Actualizar';
+    public static CONST_TEXT_VACIO = '';
 
 }

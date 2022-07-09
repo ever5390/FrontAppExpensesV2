@@ -1,13 +1,16 @@
-import { IDataStructure } from "../interfaces/data.interface";
+import { IDataStructureListShared } from "../interfaces/data-structure-list-shared.interface";
 
-export class DataStructure implements IDataStructure{
+export class DataStructureListShared implements IDataStructureListShared{
     constructor(
-        public item: string = '',
+        public component: string = '',
         public title: string = '',
         public titleDos?: string,
         public imagen: string = '',
         public onlyListItems?: boolean,
-        public lista?: any[]
+        public lista?: any[],
+        public objectOfLista?: any
     ){}
+    
+    
 
 }

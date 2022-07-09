@@ -1,7 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { CONSTANTES } from '@data/constantes';
-import { DataStructure } from 'app/data/models/data.model';
+import { DataStructureListShared } from 'app/data/models/data.model';
 
 
 @Component({
@@ -16,7 +16,7 @@ export class ManageExpenseComponent implements OnInit {
 
   
   show__list__items: boolean = false;
-  dataStructure: DataStructure = new DataStructure();
+  dataStructure: DataStructureListShared = new DataStructureListShared();
   
   @Input() show__popup: boolean = false;
   @Output() sendHiddenFormRegister: EventEmitter<boolean> = new EventEmitter();
@@ -52,7 +52,7 @@ export class ManageExpenseComponent implements OnInit {
 
   showListCategories() {
     this.show__list__items = true;
-    this.dataStructure.item=CONSTANTES.CONST_CATEGORIAS;
+    this.dataStructure.component=CONSTANTES.CONST_CATEGORIAS;
     this.dataStructure.title=CONSTANTES.CONST_TITLE_SELECCIONE_ITEM_CATEGORIAS;
     this.dataStructure.imagen = CONSTANTES.CONST_IMAGEN_CATEGORIAS
   }
@@ -60,7 +60,7 @@ export class ManageExpenseComponent implements OnInit {
 
   showListAccording() {
     this.show__list__items = true;
-    this.dataStructure.item=CONSTANTES.CONST_ACUERDOS;
+    this.dataStructure.component=CONSTANTES.CONST_ACUERDOS;
     this.dataStructure.title=CONSTANTES.CONST_TITLE_SELECCIONE_ITEM_ACUERDOS;
     this.dataStructure.imagen = CONSTANTES.CONST_IMAGEN_ACUERDOS
     
@@ -68,7 +68,7 @@ export class ManageExpenseComponent implements OnInit {
 
   showListPaymentMethods() {
     this.show__list__items = true;
-    this.dataStructure.item=CONSTANTES.CONST_MEDIOSDEPAGO;
+    this.dataStructure.component=CONSTANTES.CONST_MEDIOSDEPAGO;
     this.dataStructure.title=CONSTANTES.CONST_TITLE_SELECCIONE_ITEM_MEDIOSDEPAGO;
     this.dataStructure.imagen = CONSTANTES.CONST_IMAGEN_MEDIOSDEPAGO;
 

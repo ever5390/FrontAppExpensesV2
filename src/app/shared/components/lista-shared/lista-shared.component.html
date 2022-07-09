@@ -1,11 +1,11 @@
 
-  <div #idFormShared class="container_form" [ngClass]="{'st_container_form_account': onlyListItems === false}">
+  <div #idFormShared class="container_form" [ngClass]="{'st_container_form_account': dataStructureListReceived.onlyListItems === false}">
       <div>
-        <ng-container *ngIf="onlyListItems">
+        <ng-container *ngIf="!dataStructureListReceived.onlyListItems">
             <div class="st_form_control_header">
-                <img src="{{dataStructureReceived.imagen}}"  alt="" srcset="">
+                <img src="{{dataStructureListReceived.imagen}}"  alt="" srcset="">
                 <div class="st_form_header">
-                    <label>{{dataStructureReceived.title}}</label>
+                    <label>{{dataStructureListReceived.title}}</label>
                 </div>
             </div>
             <div class="form_control st_frm_search" >
@@ -16,30 +16,31 @@
                 </div>
             </div>
         </ng-container>
-        <label *ngIf="!onlyListItems" style="margin-bottom: 10px;" >Asigne categorías a esta cuenta</label>
+        <label *ngIf="dataStructureListReceived.onlyListItems" style="margin-bottom: 10px;" >Asigne categorías a esta cuenta</label>
 
           <div class="form_control st_form_listacategorias"  #idList>
-              <div class="st_item_category" [ngClass]="{'st_item_category_account': onlyListItems === false}">
-                  <i class="far fa-plus"  (click)="redirectToFormulario('Registrar')"></i>
+              <div class="st_item_category" [ngClass]="{'st_item_category_account': dataStructureListReceived.onlyListItems === false}">
+                  <i class="far fa-plus"  (click)="redirectToFormulario('')"></i>
                   <label>Crear Nuevo</label>
               </div>
-              <!-- ,3,4,5,6,7,8,9,10,11,12,13,14,15 -->
-              <ng-container *ngFor="let item of [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]" >
-                  <div class="st_item_category" [ngClass]="{'st_item_category_account': onlyListItems === false}"
-                     (click)="redirectToFormulario('Actualizar')">
-                      <img src="https://firebasestorage.googleapis.com/v0/b/usuarios-8190a.appspot.com/o/default%2Fdefault_image_options.JPG?alt=media&token=aaa9d207-c32f-40ae-8c3e-6131f21bcced" alt="" srcset="">
-                      <label>Servicios departamento</label>
-                  </div>
+              <ng-container *ngFor="let item of dataStructureList.lista; let i = index" >
+                  <label for="check_categ+{{i}}" class="st_item_category" [ngClass]="{'st_item_category_account': dataStructureListReceived.onlyListItems === false}"
+                     (click)="redirectToFormulario(item)">
+                      <img src="{{item.image}}" alt="" srcset="">
+                      <label>{{item.name}}</label>
+                      <input *ngIf="show_checkbox" class="check_item_list" type="checkbox" name="check_categ" id="check_categ+{{i}}">
+                  </label>
+                  
               </ng-container>
           </div>
          
       </div>
   </div>
 
-
+<!-- 
 <app-formulario-shared *ngIf="flagFormulario"
     (responseToFatherComponent)="receiveToSonComponent($event)"
     [btnText]="sendBtnText"
     [dataStructureReceived]="dataStructureReceived" 
 >
-</app-formulario-shared>
+</app-formulario-shared> -->

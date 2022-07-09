@@ -1,23 +1,28 @@
 <ng-container *ngIf="show__popup">
     <div class="container-fluid" #popup__formulario>
         <div class="container_form">
-            <i class="far fa-times" (click)="hiddenPopUp()"></i>
-            <i *ngIf="btnText==='Editar'" class="far fa-minus-circle" (click)="hiddenPopUp()" ></i>
-            <div>
+            
+            <!-- <i class="far fa-times" (click)="hiddenPopUp()"></i> -->
+            <!-- <i *ngIf="dataStructureReceived.action==='Actualizar'" class="far fa-minus-circle" (click)="hiddenPopUp()" ></i> -->
+            <div class="st_content">
                 <div class="st_form_control_header">
-                    <img src="{{dataStructureReceived.imagen}}" alt="" srcset="">
+                    <img *ngIf="dataStructureReceived.imagen" 
+                            src="{{objectToFormShared.image}}" alt="" srcset="">
                     <div class="st_form_header">
-                        <label>{{dataStructureReceived.titleDos}}</label>
-                        <input *ngIf="flagInputNameFormulario" type="text" placeholder="-- Inserta descripción">
+                        <label>{{dataStructureReceived.title}}</label>
+                        <input *ngIf="flagInputNameFormulario" type="text" 
+                        [(ngModel)]="objectToFormShared.name"
+                        placeholder="Escribir nombre">
                     </div>
                 </div>
                 <div class="form_control" *ngIf="flagGroupSelectFormulario">
                     <label>Grupo</label>
-                    <select name="cars" id="cars" class="st_aside_dropdown_wrkspc">
-                        <option value="volvo">Volvo</option>
-                        <option value="saab">Saab</option>
-                        <option value="mercedes">Mercedes</option>
-                        <option value="audi">Audi</option>
+                    <select name="cars" [(ngModel)]="selectGroup" id="cars"  (change)="chooseItem()" class="st_aside_dropdown_wrkspc" >
+                        <option value="0">--- Seleccione tipo de categoría ----</option>
+                        <option *ngFor="let itemGroup of this.dataStructureReceived.listGroupOnlyCategory"
+                            value="{{itemGroup.id}}">
+                            {{itemGroup.name}}
+                        </option>
                     </select>
                 </div>
                 <div class="form_control" *ngIf="flagBlockTransferFormulario">
@@ -42,12 +47,16 @@
                     </div>
                 </div>
 
-                <div class="st_container_categories" *ngIf="flagBlockAmountAccountFormulario">
+                <!-- <div class="st_container_categories" *ngIf="flagBlockAmountAccountFormulario">
                     <app-lista-shared [onlyListItems]="false"></app-lista-shared>
-                </div>
+                </div> -->
                 
             </div>
-            <button>{{btnText}}</button>
+            <button (click)="saveOrUpdate()">{{dataStructureReceived.action}}</button>
+            <button style="background-color: rgb(212, 33, 33);" 
+                    *ngIf="dataStructureReceived.action==='Actualizar'">
+                Eliminar
+            </button>
         </div>
        
     </div>

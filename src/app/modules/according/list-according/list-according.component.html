@@ -1,5 +1,14 @@
 <div class="container-fluid">
     <app-lista-shared 
-        [dataStructureReceived]="dataStructure"
+        [dataStructureListReceived]="dataStructureToList"
+        (emitResponseToForm)="receiveDatFormFromListShared($event)"
         ></app-lista-shared>
 </div>
+
+
+
+<!-- <app-formulario-shared *ngIf="flagFormulario"
+    (responseToFatherComponent)="receiveToSonComponent($event)"
+    [dataStructureReceived]="dataStructureToForm"
+>
+</app-formulario-shared> -->

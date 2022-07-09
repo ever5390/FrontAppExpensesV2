@@ -77,7 +77,6 @@ export class CalendarComponent implements OnInit {
   showSpecificsFilters() {
     
     this.showFilters = !this.showFilters;
-    console.log(this.showFilters);
     
     if(this.showFilters)
       this._renderer.addClass(this.hashIDFilters?.nativeElement, "st_fast_filters_show");
@@ -270,9 +269,7 @@ export class CalendarComponent implements OnInit {
           }
         }
 
-        var indiceToday = 0;
         //Catching INDEX and painting date range by initial date selected and final
-        console.log("PREV TODAY NUMBER");
         for (let index = (this.indiceDesde); index < lista.length; index++) {
 
             this._renderer.setStyle(lista[index] ,"background-color","#dadada73");
@@ -381,7 +378,6 @@ export class CalendarComponent implements OnInit {
   }
 
   renderCalendar() {
-    console.log("RENDER");
     this.today = new Date().getDate();
     this.month = new Date().getMonth();
     this.year = new Date().getFullYear();
@@ -429,8 +425,6 @@ export class CalendarComponent implements OnInit {
     for (let i = 1; i <= nextDays; i++) {
       this.daysMonthNext.push(i);      
     }
-
-    console.log(this.date);
 
   };
 
