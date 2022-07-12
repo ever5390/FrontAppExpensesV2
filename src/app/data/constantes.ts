@@ -1,8 +1,8 @@
 export class CONSTANTES {
 
-    public static CONST_CATEGORIAS = 'category';
-    public static CONST_ACUERDOS = 'according';
-    public static CONST_MEDIOSDEPAGO = 'paymentMethod';
+    public static CONST_COMPONENT_CATEGORIAS = 'categories';
+    public static CONST_COMPONENT_ACUERDOS = 'according';
+    public static CONST_COMPONENT_MEDIOSDEPAGO = 'paymentmethod';
 
     public static CONST_TRANSFERENCIA_INTERNA = 'Transferencia interna';
     public static CONST_TRANSFERENCIA_EXTERNA = 'Transferencia externa';
@@ -26,8 +26,6 @@ export class CONSTANTES {
     public static CONST_IMAGEN_MEDIOSDEPAGO = 'https://firebasestorage.googleapis.com/v0/b/usuarios-8190a.appspot.com/o/default%2Fdefault_image_options.JPG?alt=media&token=aaa9d207-c32f-40ae-8c3e-6131f21bcced';
     public static CONST_IMAGEN_TRANSFERENCIA = 'https://firebasestorage.googleapis.com/v0/b/usuarios-8190a.appspot.com/o/default%2Fdefault_image_options.JPG?alt=media&token=aaa9d207-c32f-40ae-8c3e-6131f21bcced';
     public static CONST_IMAGEN_CUENTAS = 'https://firebasestorage.googleapis.com/v0/b/usuarios-8190a.appspot.com/o/default%2Fdefault_image_options.JPG?alt=media&token=aaa9d207-c32f-40ae-8c3e-6131f21bcced';
-
-
 
     public static CONST_TEXT_BTN_REGISTRAR = 'Registrar';
     public static CONST_TEXT_BTN_ACTUALIZAR = 'Actualizar';

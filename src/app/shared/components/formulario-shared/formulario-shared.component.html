@@ -6,8 +6,19 @@
             <!-- <i *ngIf="dataStructureReceived.action==='Actualizar'" class="far fa-minus-circle" (click)="hiddenPopUp()" ></i> -->
             <div class="st_content">
                 <div class="st_form_control_header">
-                    <img *ngIf="dataStructureReceived.imagen" 
+                    <!-- class="border-dotted item-action-selected upload"  -->
+                    <div class="st_border">
+                        <label for='myFileC'>
+                            <input accept=".png, .jpg, .jpeg"  
+                                (change)="uploadFoto($event)" 
+                                type="file" id="myFileC"
+                                class="st_img_upload"
+                                >
+                                <i class="fas fa-pen"></i>
+                        </label>
+                        <img #imgFormulary  *ngIf="dataStructureReceived.imagen" 
                             src="{{objectToFormShared.image}}" alt="" srcset="">
+                    </div>
                     <div class="st_form_header">
                         <label>{{dataStructureReceived.title}}</label>
                         <input *ngIf="flagInputNameFormulario" type="text" 
@@ -54,7 +65,8 @@
             </div>
             <button (click)="saveOrUpdate()">{{dataStructureReceived.action}}</button>
             <button style="background-color: rgb(212, 33, 33);" 
-                    *ngIf="dataStructureReceived.action==='Actualizar'">
+                    *ngIf="dataStructureReceived.action==='Actualizar'"
+                    (click)="delete()">
                 Eliminar
             </button>
         </div>

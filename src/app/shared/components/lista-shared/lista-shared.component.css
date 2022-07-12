@@ -97,13 +97,18 @@
         position: relative;
         /* outline: 1px solid red; */
         overflow-x: hidden;
+       
     }
 
         .st_item_category:hover {
             cursor: pointer;
-            border-bottom: 2px solid gainsboro;
             overflow-x: visible;
         }
+
+        .st_item_category:hover label{
+            color: rgb(0, 0, 0);
+        }
+
 
     .check_item_list {
         position: absolute;

@@ -4,7 +4,8 @@ export class OwnerModel {
         public email:    string = '',
         public id:       number = 0,
         public image:    string = '',
-        public name:     string = ''
+        public name:     string = '',
+        public username: string = ''
     ){
 
     }   

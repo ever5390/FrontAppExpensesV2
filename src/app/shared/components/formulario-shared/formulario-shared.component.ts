@@ -1,9 +1,12 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { CONSTANTES } from '@data/constantes';
 import { GroupModel } from 'app/data/models/business/group.model';
+import { OwnerModel } from 'app/data/models/business/owner.model';
 import { ObjectFormularioShared } from 'app/data/models/Structures/data-object-form.model';
 import { DataStructureFormShared } from 'app/data/models/Structures/data-structure-form-shared.model';
+import { StorageService } from 'app/data/services/storage_services/storage.service';
 import Swal from 'sweetalert2';
+import { SLoaderService } from '../loaders/s-loader/service/s-loader.service';
 
 @Component({
   selector: 'app-formulario-shared',
@@ -16,8 +19,9 @@ export class FormularioSharedComponent implements OnInit {
   indexDropSelect: number = 0; //ONLY CATEGORY - GROUP
   groupListToSelect: GroupModel[] = [];
   selectGroup: number = 0;
+  owner: OwnerModel = new OwnerModel();
 
-
+  fotoSeleccionada: File | undefined;
   show__popup: boolean =  false;
   showCategoriesList: boolean = false;
   flagInputNameFormulario: boolean = true;
@@ -27,15 +31,21 @@ export class FormularioSharedComponent implements OnInit {
 
   @Input() dataStructureReceived: DataStructureFormShared = new DataStructureFormShared();
   @Output() responseToFatherComponent = new EventEmitter<any>();
+
+  @ViewChild('imgFormulary') imgFormulary: ElementRef | any;
   @ViewChild('popup__formulario') popup__formulario: ElementRef | any;
 
   constructor(
-    private _renderer: Renderer2
+    private _renderer: Renderer2,
+    private _storageService: StorageService,
+    private _loadSpinnerService: SLoaderService
   ) {
     this.catchClickEventOutForm();
   }
 
   ngOnInit(): void {
+    this.owner = JSON.parse(localStorage.getItem('lcstrg_owner')!);
+
     console.log("INICIO DE FORM SHARED");
     this.switchDecideFormByComponent();
     this.seteoObjectForm();
@@ -64,18 +74,70 @@ export class FormularioSharedComponent implements OnInit {
   }
 
   saveOrUpdate() {
-      if(this.validationForm() == false ) return;
+    this._loadSpinnerService.showSpinner();
+    if(this.fotoSeleccionada != undefined) {
+      let reader = new FileReader();
+      reader.readAsDataURL(this.fotoSeleccionada);
+      reader.onloadend = ()=> {
+          // this._utilitaries.showLoading();
+          this._storageService.uploadImage(this.fotoSeleccionada!.name + "_" + 
+                              Date.now(), reader.result, 
+                              this.dataStructureReceived.component + "/"+ 
+                              this.owner.username)
+            .then(
+              urlImagen => {
+                this.persistObject(urlImagen);
+              }, () => {
+                this.persistObject("");
+              }
+            );
+        }
       
-      this.dataStructureReceived.object.name  = this.objectToFormShared.name;
-      this.dataStructureReceived.object.image = this.objectToFormShared.image;
-      
-      //only category case
-      if(this.flagGroupSelectFormulario){
-        this.dataStructureReceived.object.group = this.objectToFormShared.group;
-      }
+    } else {
+      this.persistObject("");
+    }
+  }
 
-      console.log(this.dataStructureReceived);
-      this.responseToFatherComponent.emit(this.dataStructureReceived.object);
+   persistObject(urlImagen: any) {
+    if(this.validationForm() == false ) return;
+      
+    this.dataStructureReceived.object.name  = this.objectToFormShared.name;
+    this.dataStructureReceived.object.image = (urlImagen!="")?urlImagen:this.objectToFormShared.image;
+    
+    //only category case
+    if(this.flagGroupSelectFormulario){
+      this.dataStructureReceived.object.group = this.objectToFormShared.group;
+    }
+
+    console.log(this.dataStructureReceived);
+    this.responseToFatherComponent.emit(this.dataStructureReceived.object);
+  }
+
+  uploadFoto(event: any) {
+    if(event.target.files && event.target.files[0]) {
+      this.fotoSeleccionada = event.target.files[0];
+      // this.persistImageToDB = true;
+      //this.objectToFormShared.image = event.target.files[0];
+      const objectURL = URL.createObjectURL(event.target.files[0]);
+      
+      this._renderer.setAttribute(this.imgFormulary.nativeElement,"src",objectURL);
+    }
+  }
+
+  delete() {
+    Swal.fire({
+      title: 'Estás seguro?',
+      text: "Este proceso no podrá revertirse!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, eliminar de todas formas!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.responseToFatherComponent.emit({'action':'delete','object':this.dataStructureReceived.object});
+      }
+    })
   }
 
   validationForm():boolean {
@@ -117,21 +179,21 @@ export class FormularioSharedComponent implements OnInit {
         this.show__popup = true;
 
     switch (this.dataStructureReceived.component) {
-      case CONSTANTES.CONST_CATEGORIAS:
+      case CONSTANTES.CONST_COMPONENT_CATEGORIAS:
         this.dataStructureReceived.titleDos = (flagContentSeleccione===true)?CONSTANTES.CONST_TITLE_REGISTRAR_ITEM_CATEGORIA:this.dataStructureReceived.title;
         this.flagInputNameFormulario=true;
         this.flagGroupSelectFormulario =true;
         this.flagBlockTransferFormulario=false;
         this.flagBlockAmountAccountFormulario=false;
         break;
-      case CONSTANTES.CONST_ACUERDOS:
+      case CONSTANTES.CONST_COMPONENT_ACUERDOS:
         this.dataStructureReceived.titleDos = (flagContentSeleccione===true)?CONSTANTES.CONST_TITLE_REGISTRAR_ITEM_ACUERDO:this.dataStructureReceived.title;
         this.flagInputNameFormulario=true;
         this.flagGroupSelectFormulario =false;
         this.flagBlockTransferFormulario=false;
         this.flagBlockAmountAccountFormulario=false;
         break;
-      case CONSTANTES.CONST_MEDIOSDEPAGO:
+      case CONSTANTES.CONST_COMPONENT_MEDIOSDEPAGO:
         this.dataStructureReceived.titleDos = (flagContentSeleccione===true)?CONSTANTES.CONST_TITLE_REGISTRAR_ITEM_MEDIOSDEPAGO:this.dataStructureReceived.title;
         this.flagInputNameFormulario=true;
         this.flagGroupSelectFormulario =false;

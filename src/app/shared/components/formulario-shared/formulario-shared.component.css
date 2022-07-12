@@ -144,6 +144,34 @@ select:hover
     font-weight: bold;
 }
 
+.st_img_upload {
+    display: none;
+}
+
+.fa-pen {
+    color: rgba(255, 255, 255, 0);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 2px solid rgba(255, 255, 255, 0);
+    border-radius: 50%;
+    padding: 5px;
+    font-size: 1rem;
+}
+
+
+
+.st_border {
+    /* outline: 1px solid red; */
+    position: relative;
+}
+
+.fa-pen:hover {
+    cursor: pointer;
+}
+
 @media (max-width: 370px) {
 
     .container-fluid {

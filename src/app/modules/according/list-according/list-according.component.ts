@@ -20,7 +20,7 @@ export class ListAccordingComponent implements OnInit {
 
   //Send to List Sahred
   dataStructureToList: DataStructureListShared = {
-    component:CONSTANTES.CONST_ACUERDOS,
+    component:CONSTANTES.CONST_COMPONENT_ACUERDOS,
     title:CONSTANTES.CONST_TITLE_CONFIGURACION_DE_ACUERDOS, 
     imagen:CONSTANTES.CONST_IMAGEN_ACUERDOS
  };

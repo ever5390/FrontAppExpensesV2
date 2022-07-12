@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { SLoaderService } from '@shared/components/loaders/s-loader/service/s-loader.service';
 import { CONSTANTES } from 'app/data/constantes';
 import { OwnerModel } from 'app/data/models/business/owner.model';
 import { PaymentMethodModel } from 'app/data/models/business/payment-method.model';
@@ -20,7 +21,7 @@ export class ListPaymentMethodComponent implements OnInit {
 
   //Object send to List initializer
   dataStructureToListShared: DataStructureListShared = {
-    component:CONSTANTES.CONST_MEDIOSDEPAGO,
+    component:CONSTANTES.CONST_COMPONENT_MEDIOSDEPAGO,
     title:CONSTANTES.CONST_TITLE_CONFIGURACION_DE_MEDIOSDEPAGO, 
     imagen:CONSTANTES.CONST_IMAGEN_MEDIOSDEPAGO,
     objectOfLista: new PaymentMethodModel()
@@ -33,7 +34,8 @@ export class ListPaymentMethodComponent implements OnInit {
   paymentMethodReceivedToForm: PaymentMethodModel = new PaymentMethodModel();
 
   constructor(
-    private _paymentMethodService: PaymentMethodService
+    private _paymentMethodService: PaymentMethodService,
+    private _loadSpinnerService: SLoaderService
   ) { 
   
   }
@@ -48,6 +50,7 @@ export class ListPaymentMethodComponent implements OnInit {
       response => {
         this.listaPaymentMethod = response;
         this.dataStructureToListShared.lista = this.listaPaymentMethod;
+        this._loadSpinnerService.hideSpinner();
         // this.dataStructureToListShared.objectOfLista = new PaymentMethodModel();
       },
       error => {
@@ -67,7 +70,7 @@ export class ListPaymentMethodComponent implements OnInit {
     this.flagFormulario = true;
   }
 
-  receiveFromFormShared(objectFromLFormToTransaction:PaymentMethodModel) {
+  receiveFromFormShared(objectFromLFormToTransaction:any) {
     console.log("PAYMENT ::: RECEIVE OF FORM SHARED");
     console.log(objectFromLFormToTransaction);
     this.flagFormulario = false;
@@ -79,13 +82,39 @@ export class ListPaymentMethodComponent implements OnInit {
     this.paymentMethodReceivedToForm.owner = this.owner;
 
     console.log(this.paymentMethodReceivedToForm);
-    
-    if(this.paymentMethodReceivedToForm.id == 0) {
-      this.createNewElement(this.paymentMethodReceivedToForm);
+    if(objectFromLFormToTransaction.action == "delete") {
+      this.delete(objectFromLFormToTransaction.object);
     } else {
-      this.updateElement(this.paymentMethodReceivedToForm);
+      if(this.paymentMethodReceivedToForm.id == 0) {
+        this.createNewElement(this.paymentMethodReceivedToForm);
+      } else {
+        this.updateElement(this.paymentMethodReceivedToForm);
+      }
     }
 
+  }
+  
+  delete(element: any) {
+    this._paymentMethodService.delete(element.id).subscribe(
+      response => {
+        Swal.fire(
+          "Exito",
+          "El objeto " + element.name + " se eliminó con éxito",
+          "success"
+        )
+        this.getAllPaymentMethod();
+
+      },
+      error => {
+        console.log(error);
+        Swal.fire(
+          "Error",
+          "Ocurrió un error al intentar elimnar, inténtelo nuevamente",
+          "error"
+        )
+        this.getAllPaymentMethod();
+      }
+    );
   }
 
   updateElement(element: PaymentMethodModel) {
@@ -106,6 +135,7 @@ export class ListPaymentMethodComponent implements OnInit {
           error.error.message,
           error.error.status
         )
+        this.getAllPaymentMethod();
       }
     );
   }
@@ -128,6 +158,7 @@ export class ListPaymentMethodComponent implements OnInit {
           error.error.message,
           error.error.status
         )
+        this.getAllPaymentMethod();
       }
     );
   }

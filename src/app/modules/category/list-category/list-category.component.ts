@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { SLoaderService } from '@shared/components/loaders/s-loader/service/s-loader.service';
 import { CONSTANTES } from 'app/data/constantes';
 import { CategoryModel } from 'app/data/models/business/category.model';
 import { GroupModel } from 'app/data/models/business/group.model';
@@ -21,7 +22,7 @@ export class ListCategoryComponent implements OnInit {
 
   //Send to List Sahred
   dataStructureToListShared: DataStructureListShared = {
-    component:CONSTANTES.CONST_CATEGORIAS, 
+    component:CONSTANTES.CONST_COMPONENT_CATEGORIAS, 
     title:CONSTANTES.CONST_TITLE_CONFIGURACION_DE_CATEGORIAS,
     imagen:CONSTANTES.CONST_IMAGEN_CATEGORIAS,
     objectOfLista: new CategoryModel()};
@@ -34,6 +35,7 @@ export class ListCategoryComponent implements OnInit {
 
   constructor(
     private _categoryService: CategoryService,
+    private _loadSpinnerService: SLoaderService
   ) { }
 
   ngOnInit(): void {
@@ -65,6 +67,7 @@ export class ListCategoryComponent implements OnInit {
       response => {
         this.listaCategories = response;
         this.dataStructureToListShared.lista = this.listaCategories;
+        this._loadSpinnerService.hideSpinner();
       },
       error => {
         console.log(error);
@@ -76,7 +79,7 @@ export class ListCategoryComponent implements OnInit {
     this.getAllGroups(objectFromListToForm);
   }
 
-  receiveFromFormShared(objectFromLFormToTransaction: CategoryModel) {
+  receiveFromFormShared(objectFromLFormToTransaction: any) {
     console.log("CATEGORY ::: RECEIVE OF FORM SHARED");
     
     this.flagFormulario = false;
@@ -88,13 +91,41 @@ export class ListCategoryComponent implements OnInit {
     this.categoryReceivedToForm.group = objectFromLFormToTransaction.group;
     this.categoryReceivedToForm.owner = this.owner;
 
-    if(this.categoryReceivedToForm.id == 0) {
-      this.createNewElement(this.categoryReceivedToForm);
+    if(objectFromLFormToTransaction.action == "delete") {
+        this.delete(objectFromLFormToTransaction.object);
     } else {
-      this.updateElement(this.categoryReceivedToForm);
-    };
+      if(this.categoryReceivedToForm.id == 0) {
+        this.createNewElement(this.categoryReceivedToForm);
+      } else {
+        this.updateElement(this.categoryReceivedToForm);
+      };
+    }
+    
 
     console.log(this.categoryReceivedToForm);
+  }
+
+  delete(element: any) {
+    this._categoryService.delete(element.id).subscribe(
+      response => {
+        Swal.fire(
+          "Exito",
+          "El objeto " + element.name + " se eliminó con éxito",
+          "success"
+        )
+        this.getAllCategories();
+
+      },
+      error => {
+        console.log(error);
+        Swal.fire(
+          "Error",
+          "Ocurrió un error al intentar elimnar, inténtelo nuevamente",
+          "error"
+        )
+        this.getAllCategories();
+      }
+    );
   }
 
   updateElement(element: CategoryModel) {
@@ -115,6 +146,7 @@ export class ListCategoryComponent implements OnInit {
           error.error.message,
           error.error.status
         )
+        this.getAllCategories();
       }
     );
   }
@@ -137,6 +169,7 @@ export class ListCategoryComponent implements OnInit {
           error.error.message,
           error.error.status
         )
+        this.getAllCategories();
       }
     );
   }

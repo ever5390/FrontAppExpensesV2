@@ -14,6 +14,7 @@ export class SkeletonComponent implements OnInit {
 
   constructor() {
     this.jsonOwner.id=1;
+    this.jsonOwner.username="erosales";
     this.jsonOwner.name="Ever Rosales Peña";
     this.jsonOwner.email="everjrosalesp@gmail.com";
     this.jsonOwner.image="https://firebasestorage.googleapis.com/v0/b/usuarios-8190a.appspot.com/o/users%2Fever_1651713221827?alt=media&token=6f0bef77-a2d9-4ecd-855a-402b75be65b8";
