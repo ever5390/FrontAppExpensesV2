@@ -3,10 +3,13 @@ import { SkeletonExpenseComponent } from './skeleton-expense/skeleton-expense.co
 import { BodyExpenseComponent } from './body-expense/body-expense.component';
 import { ListExpenseComponent } from './body-list-expense/list-expense.component';
 import { FilterExpenseComponent } from './filter-expense/filter-expense.component';
-// import { ManageExpenseComponent } from './manage-expense/manage-expense.component';
+import { ManageExpenseComponent } from './manage-expense/manage-expense.component';
 import { HeaderExpenseComponent } from './header-expense/header-expense.component';
 import { ExpenseRoutingModule } from './expense-routing.module';
 import { SharedModule } from 'app/shared/shared.module';
+import { ListPaymentMethodComponent } from '@modules/payment-method/list-payment-method/list-payment-method.component';
+import { ListCategoryComponent } from '@modules/category/list-category/list-category.component';
+import { ListAccordingComponent } from '@modules/according/list-according/list-according.component';
 
 @NgModule({
   declarations: [
@@ -14,8 +17,13 @@ import { SharedModule } from 'app/shared/shared.module';
     BodyExpenseComponent,
     ListExpenseComponent,
     FilterExpenseComponent,
-    // ManageExpenseComponent,
-    HeaderExpenseComponent
+    ManageExpenseComponent,
+    HeaderExpenseComponent,
+
+    ListPaymentMethodComponent,
+    ListCategoryComponent,
+    ListAccordingComponent,
+    
   ],
   imports: [
     SharedModule,

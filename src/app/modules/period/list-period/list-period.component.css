@@ -46,7 +46,14 @@
     padding-bottom: 20px;
 }
 
+.st_resume_data {
+    width: 33.33%;
+    font-size: .6rem;
+    /* outline: 1px solid red; */
+}
+
 .st_resume_data label {
+    font-size: .8rem;
     display: block;
 }
 

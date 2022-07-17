@@ -12,6 +12,7 @@ import { AsideComponent } from './layout/aside/aside.component';
 import { HeaderComponent } from './layout/header/header.component';
 import { SkeletonComponent } from './layout/skeleton/skeleton.component';
 import { SharedModule } from './shared/shared.module';
+import { SearchPipe } from './data/pipe/search.pipe';
 
 @NgModule({
   declarations: [
@@ -22,9 +23,9 @@ import { SharedModule } from './shared/shared.module';
     AsideComponent,
     HeaderComponent,
     
-    ManageExpenseComponent,
+    // ManageExpenseComponent,
     ListNotificationComponent,
-    CalendarComponent
+    SearchPipe
   ],
   imports: [
     BrowserModule,

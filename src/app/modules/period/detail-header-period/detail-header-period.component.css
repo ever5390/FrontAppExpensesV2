@@ -21,11 +21,13 @@
     .st_fc_header span {
         font-weight: bold;
         font-size: 1rem;
+        text-align: center;
     }
     
         .st_fc_subheader {
             color: #a12626;
             font-weight: 600;
+            text-align: center;
         }
     
     .st_resume_data {

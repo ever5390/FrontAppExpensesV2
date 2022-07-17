@@ -1,5 +1,6 @@
 
-import { Component, OnInit, Output, EventEmitter, Renderer2, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Renderer2, ViewChild, ElementRef, Input } from '@angular/core';
+import { CONSTANTES } from 'app/data/constantes';
 import { Calendar } from 'app/data/models/calendar.model';
 
 @Component({
@@ -9,6 +10,9 @@ import { Calendar } from 'app/data/models/calendar.model';
 })
 export class CalendarComponent implements OnInit {
 
+  @Input() receivedOrderSelectedItem: boolean = false;
+  @Output() sendItemSelectedToFormExpense : EventEmitter<any> = new EventEmitter();
+  
   date : Date =  new Date();
   dateSend: DateSend = new DateSend();
   showDateFull : string ='';
@@ -53,7 +57,7 @@ export class CalendarComponent implements OnInit {
 
   showFilters: boolean = false;
   
-  @Output() sendDateRange = new EventEmitter<any>();
+  //@Output() sendDateRange = new EventEmitter<any>();
   @ViewChild("hashCOntentCalendar")
   hashCOntentCalendar!: ElementRef<any>;
 
@@ -433,10 +437,9 @@ export class CalendarComponent implements OnInit {
     this.dateSend.startDate = this.inputValueDateInit.getFullYear() + "-" + (this.inputValueDateInit.getMonth()+1) + "-" + this.inputValueDateInit.getDate();
     this.dateSend.finalDate = this.inputValueDateEnd.getFullYear() + "-" + (this.inputValueDateEnd.getMonth()+1) + "-" + this.inputValueDateEnd.getDate()+ " 23:59:59";
 
-    this.sendDateRange.emit({
-      "to":"dashboard",
-      "from":"calendar",
-      "id":this.dateSend
+    this.sendItemSelectedToFormExpense.emit({
+      "component": CONSTANTES.CONST_COMPONENT_CALENDAR,
+      "dateRange": this.dateSend
     });
   }
 

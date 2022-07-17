@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { ExpenseModel } from 'app/data/models/business/expense.model';
 
 @Component({
   selector: 'app-list-expense',
@@ -7,9 +8,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ListExpenseComponent implements OnInit {
 
+  expenseList : ExpenseModel[] = [];
+  @Input("receivedListExpensesToBodyList") receivedListExpensesToBodyList:any[] = [];
+  
   constructor() { }
 
   ngOnInit(): void {
+    console.log("BODY LIST");
+    this.expenseList = this.receivedListExpensesToBodyList;
+
   }
 
 }

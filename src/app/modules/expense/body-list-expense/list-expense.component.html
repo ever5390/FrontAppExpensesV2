@@ -1,34 +1,34 @@
 <!-- <div class="cst_container_list"> -->
-    <div class="st_block_expense">
-        <div class="st_expense_header">
-            <label>S/ 3560.20</label>
-            <label>VIE 24 JUN 13:26</label>
+    <ng-container *ngFor="let expense of expenseList; let i = index;">
+        <div class="st_block_expense">
+            <div class="st_expense_header">
+                <label>S/ {{expense.amountShow | number : '1.2-2'}}</label>
+                <label>{{expense.createAt | date: 'EEE dd MMM  HH:mm:ss' | uppercase}}</label>
+            </div>
+            <div class="st_expense_body">
+                <div class="st_body_header">
+                    <span>Pagado</span>
+                    <span>{{expense.accordingType.name}}</span>
+                </div>
+                <div class="st_body_body">
+                    {{expense.description}}
+                </div>
+                <div class="st_body_footer">
+                    <span>{{expense.category.name}}</span>
+                    <span>{{expense.paymentMethod.name}}</span>
+                </div>
+            </div>
+            <div class="st_expense_footer">
+                <div class="st_footer_tag">
+                    <span *ngFor="let i of [1,2]">#tagNameList</span>
+                </div>
+                <div class="st_footer_vouchers">
+                    <img *ngFor="let i of [1,2,3,4]" src="https://firebasestorage.googleapis.com/v0/b/usuarios-8190a.appspot.com/o/default%2Fdefault_image_options.JPG?alt=media&token=aaa9d207-c32f-40ae-8c3e-6131f21bcced" alt="" srcset="">
+                </div>
+            </div>
         </div>
-        <div class="st_expense_body">
-            <div class="st_body_header">
-                <span>Pagado</span>
-                <span>Compartido</span>
-            </div>
-            <div class="st_body_body">
-                <!-- <textarea rows="3"  readonly -->
-                type="text">CREATE src/app/modules/period/detail-body-period/
-                <!-- detail-body-period.component.ts (321 bytes)CREATE src/app/modules/period/ detail-body-period/detail-body-period.component.css (0 bytes)UPDATE src/app/modules/p eriod/period.module.ts (775 b PS C:\workspace_GIT_Front\ExpensesManagerAppNV> -->
-            <!-- </textarea>         -->
-            </div>
-            <div class="st_body_footer">
-                <span>Gustitos</span>
-                <span>Debit BCP</span>
-            </div>
-        </div>
-        <div class="st_expense_footer">
-            <div class="st_footer_tag">
-                <span *ngFor="let i of [1,2]">#tagNameList</span>
-            </div>
-            <div class="st_footer_vouchers">
-                <img *ngFor="let i of [1,2,3,4]" src="https://firebasestorage.googleapis.com/v0/b/usuarios-8190a.appspot.com/o/default%2Fdefault_image_options.JPG?alt=media&token=aaa9d207-c32f-40ae-8c3e-6131f21bcced" alt="" srcset="">
-            </div>
-        </div>
-    </div>
+    </ng-container>
+    
 <!-- </div> -->
 
 <!-- <app-formulary-register-expense-shared #show__popup></app-formulary-register-expense-shared> -->

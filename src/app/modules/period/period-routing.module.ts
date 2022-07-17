@@ -9,7 +9,7 @@ const routes: Routes = [
         component: ListPeriodComponent
     },
     {
-        path:'period-detail',
+        path:'period-detail/:idPeriod',
         component: DetailPeriodComponent
     }
 ];

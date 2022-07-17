@@ -8,7 +8,7 @@ import { SharedModule } from '@shared/shared.module';
 
 @NgModule({
   declarations: [
-    ListPaymentMethodComponent,
+    //ListPaymentMethodComponent,
     DetailPaymentMethodComponent
   ],
   imports: [

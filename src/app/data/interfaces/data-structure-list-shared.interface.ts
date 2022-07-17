@@ -4,6 +4,6 @@ export interface IDataStructureListShared {
     titleDos?: string;
     imagen: string;
     onlyListItems?:boolean;
-    lista?: any[];
+    lista: any[];
     objectOfLista?: any;
 }

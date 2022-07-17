@@ -1,5 +1,11 @@
 import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { FormularioSharedComponent } from '@shared/components/formulario-shared/formulario-shared.component';
+import { AccountModel } from 'app/data/models/business/account.model';
+import { PeriodDetailHeader } from 'app/data/models/business/periodDetailHeader.model';
+import { AccountService } from 'app/data/services/account/account.service';
+import { PeriodService } from 'app/data/services/period/period.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-detail-period',
@@ -8,25 +14,79 @@ import { Router } from '@angular/router';
 })
 export class DetailPeriodComponent implements OnInit {
 
+  flagShowHeader: boolean = false;
+  flagShowBody: boolean = false;
+
+  periodDetailHeaderSend: PeriodDetailHeader = new PeriodDetailHeader();
+  accountListSend: AccountModel[] = [];
+
   @ViewChild('idPeriod') idPeriod: ElementRef | any;
   
   constructor(
     private _route: Router,
-    private _renderer: Renderer2
+    private _accountService: AccountService,
+    private _rutaActiva: ActivatedRoute,
+    private _renderer: Renderer2,
+    private _periodService: PeriodService
   ) {
   }
 
   ngAfterViewInit() {
+    //this.getSizeBloclListPeriod();
+  }
+
+  ngOnInit(): void {
+
+    this._rutaActiva.params.subscribe(
+      (params: Params) => {
+        //console.log("PARAM ROUTE");
+        //console.log(params.idPeriod);
+        if(params.idPeriod != undefined) {
+          let idPeriodReceivedFromListPeriod = params.idPeriod;
+          this.getAllDataCardPeriod(idPeriodReceivedFromListPeriod);
+        }
+      }
+    );
+
+  }
+
+  getAllDataCardPeriod(idPeriodReceived: number) {
+    //Obtiene lista de periodos.
+    this._periodService.getPeriodDetailHeaderByPeriodId(idPeriodReceived).subscribe(
+      response => {
+        console.log(response);
+        this.periodDetailHeaderSend = response;
+        this.flagShowHeader = true;
+        this.getAllAccountByPeriodSelected(this.periodDetailHeaderSend.period.id);
+      },
+      error => {
+          console.log(error);
+          Swal.fire("","No se obtuvo datos del periodo buscado","error");
+      }
+    );
+  }
+
+  getAllAccountByPeriodSelected(idPeriodReceived: number) {
+    this._accountService.getListAccountByIdPeriod(idPeriodReceived).subscribe(
+      response => {
+        //console.log(response);
+        this.accountListSend = response;
+        this.flagShowBody = true;
+      },
+      error => {
+        console.log(error);
+        //Swal.fire("","No se obtuvo datos del periodo buscado","error");
+      }
+    );
+  }
+
+
+  getSizeBloclListPeriod() {
     let windowHeight = window.innerHeight;
     let heightidPeriod = this.idPeriod.nativeElement.clientHeight;
     if(heightidPeriod > (windowHeight-100)){
       this._renderer.setStyle(this.idPeriod.nativeElement,"height",(windowHeight-50)+"px");
       this._renderer.setStyle(this.idPeriod.nativeElement,"overflow-y","scroll");
     }
-
   }
-
-  ngOnInit(): void {
-  }
-
 }

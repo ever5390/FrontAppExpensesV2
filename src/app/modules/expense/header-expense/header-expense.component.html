@@ -1,10 +1,14 @@
 <div #container_header>
     <div class="st_container_header">
         <label for="">Total Gastado</label>
-        <span class="fs-3">S/ 13.219,26</span>
+        <span class="fs-3">S/ {{totalGastadoReceived | number: '1.2-2'}}</span>
         <div class="st_fc_header mt-1 d-flex align-items-center justify-content-center w-100">
             <img class="mx-2" src="../../../../assets/images/icon calendar.png" alt="" srcset="">
-            <span>Del 20 MAY 2022 al 22 JUN 2022</span>
+            <ng-container *ngIf="period.activate; else elsePeriodActivateEqualsFalse;">
+                <span>Del {{period.startDate | date: 'dd MMM YYY' | uppercase}}
+                    hasta {{period.finalDate | date: 'dd MMM YYY' | uppercase}}
+               </span>
+            </ng-container>
             <img class="mx-2"  src="../../../../assets/images/icon calendar.png" alt="" srcset="">
         </div>
     </div>
@@ -23,4 +27,10 @@
     [receivedFlagShowMenuFilterMain]="sendFlagShowMenuFilterMain"
     (emitterFlagHiddenMenuFilterMain)="receivingFlagHiddenMenuFilterMain($event)">
 </app-filter-expense>
+
+<ng-template #elsePeriodActivateEqualsFalse>
+    <span>Del {{period.startDate | date: 'dd MMM YYY' | uppercase}}
+        hasta Actualidad
+   </span>
+</ng-template>
 

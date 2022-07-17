@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { SLoaderService } from '@shared/components/loaders/s-loader/service/s-loader.service';
 import { CONSTANTES } from 'app/data/constantes';
+import { IDataSendItemToExpenseManager } from 'app/data/interfaces/data-send-item-to-expensemanager.interface';
 import { CategoryModel } from 'app/data/models/business/category.model';
 import { GroupModel } from 'app/data/models/business/group.model';
 import { OwnerModel } from 'app/data/models/business/owner.model';
@@ -16,15 +17,21 @@ import Swal from 'sweetalert2';
 })
 export class ListCategoryComponent implements OnInit {
 
+  dataSendToExpenseManager: IDataSendItemToExpenseManager = {
+    component:'',
+    itemSelected: null
+  };
   owner : OwnerModel = new OwnerModel();
   listaCategories: CategoryModel[] = [];
   flagFormulario: boolean = false;
+  flagListShared: boolean = false;
 
   //Send to List Sahred
   dataStructureToListShared: DataStructureListShared = {
     component:CONSTANTES.CONST_COMPONENT_CATEGORIAS, 
     title:CONSTANTES.CONST_TITLE_CONFIGURACION_DE_CATEGORIAS,
     imagen:CONSTANTES.CONST_IMAGEN_CATEGORIAS,
+    lista:[],
     objectOfLista: new CategoryModel()};
 
   //Send To FormShared
@@ -32,6 +39,11 @@ export class ListCategoryComponent implements OnInit {
 
   //object received to save or update
   categoryReceivedToForm: CategoryModel =  new CategoryModel();
+
+  //Receive from ExpenseManager: order selected item
+  @Input() receivedOrderSelectedItem: boolean = false;
+  //Send to ExpenseManager: item selected
+  @Output() sendItemSelectedToFormExpense = new EventEmitter();
 
   constructor(
     private _categoryService: CategoryService,
@@ -44,6 +56,11 @@ export class ListCategoryComponent implements OnInit {
     this.getAllCategories();
     
   }
+
+  
+  // hiddenPopUp() {
+  //   this.sendItemSelectedToFormExpense.emit(false);
+  // }
 
   getAllGroups(objectFromListToForm:any) {
     this._categoryService.getAllGroups().subscribe(
@@ -63,10 +80,15 @@ export class ListCategoryComponent implements OnInit {
   }
 
   getAllCategories() {
+    this.flagListShared = false;
+
     this._categoryService.getAllCategories().subscribe(
       response => {
+        console.log("GET ALL CAT");
         this.listaCategories = response;
+        this.flagListShared = true;
         this.dataStructureToListShared.lista = this.listaCategories;
+        console.log(this.dataStructureToListShared.lista );
         this._loadSpinnerService.hideSpinner();
       },
       error => {
@@ -76,23 +98,39 @@ export class ListCategoryComponent implements OnInit {
   }
   
   receiveItemSelectedFromListShared(objectFromListToForm: any) {
+
+
+    if(objectFromListToForm == false) {
+      this.sendItemSelectedToFormExpense.emit(false);
+      return;
+    }
+
+    // BEGIN :: IF FROM EXPENSES_MANAGER
+    if(this.receivedOrderSelectedItem == true && 
+      objectFromListToForm.object.id != 0) {
+      this.dataSendToExpenseManager.component=CONSTANTES.CONST_COMPONENT_CATEGORIAS;
+      this.dataSendToExpenseManager.itemSelected=objectFromListToForm.object;
+      this.sendItemSelectedToFormExpense.emit(this.dataSendToExpenseManager);
+      return;
+    }
+    // END :: IF FROM EXPENSES_MANAGER 
     this.getAllGroups(objectFromListToForm);
   }
 
   receiveFromFormShared(objectFromLFormToTransaction: any) {
     console.log("CATEGORY ::: RECEIVE OF FORM SHARED");
-    
+    console.log(objectFromLFormToTransaction);
     this.flagFormulario = false;
     if(objectFromLFormToTransaction === null) return;
 
-    this.categoryReceivedToForm.id = objectFromLFormToTransaction.id;
-    this.categoryReceivedToForm.name = objectFromLFormToTransaction.name;
-    this.categoryReceivedToForm.image = objectFromLFormToTransaction.image;
-    this.categoryReceivedToForm.group = objectFromLFormToTransaction.group;
+    this.categoryReceivedToForm.id = objectFromLFormToTransaction.object.id;
+    this.categoryReceivedToForm.name = objectFromLFormToTransaction.object.name;
+    this.categoryReceivedToForm.image = objectFromLFormToTransaction.object.image;
+    this.categoryReceivedToForm.group = objectFromLFormToTransaction.object.group;
     this.categoryReceivedToForm.owner = this.owner;
 
     if(objectFromLFormToTransaction.action == "delete") {
-        this.delete(objectFromLFormToTransaction.object);
+        this.delete(this.categoryReceivedToForm);
     } else {
       if(this.categoryReceivedToForm.id == 0) {
         this.createNewElement(this.categoryReceivedToForm);

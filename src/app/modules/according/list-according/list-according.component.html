@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <app-lista-shared 
-        [dataStructureListReceived]="dataStructureToList"
-        (emitResponseToForm)="receiveDatFormFromListShared($event)"
+        [dataStructureListReceived]="dataStructureToListShared"
+        (emitResponseToForm)="receiveItemSelectedFromListShared($event)"
         ></app-lista-shared>
 </div>
 

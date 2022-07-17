@@ -57,7 +57,14 @@ export class FormularioSharedComponent implements OnInit {
     if(this.dataStructureReceived.object.id == 0) { //OBJETO NUEVO
       // alert("wwww");
       this.objectToFormShared = new ObjectFormularioShared();
-      this.selectGroup = 0;
+
+      if(this.flagBlockAmountAccountFormulario){
+        this.objectToFormShared.name = (!this.dataStructureReceived.object.accountName)?CONSTANTES.CONST_TEXT_VACIO:this.dataStructureReceived.object.accountName;
+      } else {
+        this.objectToFormShared.name = (!this.dataStructureReceived.object.name)?CONSTANTES.CONST_TEXT_VACIO:this.dataStructureReceived.object.name;
+        this.selectGroup = 0;
+      }
+
       return;
     }
 
@@ -74,12 +81,21 @@ export class FormularioSharedComponent implements OnInit {
   }
 
   saveOrUpdate() {
+    if(this.validationForm() == false ) return;
+
+    if(!this.flagBlockTransferFormulario) this.uploadImageToFireStore();
+
+    if(this.flagBlockTransferFormulario){
+      this.persistObject(null);
+    }
+  }
+
+  uploadImageToFireStore() {
     this._loadSpinnerService.showSpinner();
     if(this.fotoSeleccionada != undefined) {
       let reader = new FileReader();
       reader.readAsDataURL(this.fotoSeleccionada);
       reader.onloadend = ()=> {
-          // this._utilitaries.showLoading();
           this._storageService.uploadImage(this.fotoSeleccionada!.name + "_" + 
                               Date.now(), reader.result, 
                               this.dataStructureReceived.component + "/"+ 
@@ -99,18 +115,26 @@ export class FormularioSharedComponent implements OnInit {
   }
 
    persistObject(urlImagen: any) {
-    if(this.validationForm() == false ) return;
+    //if(this.validationForm() == false ) return;
       
-    this.dataStructureReceived.object.name  = this.objectToFormShared.name;
-    this.dataStructureReceived.object.image = (urlImagen!="")?urlImagen:this.objectToFormShared.image;
     
-    //only category case
-    if(this.flagGroupSelectFormulario){
-      this.dataStructureReceived.object.group = this.objectToFormShared.group;
+    
+    if(this.flagBlockAmountAccountFormulario) {
+      this.dataStructureReceived.object.accountName  = this.objectToFormShared.name;
+      this.dataStructureReceived.object.balance = this.objectToFormShared.monto;
+    } else {
+      this.dataStructureReceived.object.name  = this.objectToFormShared.name;
+      this.dataStructureReceived.object.image = (urlImagen!="")?urlImagen:this.objectToFormShared.image;
+      //only category case
+      if(this.flagGroupSelectFormulario){
+        this.dataStructureReceived.object.group = this.objectToFormShared.group;
+      }
     }
+    
 
     console.log(this.dataStructureReceived);
-    this.responseToFatherComponent.emit(this.dataStructureReceived.object);
+    this.responseToFatherComponent.emit({'action':'register_update','object':this.dataStructureReceived.object});
+
   }
 
   uploadFoto(event: any) {
@@ -148,6 +172,11 @@ export class FormularioSharedComponent implements OnInit {
 
     if(this.flagGroupSelectFormulario == true && this.selectGroup == 0) {
         Swal.fire("Alerta","Debe seleccionar un grupo para esta categoría","info");
+      return false;
+    }
+
+    if(this.flagBlockAmountAccountFormulario == true && this.objectToFormShared.monto == '') {
+      Swal.fire("Alerta","El campo Monto se encuentra vacío","info");
       return false;
     }
 

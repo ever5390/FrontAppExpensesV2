@@ -1,4 +1,5 @@
-import { Component, ElementRef, EventEmitter, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
+import { PeriodModel } from 'app/data/models/business/period.model';
 
 @Component({
   selector: 'app-header-expense',
@@ -8,7 +9,9 @@ import { Component, ElementRef, EventEmitter, OnInit, Output, Renderer2, ViewChi
 export class HeaderExpenseComponent implements OnInit {
 
   
+  period: PeriodModel = new PeriodModel();
 
+  @Input() totalGastadoReceived: number = 0.00;
 
 
   //Show component menu
@@ -25,10 +28,12 @@ export class HeaderExpenseComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if(this.period != null && this.period.id != 0) {
+      this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
+    }
+
+     console.log(this.period);
   }
-
-
-
 
   //Show and catching menu y height
   showMenuOptions() {

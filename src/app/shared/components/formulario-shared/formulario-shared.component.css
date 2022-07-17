@@ -119,9 +119,10 @@ img {
 input{
     width: 100%;
     outline: none;
-    border: 1px solid #ccc;
+    border: none;
+    /* border: 1px solid #ccc; */
     padding-left: 5px;
-    border-radius: 10px ;
+    /* border-radius: 10px ; */
 }
 
 label {

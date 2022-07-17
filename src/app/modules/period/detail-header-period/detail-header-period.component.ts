@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { PeriodDetailHeader } from 'app/data/models/business/periodDetailHeader.model';
 
 @Component({
   selector: 'app-detail-header-period',
@@ -7,9 +8,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DetailHeaderPeriodComponent implements OnInit {
 
+
+  @Input() periodDetailHeaderReceived: PeriodDetailHeader = new PeriodDetailHeader();
+
   constructor() { }
 
   ngOnInit(): void {
+    console.log("DETAIL-ACCOUNT-PERIOD-HEADER");
+    console.log(this.periodDetailHeaderReceived);
   }
 
 }

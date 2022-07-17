@@ -1,70 +1,98 @@
-<ng-container *ngIf="show__popup">
+<ng-container >
     <div class="container-fluid" #popup__formulario>
         <div class="container_form">
-            <i class="far fa-times" (click)="this.sendHiddenFormRegister.emit(false);this.show__popup = false;"></i>
+            <!-- <i class="far fa-times" (click)="this.sendHiddenFormRegister.emit(false);this.show__popup = false;"></i> -->
             <div #formRegister class="container_form_controls">
                 <div class="form_control pt-1">
                     <label>Monto</label>
                     <div class="st_block_amount d-flex align-items-center">
                         <span>S/</span>
-                        <input type="text" placeholder="0.00">
+                        <input type="text" placeholder="0.00" [(ngModel)]="expense.amountShow">
                     </div>
                 </div>
                 <div class="form_control pt-1">
                     <label>Descripción(optional)</label>
-                    <textarea rows="3" 
-                        type="text">CREATE src/app/modules/period/detail-body-period/detail-body-period.component.ts (321 bytes)CREATE src/app/modules/period/ detail-body-period/detail-body-period.component.css (0 bytes)UPDATE src/app/modules/p eriod/period.module.ts (775 b PS C:\workspace_GIT_Front\ExpensesManagerAppNV>
-                    </textarea>
+                    <textarea rows="2" type="text" [(ngModel)]="expense.description"></textarea>
                 </div>
                 <div class="form_control">
                     <div class="st_content_aditionals_items d-flex justify-content-between">
                         <div class="st_item" (click)="showListCategories()">
-                            <img src="https://firebasestorage.googleapis.com/v0/b/usuarios-8190a.appspot.com/o/default%2Fdefault_image_options.JPG?alt=media&token=aaa9d207-c32f-40ae-8c3e-6131f21bcced" alt="" srcset="">
+                            <img src="{{itemCategory.image}}" alt="" srcset="">
                             <label>Category</label>
-                            <span>Servicios Departamento</span>
+                            <span>{{itemCategory.name}}</span>
                         </div>
                         <div class="st_item" (click)="showListAccording()">
-                            <img src="https://firebasestorage.googleapis.com/v0/b/usuarios-8190a.appspot.com/o/default%2Fdefault_image_options.JPG?alt=media&token=aaa9d207-c32f-40ae-8c3e-6131f21bcced" alt="" srcset="">
+                            <img src="{{itemAccording.image}}" alt="" srcset="">
                             <label>Acuerdo</label>
-                            <span>Con Reposición</span>
+                            <span>{{itemAccording.name}}</span>
                         </div>
                         <div class="st_item" (click)="showListPaymentMethods()">
-                            <img src="https://firebasestorage.googleapis.com/v0/b/usuarios-8190a.appspot.com/o/default%2Fdefault_image_options.JPG?alt=media&token=aaa9d207-c32f-40ae-8c3e-6131f21bcced" alt="" srcset="">
+                            <img src="{{itemPaymentMethod.image}}" alt="" srcset="">
                             <label>Medio de Pago</label>
-                            <span>Tarjeta de Crédito</span>
+                            <span>{{itemPaymentMethod.name}}</span>
                         </div>
                     </div>
                 </div>
                 <div class="form_control pt-1">
                     <div class="st_content_attach">
-                        <button>Subir voucher(opcional)</button>
-                        <div class="container-vouchers">
-                            <img src="https://firebasestorage.googleapis.com/v0/b/usuarios-8190a.appspot.com/o/default%2Fdefault_image_options.JPG?alt=media&token=aaa9d207-c32f-40ae-8c3e-6131f21bcced" alt="" srcset="">
-                            <img src="https://firebasestorage.googleapis.com/v0/b/usuarios-8190a.appspot.com/o/default%2Fdefault_image_options.JPG?alt=media&token=aaa9d207-c32f-40ae-8c3e-6131f21bcced" alt="" srcset="">
+                        <!-- <button>Subir voucher (opcional)</button> -->
+                        <label class="st_button_upload_voucher" (click)="showCalendar()">
+                                <span>Fecha: </span>
+                                <span>02/12/2022  05:10:13</span>
+                                <i class="fas fa-calendar"></i>
+                        </label>
+                        <ng-container *ngIf="itemAccording.id == 2 || itemAccording.id == 4">
+                            <label class="st_button_upload_voucher st_bgcolor_whopay">
+                                <span>Quien paga</span>
+                                <i class="fas fa-envelope-open-dollar"></i>
+                            </label>
+                        </ng-container>
+                        
+                        <label class="st_button_upload_voucher" for='myFileC'>
+                            <input style="display: none;" accept=".png, .jpg, .jpeg" multiple 
+                                (change)="uploadFoto($event)" 
+                                type="file" id="myFileC"
+                                class="st_img_upload"
+                                >
+                                <span>Subir voucher (opcional)</span>
+                                <i class="fas fa-arrow-alt-square-up"></i>
+                        </label>
+                        <div class="container-vouchers" >
+                            <span class="st_voucher" *ngFor="let index of imagenesUpload; let i = index" >
+                                <img src="{{index}}" alt="" srcset="">
+                                <i class="fas fa-times st_delete_voucher" (click)="removeVoucherFromList(i)"></i>
+                            </span>
                         </div>
                     </div>
                 </div>
-                <div class="form_control pt-1">
-                    <div class="st_content_attach">
-                        <button>Subir voucher(opcional)</button>
-                        <div class="container-vouchers">
-                            <img src="https://firebasestorage.googleapis.com/v0/b/usuarios-8190a.appspot.com/o/default%2Fdefault_image_options.JPG?alt=media&token=aaa9d207-c32f-40ae-8c3e-6131f21bcced" alt="" srcset="">
-                            <img src="https://firebasestorage.googleapis.com/v0/b/usuarios-8190a.appspot.com/o/default%2Fdefault_image_options.JPG?alt=media&token=aaa9d207-c32f-40ae-8c3e-6131f21bcced" alt="" srcset="">
-                        </div>
-                    </div>
-                </div>
+               
             </div>
-            <button>Registrar</button>
+            <button (click)="registerOrUpdateExpense()">Registrar</button>
 
 
 
             <!-- Lista de items POP-UP-->
             <div class="st_lista_items_select" *ngIf="show__list__items">
-                <i class="fas fa-times" (click)="show__list__items=false"></i>
-                <app-lista-shared 
-                    [dataStructureListReceived]="dataStructure"
-                    ></app-lista-shared>
-                    <!-- [onlyListItems]="false" -->
+                <!-- <i class="fas fa-times" (click)="hiddenPopUp()"></i> -->
+                    <app-list-payment-method 
+                        [receivedOrderSelectedItem]="flagShowListPaymentMethod"
+                        (sendItemSelectedToFormExpense)="receivedItemSelectedaFromPopUp($event)" 
+                        *ngIf="flagShowListPaymentMethod">
+                    </app-list-payment-method>
+                    <app-list-category       
+                        [receivedOrderSelectedItem]="flagShowListCategories"
+                        (sendItemSelectedToFormExpense)="receivedItemSelectedaFromPopUp($event)" 
+                        *ngIf="flagShowListCategories">
+                    </app-list-category>
+                    <app-list-according      
+                        [receivedOrderSelectedItem]="flagShowListAccording"
+                        (sendItemSelectedToFormExpense)="receivedItemSelectedaFromPopUp($event)" 
+                        *ngIf="flagShowListAccording">
+                    </app-list-according>
+                    <app-calendar [receivedOrderSelectedItem]="flagShowCalendar"
+                        (sendItemSelectedToFormExpense)="receivedItemSelectedaFromPopUp($event)" 
+                        *ngIf="flagShowCalendar">
+                    </app-calendar>
             </div>
 
         </div>

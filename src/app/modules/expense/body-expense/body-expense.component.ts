@@ -7,7 +7,9 @@ import { Component, ElementRef, Input, OnInit, Renderer2, ViewChild } from '@ang
 })
 export class BodyExpenseComponent implements OnInit {
 
+  sendListExpensesToBodyList: any[] = [];
   @Input("receivedHeightHeaderToBody") receivedHeightHeaderToBody:string = '';
+  @Input("receivedListExpensesFromSkeleton") receivedListExpensesFromSkeleton:any = [];
   @ViewChild('contentList') contentList: ElementRef  | any;
 
   constructor(
@@ -16,8 +18,7 @@ export class BodyExpenseComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    
-
+    this.sendListExpensesToBodyList = this.receivedListExpensesFromSkeleton;
   }
 
   ngAfterViewInit() {

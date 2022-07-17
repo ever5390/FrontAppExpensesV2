@@ -2,6 +2,8 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, 
 import { DataStructureListShared } from 'app/data/models/data.model';
 import { DataStructureFormShared } from 'app/data/models/Structures/data-structure-form-shared.model';
 import { CONSTANTES } from 'app/data/constantes';
+import { FormControl } from '@angular/forms';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-lista-shared',
@@ -10,6 +12,10 @@ import { CONSTANTES } from 'app/data/constantes';
 })
 export class ListaSharedComponent implements OnInit {
 
+  search = new FormControl('');
+  txtSearch: string = '';
+  listaShared : any[] = [];
+  hiddenButtonAddItemAccording: boolean = true;
   show_checkbox: boolean = false;
   structureFormSend: DataStructureFormShared = new DataStructureFormShared();
   dataStructureList: DataStructureListShared = new DataStructureListShared();
@@ -30,15 +36,41 @@ export class ListaSharedComponent implements OnInit {
     this.reziseWindowList();
   }
 
-  ngOnInit(): void {
+  hiddenPopUp() {
+    this.emitResponseToForm.emit(false);
+  }
+
+  ngOnInit() {
+
+    this.hiddenButtonAddItemIfFromAccording();
     console.log("INICIO DE LISTA SHARED");
-    //console.log(this.dataStructureListReceived);
     this.dataStructureList = this.dataStructureListReceived;
+    this.listaShared = this.dataStructureList.lista;
+    this.searchActivateFunction();
+    
+  }
+
+  searchActivateFunction() {
+    this.search.valueChanges.pipe(
+      debounceTime(200) // Cuando pare de escribir pasen 300 ms recíen enviará .
+    ).subscribe((value:string) => {
+          this.listaShared = this.dataStructureListReceived.lista.filter(item => {
+            return item.name.toUpperCase().includes(value.toUpperCase()) 
+          }
+          );                    
+      }
+    )
+  }
+
+  hiddenButtonAddItemIfFromAccording() {
+    console.log("Hello");
+    console.log(this.dataStructureListReceived);
+    if(this.dataStructureListReceived.component == CONSTANTES.CONST_COMPONENT_ACUERDOS) {
+      this.hiddenButtonAddItemAccording = false;
+    }
   }
 
   redirectToFormulario(objectSelected: any) {
-    console.log("IN LIST");
-    //console.log(objectSelected);
     this.structureFormSend = new DataStructureFormShared();
     this.structureFormSend.component = this.dataStructureListReceived.component;
     this.structureFormSend.title = this.dataStructureListReceived.title;
@@ -47,7 +79,7 @@ export class ListaSharedComponent implements OnInit {
     this.structureFormSend.object = this.dataStructureList.objectOfLista;
 
     if(objectSelected === CONSTANTES.CONST_TEXT_VACIO) {
-      this.structureFormSend.object.name=CONSTANTES.CONST_TEXT_VACIO;
+      this.structureFormSend.object.name=this.txtSearch;
       this.structureFormSend.action=CONSTANTES.CONST_TEXT_BTN_REGISTRAR;
     } else {
       this.structureFormSend.action=CONSTANTES.CONST_TEXT_BTN_ACTUALIZAR;
@@ -55,32 +87,8 @@ export class ListaSharedComponent implements OnInit {
       this.structureFormSend.object=objectSelected;
     }
 
-    //console.log(this.structureFormSend);
     this.emitResponseToForm.emit(this.structureFormSend);
   }
-
-  // redirectToFormulario(objectSelected: any) {
-  //   console.log("redirecto");
-  //   console.log(objectSelected);
-  //   this.structureFormSend = new DataStructureFormSharedFormShared();
-  //   this.structureFormSend.component = this.dataStructureListReceived.component;
-  //   this.structureFormSend.title = this.dataStructureListReceived.title;
-  //   this.structureFormSend.titleDos = this.dataStructureListReceived.titleDos;
-
-  //   //this.structureFormSend.object = this.dataStructureList.objectOfLista;
-
-  //   if(objectSelected === CONSTANTES.CONST_TEXT_VACIO) {
-  //     this.structureFormSend.action=CONSTANTES.CONST_TEXT_BTN_REGISTRAR;
-  //     //this.structureFormSend.object=null;
-  //   } else {
-  //     this.structureFormSend.action=CONSTANTES.CONST_TEXT_BTN_ACTUALIZAR;
-  //     this.structureFormSend.imagen = objectSelected.image;
-  //     this.structureFormSend.object=objectSelected;
-  //   }
-
-  //   this.emitResponseToForm.emit(this.structureFormSend);
-  // }
-
 
   reziseWindowList() {
     let windowHeight = window.innerHeight;

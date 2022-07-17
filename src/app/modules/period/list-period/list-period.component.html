@@ -1,34 +1,42 @@
 <div class="container-fluid">
     <div #idFormShared class="st-content-block d-flex flex-wrap justify-content-around">
-        <div class="container_form mb-3" *ngFor="let i of [1,2,3,4,5,6,7,8]">
-            <div class="form_control d-flex flex-column align-items-center" (click)="redirectToDetailPeriod()">
+        <div class="container_form mb-3" *ngFor="let dataHeader of listPeriodDetailHeader; let i = index">
+            <div class="form_control d-flex flex-column align-items-center" (click)="redirectToDetailPeriod(dataHeader.period.id)">
                 <i class="far fa-minus-circle" ></i>
 
                 <h1 class="fs-6">PERIODO</h1>
                 <div class=" d-flex align-items-center justify-content-center w-100">
                     <img class="mx-2" src="../../../../assets/images/icon calendar.png" alt="" srcset="">
-                    <span class="fs-8">Del 20 MAY 2022 al 22 JUN 2022</span>
+                    <ng-container *ngIf="dataHeader.period.activate; else elsePeriodActivateEqualsFalse;">
+                        <span>Del {{dataHeader.period.startDate | date: 'dd MMM YYY' | uppercase}}
+                            hasta {{dataHeader.period.finalDate | date: 'dd MMM YYY' | uppercase}}
+                       </span>
+                    </ng-container>
                     <img class="mx-2"  src="../../../../assets/images/icon calendar.png" alt="" srcset="">
                 </div>
             </div>
-            <div class="form_control d-flex justify-content-between align-items-center" >
+            <div class="form_control d-flex flex-wrap justify-content-between align-items-center" >
                 <div class="st_resume_data text-center">
-                    <label >S/ 13.260,00</label>
+                    <label >S/ {{dataHeader.amountEstimado | number:'1.2-2'}}</label>
                     <span>INICIAL ESTIMADO</span>
                 </div>
                 <div class="st_resume_data text-center">
-                    <label >S/ 13.260,00</label>
+                    <label >S/ {{dataHeader.totalSpent | number:'1.2-2'}}</label>
                     <span>TOTAL GASTADO</span>
                 </div>
                 <div class="st_resume_data text-center">
-                    <label >S/ 13.260,00</label>
+                    <label >S/ {{dataHeader.saving | number:'1.2-2'}}</label>
                     <span>AHORRO</span>
                 </div>
             </div>             
-        </div>
-
-        
+        </div>        
 
     </div>
     
   </div>
+
+  <ng-template #elsePeriodActivateEqualsFalse>
+    <span>Del {{period.startDate | date: 'dd MMM YYY' | uppercase}}
+        hasta Actualidad
+   </span>
+</ng-template>

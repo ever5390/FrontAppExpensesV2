@@ -26,11 +26,13 @@
     justify-content: flex-start;
 }
 
-.st_expense_header label:first-child {
-    font-size: 1.2rem;
+.st_expense_header label{
     font-weight: bold;
 }
 
+.st_expense_header label:first-child{
+    font-size: 1.2rem;
+}
 
 .st_body_body {
     margin: 10px 0;

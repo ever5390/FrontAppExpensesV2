@@ -7,7 +7,7 @@ export class DataStructureListShared implements IDataStructureListShared{
         public titleDos?: string,
         public imagen: string = '',
         public onlyListItems?: boolean,
-        public lista?: any[],
+        public lista:any[] = [],
         public objectOfLista?: any
     ){}
     

@@ -17,7 +17,7 @@
                     <i class="far fa-plus"></i>
                     <span class="px-2">IR registrar gastos</span>
                 </div> -->
-                <div class="st_aside_option_menu d-flex justify-content-start align-items-center" (click)="redirectRoutes('period')">
+                <div *ngIf="flagShowOptionPeriod" class="st_aside_option_menu d-flex justify-content-start align-items-center" (click)="redirectRoutes('period')">
                     <i class="far fa-calendar-day"></i>
                     <span class="px-2">Periodos</span>
                 </div>

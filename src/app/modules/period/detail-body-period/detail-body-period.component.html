@@ -1,25 +1,32 @@
 <div class="container-fluid">
     <div #containerlistAccount class="st_container_list_account">
-        <div class="st_account_principal">
-            <div class="st_acc_principal_header">
-                <span>Principal</span>
-                <span class="icons">
-                    <i class="far fa-plus" (click)="redirectToAccount('Registrar')"></i>
-                    <i class="far fa-exchange-alt" (click)="redirectToTransfer('Transferencia externa')"></i>
-                    <i class="fas fa-edit" (click)="redirectToAccount('Actualizar')"></i>
-                    <i class="fas fa-minus-circle"></i>
-                </span>
-            </div>
-            <div class="st_acc_principal_body">
-                <div class="st_acc_data">
-                    <label for="">S/2600</label>
-                    <span style="color:rgb(99, 99, 99);">Disponible</span>
+        <ng-container *ngIf="accountParentShow.id != 0; else templateElseWithoutAccount">
+            <div class="st_account_principal">
+                <div class="st_acc_principal_header">
+                    <span>Principal
+                        <label>{{accountParentShow.statusAccount}}</label>
+                    </span>
+                    <span class="icons">
+                        <i class="far fa-plus" (click)="redirectToAccount('Registrar')"></i>
+                        <i class="far fa-exchange-alt" (click)="redirectToTransfer('Transferencia externa')"></i>
+                        <i class="fas fa-edit" (click)="redirectToAccount('Actualizar')"></i>
+                        <i class="fas fa-minus-circle"></i>
+                    </span>
                 </div>
-                <span style="color:rgb(99, 99, 99);">S/ 120.32</span>
+                <div class="st_acc_principal_body">
+                    <div class="st_acc_data">
+                        <label for="">S/{{accountParentShow.balance | number: '1.2-2'}}</label>
+                        <span style="color:rgb(99, 99, 99);">Disponible</span>
+                    </div>
+                    <span style="color:rgb(99, 99, 99);">S/ {{accountParentShow.balanceFlow | number: '1.2-2'}}</span>
+                </div>
+                <div *ngIf="accountParentShow.statusAccount == 'INITIAL'" class="st_btn_confirm_account">
+                    Confirmar estado de las cuentas
+                </div>
             </div>
-        </div>
+        </ng-container>
         <div #listAccount class="st_list_account">
-            <div class="st_card_account" *ngFor="let i of [1,213,4,5,6]">
+            <div class="st_card_account" *ngFor="let account of accountListChildsShow; let i = index;">
 
                 <span class="icons icons-float-card">
                     <i class="fas fa-edit" (click)="redirectToAccount('Actualizar')"></i>
@@ -27,18 +34,18 @@
                     <i class="fas fa-minus-circle"></i>
                 </span>
 
-                <p>Compras mercado</p>
+                <p>{{account.accountName}}</p>
                 <div class="st_account_actual">
                     <div class="st_acc_act_data">
-                        <label>Actual</label>
-                        <span>S/ 620.00</span>
+                        <label>{{account.statusAccount}}</label>
+                        <span>S/ {{account.balance | number: '1.2-2'}}</span>
                     </div>
                     <div class="st_acc_act_data">
                         <label>Disponible</label>
-                        <span>S/ 20.00</span>
+                        <span>S/ {{account.balanceFlow | number: '1.2-2'}}</span>
                     </div>
                 </div>
-                <div class="st_account_estimated">
+                <div class="st_account_estimated" *ngIf="account.statusAccount=='CLOSED'">
                     <div class="st_acc_act_data">
                         <label>Estimación inicial</label>
                         <span>S/ 500.00</span>
@@ -60,8 +67,15 @@
         </div>
     </div>
 </div>
-<!-- '<app-formulario-shared *ngIf="flagFormulario" 
+'<app-formulario-shared *ngIf="flagFormulario" 
     (responseToFatherComponent)="receiveToSonComponent($event)" 
     [dataStructureReceived]="dataStructure" 
-    [btnText]="sendBtnText" >
-</app-formulario-shared> -->
+    >
+</app-formulario-shared>
+
+<ng-template #templateElseWithoutAccount>
+    <div class="st_content_text_without_account" (click)="showFormularyRegister('Registrar')">
+        Su periodo no tiene habilitada una cuenta principal, cree una y empiece a organizar su presupuesto
+        <br>Presione AQUÍ para crear su cuenta <i class="fas fa-plus"></i>
+    </div>
+</ng-template>

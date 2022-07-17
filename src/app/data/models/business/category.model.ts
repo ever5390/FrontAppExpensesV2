@@ -1,3 +1,4 @@
+import { CONSTANTES } from "app/data/constantes";
 import { GroupModel } from "./group.model";
 import { OwnerModel } from "./owner.model";
 
@@ -7,7 +8,7 @@ export class CategoryModel {
         public group:  GroupModel = new GroupModel(),
         public name: string = '',
         public id:    number = 0,
-        public image: string = '',
+        public image: string = CONSTANTES.CONST_IMAGEN_DEFAULT,
         public owner:  OwnerModel = new OwnerModel()
     ){}
 }

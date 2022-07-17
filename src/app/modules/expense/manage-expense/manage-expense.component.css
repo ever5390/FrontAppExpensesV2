@@ -5,11 +5,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    /* background-color: #BCBCBC; */
     height: 100vh;
     width: 100%;
     background-color: rgba(150, 149, 149, 0.226);
     z-index: 2;
+    padding-left: 0;
+    padding-right: 0;
 }
 
 .container_form {
@@ -19,28 +20,26 @@
     max-width: 450px;
     border: 1px solid #BCBCBC;
     padding: 30px;
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, 
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
                 rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
     border-radius: 10px;
 }
 
 .fa-times {
     position: absolute;
-    right: 20px;
     top: 20px;
+    width: auto;
+    background-color: #fff;
+    padding: 5px 8px;
+    border: 1px solid #000;
+    border-radius: 50%;
 }
 
 .fa-times:hover {
     cursor: pointer;
 }
-
-.container_form_controls {
-    /* height: calc(100vh - 200px); */
-}
-
     .form_control {
         padding-bottom: 10px;
-        /* outline: 1px solid red; */
     }
 
     .st_item {
@@ -52,39 +51,81 @@
         width: 200px;
     }
 
-    .st_content_attach button {
-        font-size: .8rem;
-        background-color: #06442e;
-        margin-bottom: 10px;
-    }
-
-    button {
-        width: 100%;
-        margin-top: 10px;
-        padding: 10px;
-        border: none;
-        outline: none;
-        color: #fff;
-        border-radius: 10px;
-        background-color: #2EBF8D;
-    }
-
-    .container-vouchers img {
+    .st_content_attach {
+        border: 1px solid rgba(204, 204, 204, 0.856);
         padding: 5px;
+        border-radius: 10px;
     }
 
-    img {
-        display: inline-block;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-    }
+        .st_content_attach button {
+            font-size: .8rem;
+            background-color: #dffaf0;
+            margin-bottom: 10px;
+            border-radius: 8px !important;
+            color: #366351;
+            border: 1px dashed #abcabf;
+        }
+
+        .st_button_upload_voucher {
+            width: 100%;
+            font-size: .8rem;
+            margin-bottom: 10px;
+            border-radius: 8px !important;
+            color: #366351;
+            padding: 10px;
+            text-align: center;
+            border: 1px dashed #77bba3;
+            background-color: #dffaf0;
+        }
+            .st_button_upload_voucher span {
+                margin-right: 20px;
+            }
+
+            .st_button_upload_voucher:hover {
+                cursor: pointer;
+                border: 1px dashed #15976a;
+            }
+        
+            .st_button_upload_voucher:nth-child(1) {
+                background-color: #fff;
+            }
+
+            .st_bgcolor_whopay {
+                background-color: #fff;
+            }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            outline: none;
+            color: #fff;
+            border-radius: 7px;
+            background-color: #2EBF8D;
+            border: 1px dashed #2EBF8D;
+        }
+
+            button:hover {
+                background-color: #22d191;
+            }
+
+        .container-vouchers img {
+            margin-right: 5px;
+            border-radius: 0 !important;
+        }
+
+        img {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
 
     .st_block_amount {
         width: 100%;
         border: 1px solid #BCBCBC;
         border-radius: 10px;
-        height: 50px;
+        height: 40px;
         padding-left: 10px;
     }
 
@@ -99,11 +140,29 @@
         display: flex;
         justify-content: center;
         text-align: center;
+        flex-wrap: wrap;
+    }
+
+    .st_voucher {
+        margin: 10px;
+    }
+        .fa-times.st_delete_voucher {
+            top: -8px;
+            left: -10px;
+            font-size: .8rem;
+            padding: 2px 4px;
+            color: #36635193;
+            border: 1px solid #36635185;
+        }
+
+    .st_voucher {
+        position: relative;
     }
 
     textarea {
         border: 1px solid #BCBCBC;
         border-radius: 10px;
+        padding: 10px;
         padding-left: 10px;
         font-size: .9rem;
         outline: none;
@@ -129,7 +188,6 @@
     justify-content: center;
     align-items: center;
     border-radius: 10px;
-    padding: 0 10px;
     background-color: rgba(204, 204, 204, 0.178);
 }
 
@@ -142,8 +200,7 @@
 
 .container_form {
     width: 95%;
-    padding: 10px;
-    /* height: calc(100vh - 50px); */
+    padding: 10px 15px;
 }
 
 .form_control {

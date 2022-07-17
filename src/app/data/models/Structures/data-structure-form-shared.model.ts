@@ -6,7 +6,7 @@ export class DataStructureFormShared implements IDataStructureListSharedFormShar
         public component: string = '',
         public title: string = '',
         public titleDos?: string,
-        public imagen: string = CONSTANTES.CONST_IMAGEN_CATEGORIAS,
+        public imagen: string = CONSTANTES.CONST_IMAGEN_DEFAULT,
         public action: string = '',
         public object:any = null,
         public listGroupOnlyCategory:any = []

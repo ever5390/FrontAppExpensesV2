@@ -1,5 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { PeriodModel } from 'app/data/models/business/period.model';
 
 @Component({
   selector: 'app-aside',
@@ -7,6 +8,10 @@ import { Router } from '@angular/router';
   styleUrls: ['./aside.component.css']
 })
 export class AsideComponent implements OnInit {
+
+
+  flagShowOptionPeriod: boolean = false;
+  period : PeriodModel = new PeriodModel();
 
   @ViewChild('aside') aside: ElementRef | any;
   @Output() hiddenMenuNow: EventEmitter<boolean> = new EventEmitter();
@@ -26,6 +31,10 @@ export class AsideComponent implements OnInit {
    }
   
   ngOnInit(): void {
+    this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
+    if(this.period != null && this.period.id != 0) {
+        this.flagShowOptionPeriod = true;     
+    }
   }
 
 

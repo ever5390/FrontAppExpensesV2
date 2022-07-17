@@ -1,5 +1,9 @@
 <div #idPeriod class="container-fluid_period">
-    <app-detail-header-period></app-detail-header-period>
+    <app-detail-header-period *ngIf="flagShowHeader"
+        [periodDetailHeaderReceived]="periodDetailHeaderSend"
+    ></app-detail-header-period>
     <!-- <h3>text</h3> -->
-    <app-detail-body-period></app-detail-body-period>
+    <app-detail-body-period *ngIf="flagShowBody"
+        [accountListReceived]="accountListSend"
+    ></app-detail-body-period>
 </div>

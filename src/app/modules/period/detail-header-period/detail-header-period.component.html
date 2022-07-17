@@ -8,7 +8,11 @@
             <h1>PERIODO ACTUAL</h1>
             <div class="st_fc_header mt-1 d-flex align-items-center justify-content-center w-100">
                 <img class="mx-2" src="../../../../assets/images/icon calendar.png" alt="" srcset="">
-                <span>Del 20 MAY 2022 al 22 JUN 2022</span>
+                <ng-container *ngIf="periodDetailHeaderReceived.period.activate; else elsePeriodActivateEqualsFalse;">
+                    <span>Del {{periodDetailHeaderReceived.period.startDate | date: 'dd MMM YYY' | uppercase}}
+                        hasta {{periodDetailHeaderReceived.period.finalDate | date: 'dd MMM YYY' | uppercase}}
+                    </span>
+                </ng-container>
                 <img class="mx-2"  src="../../../../assets/images/icon calendar.png" alt="" srcset="">
             </div>
             <div class="st_fc_subheader">
@@ -18,20 +22,30 @@
         </div>
         <div class="form_control d-flex justify-content-between align-items-center" >
             <div class="st_resume_data">
-                <label>S/ 13.260,00</label>
+                <label>S/ {{periodDetailHeaderReceived.amountEstimado | number:'1.2-2'}}</label>
                 <span>INICIAL ESTIMADO</span>
             </div>
             <div class="st_resume_data">
-                <label >S/ 13.260,00</label>
+                <label >S/ {{periodDetailHeaderReceived.totalSpent | number:'1.2-2'}}</label>
                 <span >TOTAL GASTADO</span>
             </div>
             <div class="st_resume_data">
-                <label >S/ 13.260,00</label>
-                <span >
+                <label >S/ {{periodDetailHeaderReceived.saving | number:'1.2-2'}}</label>
+                <span *ngIf="periodDetailHeaderReceived.saving < 0">
                     <i style="color: rgb(202, 41, 41);" class="fas fa-caret-down"></i>
+                    PÉRDIDA
+                </span>
+                <span *ngIf="periodDetailHeaderReceived.saving >= 0">
                     <i style="color: rgb(66, 170, 66);" class="fas fa-caret-up"></i>
-                    PERDIDA
+                    AHORRADO
                 </span>
             </div>
         </div>             
     </div>
+
+
+    <ng-template #elsePeriodActivateEqualsFalse>
+        <span>Del {{periodDetailHeaderReceived.period.startDate | date: 'dd MMM YYY' | uppercase}}
+            hasta Actualidad
+       </span>
+    </ng-template>

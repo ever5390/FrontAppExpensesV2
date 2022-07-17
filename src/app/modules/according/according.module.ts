@@ -7,7 +7,7 @@ import { ListAccordingComponent } from './list-according/list-according.componen
 @NgModule({
   declarations: [
     DetailAccordingComponent,
-    ListAccordingComponent
+    //ListAccordingComponent
   ],
   imports: [
     AccordingRoutingModule,

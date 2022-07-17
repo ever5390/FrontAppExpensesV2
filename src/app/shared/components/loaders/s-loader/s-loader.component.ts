@@ -34,7 +34,6 @@ export class SLoaderComponent implements OnInit {
 
 
   ngOnInit(): void {
-    throw new Error('Method not implemented.');
   }
 
   ngOnDestroy(): void {
