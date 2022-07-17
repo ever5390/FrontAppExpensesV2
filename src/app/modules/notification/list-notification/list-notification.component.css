@@ -1,7 +1,16 @@
-.st_container_notification {
-    position: absolute;
-    top: 40px;
+.st_container_pop_up {
+    width: 100%;
+    height: 100vh;
+    top: 0;
     right: 9px;
+    position: absolute;
+}
+
+.st_container_notification {
+    /* top: 40px;
+    right: 9px; */
+    margin-top: 40px;
+    float: right;
     max-width: 400px;
     /* width: 400px; */
     border-radius: 5px;
@@ -12,6 +21,7 @@
     font-size: .8rem;
     color: rgb(41, 40, 40);
     z-index: 1;
+
 }
 .st_title_notification {
     padding-bottom: 10px;
@@ -42,6 +52,6 @@
         right: 5px;
         max-width: 98%;
         margin: auto;
-       
+        margin-top: 40px;
     }
 }

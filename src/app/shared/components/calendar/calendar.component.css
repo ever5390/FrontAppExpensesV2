@@ -1,3 +1,10 @@
+.st_container_calendar {
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  top: 0;
+  right: 0;
+}
 
 .st_btn_goto_today {
   color: #3a5e56;
@@ -8,10 +15,9 @@
   color: #4c796f;
 }
 
-.calendar {
-    position: absolute;
-    top: 45px;
-    right: 5px;
+.calendar {  
+    margin-top: 45px;
+    float: right;
     width: 290px;
     max-width: 290px;
     background-color: #fff;

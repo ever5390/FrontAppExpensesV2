@@ -22,6 +22,8 @@ export class ManageExpenseComponent implements OnInit {
   imagenesUpload: string[] = [];
   owner : OwnerModel = new OwnerModel();
 
+  sendComponentParentToCalendar: string = CONSTANTES.CONST_COMPONENT_EXPENSEREGISTER;
+
   flagShowListCategories: boolean = false;
   flagShowListAccording: boolean = false;
   flagShowListPaymentMethod: boolean = false;
@@ -171,7 +173,6 @@ export class ManageExpenseComponent implements OnInit {
   }
 
   receivedItemSelectedaFromPopUp(element: any) {
-
     switch (element.component) {
       case CONSTANTES.CONST_COMPONENT_MEDIOSDEPAGO:
         this.itemPaymentMethod = element.itemSelected;
@@ -183,6 +184,7 @@ export class ManageExpenseComponent implements OnInit {
         this.itemAccording = element.itemSelected;
         break;
       case CONSTANTES.CONST_COMPONENT_CALENDAR:
+        console.log(element.dateRange);
         this.dateRangeCalendarSelected = element.dateRange;
         break;
       default:

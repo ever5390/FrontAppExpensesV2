@@ -7,9 +7,9 @@
                         <label>{{accountParentShow.statusAccount}}</label>
                     </span>
                     <span class="icons">
-                        <i class="far fa-plus" (click)="redirectToAccount('Registrar')"></i>
+                        <i class="far fa-plus" (click)="showFormularyRegister('Registrar')"></i>
                         <i class="far fa-exchange-alt" (click)="redirectToTransfer('Transferencia externa')"></i>
-                        <i class="fas fa-edit" (click)="redirectToAccount('Actualizar')"></i>
+                        <i class="fas fa-edit" (click)="showFormularyRegister('Actualizar')"></i>
                         <i class="fas fa-minus-circle"></i>
                     </span>
                 </div>
@@ -20,7 +20,8 @@
                     </div>
                     <span style="color:rgb(99, 99, 99);">S/ {{accountParentShow.balanceFlow | number: '1.2-2'}}</span>
                 </div>
-                <div *ngIf="accountParentShow.statusAccount == 'INITIAL'" class="st_btn_confirm_account">
+                <div *ngIf="accountParentShow.statusAccount == 'INITIAL'" 
+                    (click)="confirmAccount()" class="st_btn_confirm_account">
                     Confirmar estado de las cuentas
                 </div>
             </div>
@@ -29,7 +30,7 @@
             <div class="st_card_account" *ngFor="let account of accountListChildsShow; let i = index;">
 
                 <span class="icons icons-float-card">
-                    <i class="fas fa-edit" (click)="redirectToAccount('Actualizar')"></i>
+                    <i class="fas fa-edit" (click)="showFormularyRegister('Actualizar')"></i>
                     <i class="far fa-exchange-alt" (click)="redirectToTransfer('Transferencia interna')"></i>
                     <i class="fas fa-minus-circle"></i>
                 </span>

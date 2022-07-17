@@ -29,4 +29,8 @@ export class AccountService {
     return this._http.post<AccountModel>(`${this.URLCOMPL}/account`, accountToSave, {headers: this.httpHeaders});
   }
 
+  confirmAccountStatus(idPeriod: number): Observable<any> {
+    return this._http.get(`${this.URLCOMPL}/account/confirm-period/${idPeriod}`);
+  }
+
 }

@@ -132,7 +132,7 @@ export class FormularioSharedComponent implements OnInit {
     }
     
 
-    console.log(this.dataStructureReceived);
+    //console.log(this.dataStructureReceived);
     this.responseToFatherComponent.emit({'action':'register_update','object':this.dataStructureReceived.object});
 
   }

@@ -89,10 +89,14 @@
                         (sendItemSelectedToFormExpense)="receivedItemSelectedaFromPopUp($event)" 
                         *ngIf="flagShowListAccording">
                     </app-list-according>
-                    <app-calendar [receivedOrderSelectedItem]="flagShowCalendar"
+                    <app-calendar *ngIf="flagShowCalendar"
+                        [receivedComponentParent]="sendComponentParentToCalendar"
+                        (sendResponseFromCalendarToParent)="receivedItemSelectedaFromPopUp($event)"
+                    ></app-calendar>
+                    <!-- <app-calendar [receivedOrderSelectedItem]="flagShowCalendar"
                         (sendItemSelectedToFormExpense)="receivedItemSelectedaFromPopUp($event)" 
                         *ngIf="flagShowCalendar">
-                    </app-calendar>
+                    </app-calendar> -->
             </div>
 
         </div>

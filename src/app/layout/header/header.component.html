@@ -17,15 +17,15 @@
         <i class="fas fa-calendar-alt" (click)="flagCalendarpPopUp=!flagCalendarpPopUp"></i>
     </div>
 </div>
-<!-- <app-manage-expense *ngIf="showFormRgister" 
-    [show__popup]="showFormRgister"
-    (sendHiddenFormRegister)="receivedHiddenFormRegister()"
-    >
-</app-manage-expense> -->
 
-<app-list-notification *ngIf="flagNotificationpPopUp">
+<app-list-notification *ngIf="flagNotificationpPopUp"
+    [receivedShowNotificationFromHeader]="flagNotificationpPopUp"
+    (sendHiddenNotificationtoHeader)="receivedHiddenNotificationtoHeader($event)"
+    >
 </app-list-notification>
 
-<app-calendar *ngIf="flagCalendarpPopUp"></app-calendar>
-<!-- <app-formulary-register-expense-shared #show__popup></app-formulary-register-expense-shared> -->
+<app-calendar *ngIf="flagCalendarpPopUp"
+    [receivedComponentParent]="sendComponentParentToCalendar"
+    (sendResponseFromCalendarToParent)="receiveResponseFromCalendarToParent($event)"
+></app-calendar>
 

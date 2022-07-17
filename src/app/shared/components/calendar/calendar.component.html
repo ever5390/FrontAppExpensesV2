@@ -1,63 +1,64 @@
-<div class="calendar" >
-    <div class="month">
-        <i class="fas fa-angle-left prev" (click)="goToPrev()"></i>
-        <div class="date">
-            <p class="st_btn_goto_today fw-bold" (click)="goToToday()"> {{showDateFull}}</p>
-            <h1>{{showDateMonthAndYearCurrent}}</h1>
-        </div>
-        <i class="fas fa-angle-right next" (click)="goToNext()"></i>
-        
-    </div>
-    <div class="st_content_days_weeks">
-        <div class="weekdays">
-            <div>D</div>
-            <div>L</div>
-            <div>M</div>
-            <div>M</div>
-            <div>J</div>
-            <div>V</div>
-            <div>S</div>
-        </div>
-        <div #hashCOntentCalendar class="days">
-            <div class="prev-date" *ngFor="let day of daysMonthPrev; " >{{day}}</div>
-            <div  class="today_select" (click)="getDateByDaySelected(dayC)"
-                [ngClass]="{'todayS': today==dayC && month == date.getMonth() && year == date.getFullYear()}"
-                *ngFor="let dayC of daysMonthCurrent;let i = index"
-                >
-                {{dayC}}
+<div #containerAll class="st_container_calendar">
+    <div class="calendar" >
+        <div class="month">
+            <i class="fas fa-angle-left prev" (click)="goToPrev()"></i>
+            <div class="date">
+                <p class="st_btn_goto_today fw-bold" (click)="goToToday()"> {{showDateFull}}</p>
+                <h1>{{showDateMonthAndYearCurrent}}</h1>
             </div>
-            <div class="next-date" *ngFor="let day of daysMonthNext" >{{day}}</div>
+            <i class="fas fa-angle-right next" (click)="goToNext()"></i>
+            
         </div>
-        <div class="fw-bold mt-0 p-3 border-top ft_hover" (click)="showSpecificsFilters()">
-            <i class="fas fa-angle-up"></i>
-            <span class="px-2">Filtros específicos</span>
-        </div>
-        <div class="st_fast_filters" #hashIDFilters>
-            <div class="fw-bold mt-3 pb-2" (click)="showSpecificsFilters()">
-                <i class="fas fa-angle-down"></i>
-                <span class="px-2 ft_hover">Filtros específicos</span>
+        <div class="st_content_days_weeks">
+            <div class="weekdays">
+                <div>D</div>
+                <div>L</div>
+                <div>M</div>
+                <div>M</div>
+                <div>J</div>
+                <div>V</div>
+                <div>S</div>
             </div>
+            <div #hashCOntentCalendar class="days">
+                <div class="prev-date" *ngFor="let day of daysMonthPrev; " >{{day}}</div>
+                <div  class="today_select" (click)="getDateByDaySelected(dayC)"
+                    [ngClass]="{'todayS': today==dayC && month == date.getMonth() && year == date.getFullYear()}"
+                    *ngFor="let dayC of daysMonthCurrent;let i = index"
+                    >
+                    {{dayC}}
+                </div>
+                <div class="next-date" *ngFor="let day of daysMonthNext" >{{day}}</div>
+            </div>
+            <div class="fw-bold mt-0 p-3 border-top ft_hover" (click)="showSpecificsFilters()">
+                <i class="fas fa-angle-up"></i>
+                <span class="px-2">Filtros específicos</span>
+            </div>
+            <div class="st_fast_filters" #hashIDFilters>
+                <div class="fw-bold mt-3 pb-2" (click)="showSpecificsFilters()">
+                    <i class="fas fa-angle-down"></i>
+                    <span class="px-2 ft_hover">Filtros específicos</span>
+                </div>
+                <div (click)="catchDate(0,0,0)">Hoy</div>
+                <div (click)="catchDate(0,0,-1)">Ayer</div>
+    
+                <div (click)="catchDate(1,-1,1)">Últimos 7 días</div>
+                <div (click)="catchDate(0,0,-7)">Últimos 14 días</div>
+                <div (click)="catchDate(0,-3,0)">Últimos 30 días</div>
+    
+                <div (click)="catchDate(1,0,1)">Este mes</div>
+                <div (click)="catchDate(1,-1,1)">El mes pasado</div>
+                <div (click)="catchDate(0,0,-7)">Esta semana</div>
+                <div (click)="catchDate(0,-3,0)">Hace 3 meses</div>
+            </div>
+        </div>
+        <!-- <div class="actions__filter">
             <div (click)="catchDate(0,0,0)">Hoy</div>
             <div (click)="catchDate(0,0,-1)">Ayer</div>
-
-            <div (click)="catchDate(1,-1,1)">Últimos 7 días</div>
-            <div (click)="catchDate(0,0,-7)">Últimos 14 días</div>
-            <div (click)="catchDate(0,-3,0)">Últimos 30 días</div>
-
-            <div (click)="catchDate(1,0,1)">Este mes</div>
-            <div (click)="catchDate(1,-1,1)">El mes pasado</div>
-            <div (click)="catchDate(0,0,-7)">Esta semana</div>
+            <div (click)="catchDate(1,0,1)">Mes actual</div>
+            <div (click)="catchDate(1,-1,1)">Mes pasado</div>
+            <div (click)="catchDate(0,0,-7)">Última semana</div>
             <div (click)="catchDate(0,-3,0)">Hace 3 meses</div>
-        </div>
+        </div> -->
     </div>
-    <!-- <div class="actions__filter">
-        <div (click)="catchDate(0,0,0)">Hoy</div>
-        <div (click)="catchDate(0,0,-1)">Ayer</div>
-        <div (click)="catchDate(1,0,1)">Mes actual</div>
-        <div (click)="catchDate(1,-1,1)">Mes pasado</div>
-        <div (click)="catchDate(0,0,-7)">Última semana</div>
-        <div (click)="catchDate(0,-3,0)">Hace 3 meses</div>
-    </div> -->
 </div>
-<!-- </div> -->
     

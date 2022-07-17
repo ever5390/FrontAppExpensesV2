@@ -1,4 +1,4 @@
-
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, OnInit, Output, EventEmitter, Renderer2, ViewChild, ElementRef, Input } from '@angular/core';
 import { CONSTANTES } from 'app/data/constantes';
 import { Calendar } from 'app/data/models/calendar.model';
@@ -10,9 +10,10 @@ import { Calendar } from 'app/data/models/calendar.model';
 })
 export class CalendarComponent implements OnInit {
 
-  @Input() receivedOrderSelectedItem: boolean = false;
-  @Output() sendItemSelectedToFormExpense : EventEmitter<any> = new EventEmitter();
+  @Input() receivedComponentParent: String = '';
+  @Output() sendResponseFromCalendarToParent : EventEmitter<any> = new EventEmitter();
   
+
   date : Date =  new Date();
   dateSend: DateSend = new DateSend();
   showDateFull : string ='';
@@ -64,7 +65,20 @@ export class CalendarComponent implements OnInit {
   @ViewChild("hashIDFilters")
   hashIDFilters: ElementRef<any> | undefined;
 
-  constructor(private _renderer: Renderer2,) { }
+  @ViewChild("containerAll") 
+  containerAll: ElementRef | any;
+
+  constructor(private _renderer: Renderer2,) {
+    this._renderer.listen('window','click',(e: Event)=> {
+        if(this.containerAll && e.target === this.containerAll.nativeElement) {
+          this.hiddenCalendar();
+        }
+    });
+  }
+
+  hiddenCalendar() {
+    this.sendResponseFromCalendarToParent.emit(false);
+  }
 
   ngOnInit(): void {
     //this.catchDate(1,0,1);
@@ -95,7 +109,7 @@ export class CalendarComponent implements OnInit {
 
     for (let index = 0; index < lista.length; index++) {
       if(e.target == lista[index]) {
-          //catching to target select nand painting 
+          //catching to target select and painting 
           if(this.countClick == 1) {
             this.initial = e.target;
             this.seteandoStylesToTargetSelected(this.initial);
@@ -118,7 +132,7 @@ export class CalendarComponent implements OnInit {
   }
 
   getDateByDaySelected(daySelected: any) {
-    
+    console.log("CLICK ITEM DATE");
     var lista =  document.querySelectorAll(".today_select");
     
     //Reset if exceeds the value
@@ -142,6 +156,9 @@ export class CalendarComponent implements OnInit {
         
         //Begin to select range
         this.validIfMonthInitialIsEqualsMonthFinal(lista);
+
+        //Emite dates to Parent
+        this.sendDateRangeToFather();
         
         return;
     }
@@ -151,6 +168,15 @@ export class CalendarComponent implements OnInit {
         this.date.getFullYear(),
         this.date.getMonth(),
         daySelected);
+
+        console.log("CLICK ITEM DATE");
+
+    if(this.receivedComponentParent == CONSTANTES.CONST_COMPONENT_EXPENSEREGISTER) {
+      //Emite dates to Parent
+      this.sendDateRangeToFather();
+      return;
+    }
+    
   }
 
   resetDateRange(lista: any) {
@@ -434,17 +460,20 @@ export class CalendarComponent implements OnInit {
 
   sendDateRangeToFather() {
 
-    this.dateSend.startDate = this.inputValueDateInit.getFullYear() + "-" + (this.inputValueDateInit.getMonth()+1) + "-" + this.inputValueDateInit.getDate();
-    this.dateSend.finalDate = this.inputValueDateEnd.getFullYear() + "-" + (this.inputValueDateEnd.getMonth()+1) + "-" + this.inputValueDateEnd.getDate()+ " 23:59:59";
+    // this.dateSend.startDate = this.inputValueDateInit.getFullYear() + "-" + (this.inputValueDateInit.getMonth()+1) + "-" + this.inputValueDateInit.getDate();
+    // this.dateSend.finalDate = this.inputValueDateEnd.getFullYear() + "-" + (this.inputValueDateEnd.getMonth()+1) + "-" + this.inputValueDateEnd.getDate()+ " 23:59:59";
 
-    this.sendItemSelectedToFormExpense.emit({
+    this.dateSend.startDate = this.dateSelectedInitial.dateSelected;
+    this.dateSend.finalDate = this.dateSelectedFinal.dateSelected;
+    // console.log(this.inputValueDateInit);
+    // console.log(this.inputValueDateEnd);
+    this.sendResponseFromCalendarToParent.emit({
       "component": CONSTANTES.CONST_COMPONENT_CALENDAR,
       "dateRange": this.dateSend
     });
   }
 
   catchDate(orden:number, mes:number, dia:number){
-
     this.date = new Date();
     let discountDay = 0;
     if(orden == 1) {
@@ -523,7 +552,7 @@ export class CalendarComponent implements OnInit {
 export class DateSend {
 
   constructor(
-    public startDate: string = "",
-    public finalDate: string = ""
+    public startDate: Date = new Date(),
+    public finalDate: Date = new Date()
   ){}
 }

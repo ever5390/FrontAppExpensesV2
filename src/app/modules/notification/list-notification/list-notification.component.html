@@ -1,7 +1,7 @@
-<div class="st_container_pop_up">
+<div #contentNotification class="st_container_pop_up" *ngIf="receivedShowNotificationFromHeader">
     <div class="st_container_notification">
         <h6 class="st_title_notification">
-            <i class="fas fa-chevron-double-left"></i> 
+            <i class="fas fa-chevron-double-left" (click)="this.receivedShowNotificationFromHeader = false;this.sendHiddenNotificationtoHeader.emit(false);"></i> 
             <!-- <img width="20px" height="20px" src="https://www.blackwiredesigns.com/wp-content/uploads/Push-Notification-Icon.png" alt="" srcset=""> -->
 
             Registros compartidos
