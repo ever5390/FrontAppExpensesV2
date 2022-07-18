@@ -33,4 +33,12 @@ export class AccountService {
     return this._http.get(`${this.URLCOMPL}/account/confirm-period/${idPeriod}`);
   }
 
+  updateAccount(accountToSave: AccountModel): Observable<AccountModel> {
+    return this._http.put<AccountModel>(`${this.URLCOMPL}/account/${accountToSave.id}`, accountToSave, {headers: this.httpHeaders});
+  }
+
+  deleteAccount(idAccount: number): Observable<any> {
+    return this._http.delete(`${this.URLCOMPL}/account/${idAccount}`);
+  }
+
 }

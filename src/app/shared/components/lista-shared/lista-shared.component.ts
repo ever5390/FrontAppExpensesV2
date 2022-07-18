@@ -100,7 +100,7 @@ export class ListaSharedComponent implements OnInit {
         this._renderer.setStyle(this.idList.nativeElement,"height",(windowHeight*0.55)+"px");
         this._renderer.setStyle(this.idList.nativeElement,"overflow-y","scroll");
       }
-    },200);
+    },10);
   }
 
 }

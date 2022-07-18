@@ -5,5 +5,6 @@
     <!-- <h3>text</h3> -->
     <app-detail-body-period *ngIf="flagShowBody"
         [accountListReceived]="accountListSend"
+        (sendUpdateAmountInitialHeader)="receivedUpdateAmountInitialHeader($event)"
     ></app-detail-body-period>
 </div>

@@ -79,6 +79,9 @@
         color: #2d8b6a;
     }
 
+    .st_content_text_without_account.st_child {
+        margin-top: 10px;
+    }
 
     .st_list_account {
         /* padding: 20px 0; */

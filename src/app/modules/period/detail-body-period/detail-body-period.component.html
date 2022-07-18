@@ -1,16 +1,16 @@
 <div class="container-fluid">
     <div #containerlistAccount class="st_container_list_account">
-        <ng-container *ngIf="accountParentShow.id != 0; else templateElseWithoutAccount">
+        <ng-container *ngIf="accountParentShow.id != 0; else templateElseWithoutAccountPrent">
             <div class="st_account_principal">
                 <div class="st_acc_principal_header">
                     <span>Principal
                         <label>{{accountParentShow.statusAccount}}</label>
                     </span>
                     <span class="icons">
-                        <i class="far fa-plus" (click)="showFormularyRegister('Registrar')"></i>
-                        <i class="far fa-exchange-alt" (click)="redirectToTransfer('Transferencia externa')"></i>
-                        <i class="fas fa-edit" (click)="showFormularyRegister('Actualizar')"></i>
-                        <i class="fas fa-minus-circle"></i>
+                        <i class="far fa-plus" (click)="showFormularyRegisterOrUpdate('Registrar', null)"></i>
+                        <i *ngIf="accountParentShow.statusAccount == 'PROCESS'" class="far fa-exchange-alt" (click)="redirectToTransfer('Transferencia externa', accountParentShow)"></i>
+                        <i *ngIf="accountParentShow.statusAccount == 'INITIAL'" class="fas fa-edit" (click)="showFormularyRegisterOrUpdate('Actualizar', accountParentShow)"></i>
+                        <i *ngIf="accountParentShow.statusAccount == 'INITIAL'" class="fas fa-minus-circle" (click)="deleteConfirmAccount(accountParentShow)"></i>
                     </span>
                 </div>
                 <div class="st_acc_principal_body">
@@ -25,14 +25,16 @@
                     Confirmar estado de las cuentas
                 </div>
             </div>
+            <ng-container *ngIf="accountListChildsShow.length > 0; else templateElseWithoutAccountChild">
+            </ng-container>
         </ng-container>
         <div #listAccount class="st_list_account">
             <div class="st_card_account" *ngFor="let account of accountListChildsShow; let i = index;">
 
                 <span class="icons icons-float-card">
-                    <i class="fas fa-edit" (click)="showFormularyRegister('Actualizar')"></i>
-                    <i class="far fa-exchange-alt" (click)="redirectToTransfer('Transferencia interna')"></i>
-                    <i class="fas fa-minus-circle"></i>
+                    <i *ngIf="accountParentShow.statusAccount == 'INITIAL'" class="fas fa-edit" (click)="showFormularyRegisterOrUpdate('Actualizar', account)"></i>
+                    <i *ngIf="accountParentShow.statusAccount == 'PROCESS'" class="far fa-exchange-alt" (click)="redirectToTransfer('Transferencia interna', account)"></i>
+                    <i (click)="deleteConfirmAccount(account)" class="fas fa-minus-circle"></i>
                 </span>
 
                 <p>{{account.accountName}}</p>
@@ -74,9 +76,17 @@
     >
 </app-formulario-shared>
 
-<ng-template #templateElseWithoutAccount>
-    <div class="st_content_text_without_account" (click)="showFormularyRegister('Registrar')">
+<ng-template #templateElseWithoutAccountPrent>
+    <div class="st_content_text_without_account" (click)="showFormularyRegisterOrUpdate('Registrar', null)">
         Su periodo no tiene habilitada una cuenta principal, cree una y empiece a organizar su presupuesto
         <br>Presione AQUÍ para crear su cuenta <i class="fas fa-plus"></i>
+    </div>
+</ng-template>
+
+<ng-template #templateElseWithoutAccountChild>
+    <div class="st_content_text_without_account st_child" (click)="showFormularyRegisterOrUpdate('Registrar', null)">
+        Puedes agregar sub cuentas apartir de la principal, para llevar la contabilidad de gastos específicos.
+        A estas podrás asignarles las categorías que tu decidas
+        <br>Presione AQUÍ para crear sub cuentas <i class="fas fa-plus"></i>
     </div>
 </ng-template>

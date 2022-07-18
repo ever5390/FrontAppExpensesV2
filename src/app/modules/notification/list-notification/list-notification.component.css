@@ -4,6 +4,7 @@
     top: 0;
     right: 9px;
     position: absolute;
+    z-index: 2;
 }
 
 .st_container_notification {

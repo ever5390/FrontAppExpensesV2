@@ -15,13 +15,16 @@ import { SLoaderService } from '../loaders/s-loader/service/s-loader.service';
 })
 export class FormularioSharedComponent implements OnInit {
   
+  fotoSeleccionada: File | undefined;
+  owner: OwnerModel = new OwnerModel();
   objectToFormShared : ObjectFormularioShared = new ObjectFormularioShared();
-  indexDropSelect: number = 0; //ONLY CATEGORY - GROUP
+
+  // *** only category
+  indexDropSelect: number = 0;
   groupListToSelect: GroupModel[] = [];
   selectGroup: number = 0;
-  owner: OwnerModel = new OwnerModel();
 
-  fotoSeleccionada: File | undefined;
+  // *** indicate show tags
   show__popup: boolean =  false;
   showCategoriesList: boolean = false;
   flagInputNameFormulario: boolean = true;
@@ -34,6 +37,7 @@ export class FormularioSharedComponent implements OnInit {
 
   @ViewChild('imgFormulary') imgFormulary: ElementRef | any;
   @ViewChild('popup__formulario') popup__formulario: ElementRef | any;
+  flagActivateInputFile: boolean = true;
 
   constructor(
     private _renderer: Renderer2,
@@ -48,102 +52,100 @@ export class FormularioSharedComponent implements OnInit {
 
     console.log("INICIO DE FORM SHARED");
     this.switchDecideFormByComponent();
-    this.seteoObjectForm();
+    this.seteoByComponentParent();
   }
 
-  seteoObjectForm() {
-    console.log( "OBJECTO RECIBIDO : IF NULL -> NUEVO ELSE ACTUALIZAR");
-    console.log(this.dataStructureReceived.object);
-    if(this.dataStructureReceived.object.id == 0) { //OBJETO NUEVO
-      // alert("wwww");
-      this.objectToFormShared = new ObjectFormularioShared();
-
-      if(this.flagBlockAmountAccountFormulario){
-        this.objectToFormShared.name = (!this.dataStructureReceived.object.accountName)?CONSTANTES.CONST_TEXT_VACIO:this.dataStructureReceived.object.accountName;
-      } else {
-        this.objectToFormShared.name = (!this.dataStructureReceived.object.name)?CONSTANTES.CONST_TEXT_VACIO:this.dataStructureReceived.object.name;
-        this.selectGroup = 0;
-      }
-
-      return;
-    }
-
-    //OBJETO ACTUALIZAR
-    this.objectToFormShared.name = this.dataStructureReceived.object?this.dataStructureReceived.object.name:"";
+  seteoByComponentParent() {
     this.objectToFormShared.image = this.dataStructureReceived.imagen;
-    
-    //only category case
-    if(this.flagGroupSelectFormulario){
-      this.objectToFormShared.group = this.dataStructureReceived.object.group;
-      this.selectGroup = this.dataStructureReceived.object.group.id;
-    }
 
+    switch (this.dataStructureReceived.component) {
+      case CONSTANTES.CONST_COMPONENT_CATEGORIAS:
+        this.objectToFormShared.name = (!this.dataStructureReceived.object)?CONSTANTES.CONST_TEXT_VACIO:this.dataStructureReceived.object.name;
+        this.objectToFormShared.group = this.dataStructureReceived.object.group;
+        this.selectGroup = this.dataStructureReceived.object.group.id;
+        break;
+      case CONSTANTES.CONST_COMPONENT_MEDIOSDEPAGO:
+        this.objectToFormShared.name = (!this.dataStructureReceived.object)?CONSTANTES.CONST_TEXT_VACIO:this.dataStructureReceived.object.name;
+        break;
+      case CONSTANTES.CONST_COMPONENT_ACUERDOS:
+        break;
+      case CONSTANTES.CONST_TRANSFERENCIA_INTERNA:
+        this.objectToFormShared.destino = (!this.dataStructureReceived.object)?CONSTANTES.CONST_TEXT_VACIO:this.dataStructureReceived.object;
+        break;
+      case CONSTANTES.CONST_TRANSFERENCIA_EXTERNA:
+        this.objectToFormShared.destino = (!this.dataStructureReceived.object)?CONSTANTES.CONST_TEXT_VACIO:this.dataStructureReceived.object;
+        break;
+      case CONSTANTES.CONST_CUENTAS:
+        this.objectToFormShared.name = this.dataStructureReceived.object.accountName;
+        this.objectToFormShared.monto = this.dataStructureReceived.object.balance;
+
+        // this.objectToFormShared.name = (!this.dataStructureReceived.object.accountName)?CONSTANTES.CONST_TEXT_VACIO:this.dataStructureReceived.object.accountName;
+        // this.objectToFormShared.monto = (!this.dataStructureReceived.object.balance)?CONSTANTES.CONST_TEXT_VACIO:this.dataStructureReceived.object.accountName;
+        break;
+      default:
+        break;
+    }
   }
 
   saveOrUpdate() {
     if(this.validationForm() == false ) return;
 
-    if(!this.flagBlockTransferFormulario) this.uploadImageToFireStore();
-
-    if(this.flagBlockTransferFormulario){
-      this.persistObject(null);
-    }
-  }
-
-  uploadImageToFireStore() {
     this._loadSpinnerService.showSpinner();
-    if(this.fotoSeleccionada != undefined) {
-      let reader = new FileReader();
-      reader.readAsDataURL(this.fotoSeleccionada);
-      reader.onloadend = ()=> {
-          this._storageService.uploadImage(this.fotoSeleccionada!.name + "_" + 
-                              Date.now(), reader.result, 
-                              this.dataStructureReceived.component + "/"+ 
-                              this.owner.username)
-            .then(
-              urlImagen => {
-                this.persistObject(urlImagen);
-              }, () => {
-                this.persistObject("");
-              }
-            );
-        }
+
+    if(this.dataStructureReceived.component == CONSTANTES.CONST_CUENTAS 
+        || this.dataStructureReceived.component == CONSTANTES.CONST_TRANSFERENCIA_EXTERNA
+        || this.dataStructureReceived.component == CONSTANTES.CONST_TRANSFERENCIA_INTERNA ) {
       
-    } else {
-      this.persistObject("");
+        this.dataStructureReceived.object.accountName  = this.objectToFormShared.name;
+        this.dataStructureReceived.object.balance = this.objectToFormShared.monto;
+        this.responseToFatherComponent.emit({'action':'register_update','object':this.dataStructureReceived.object});
+        return;
+    }
+
+    if(this.dataStructureReceived.component == CONSTANTES.CONST_COMPONENT_CATEGORIAS
+        || this.dataStructureReceived.component == CONSTANTES.CONST_COMPONENT_MEDIOSDEPAGO) {
+
+        if(this.fotoSeleccionada == undefined) {
+            this.emitObjectToSave(CONSTANTES.CONST_TEXT_VACIO);
+            return;
+        }
+        this.uploadImageToFirestore();
     }
   }
 
-   persistObject(urlImagen: any) {
-    //if(this.validationForm() == false ) return;
-      
+  
+  emitObjectToSave(urlImagen: any) { 
     
-    
-    if(this.flagBlockAmountAccountFormulario) {
-      this.dataStructureReceived.object.accountName  = this.objectToFormShared.name;
-      this.dataStructureReceived.object.balance = this.objectToFormShared.monto;
-    } else {
-      this.dataStructureReceived.object.name  = this.objectToFormShared.name;
-      this.dataStructureReceived.object.image = (urlImagen!="")?urlImagen:this.objectToFormShared.image;
-      //only category case
-      if(this.flagGroupSelectFormulario){
-        this.dataStructureReceived.object.group = this.objectToFormShared.group;
-      }
+    if(this.dataStructureReceived.component == CONSTANTES.CONST_COMPONENT_CATEGORIAS) {
+      this.dataStructureReceived.object.group = this.objectToFormShared.group;
     }
+    this.dataStructureReceived.object.name  = this.objectToFormShared.name;
+    this.dataStructureReceived.object.image = (urlImagen!=CONSTANTES.CONST_TEXT_VACIO)?urlImagen:this.objectToFormShared.image;
     
-
-    //console.log(this.dataStructureReceived);
     this.responseToFatherComponent.emit({'action':'register_update','object':this.dataStructureReceived.object});
 
+  }
+
+  uploadImageToFirestore() {
+    let reader = new FileReader();
+    reader.readAsDataURL(this.fotoSeleccionada!);
+    reader.onloadend = ()=> {
+      this._storageService.uploadImage(this.fotoSeleccionada!.name + "_" + Date.now(), reader.result, 
+                          this.dataStructureReceived.component + "/"+ this.owner.username)
+        .then(
+        urlImagen => {
+          this.emitObjectToSave(urlImagen);
+        }, () => {
+          this.emitObjectToSave(CONSTANTES.CONST_TEXT_VACIO);
+        }
+      );
+    }
   }
 
   uploadFoto(event: any) {
     if(event.target.files && event.target.files[0]) {
       this.fotoSeleccionada = event.target.files[0];
-      // this.persistImageToDB = true;
-      //this.objectToFormShared.image = event.target.files[0];
       const objectURL = URL.createObjectURL(event.target.files[0]);
-      
       this._renderer.setAttribute(this.imgFormulary.nativeElement,"src",objectURL);
     }
   }
@@ -165,31 +167,46 @@ export class FormularioSharedComponent implements OnInit {
   }
 
   validationForm():boolean {
-    if(this.objectToFormShared.name == '') {
+    
+    if(this.objectToFormShared.name == CONSTANTES.CONST_TEXT_VACIO) {
         Swal.fire("Alerta","El campo nombre se encuentra vacío","info");
       return false;
     }
 
-    if(this.flagGroupSelectFormulario == true && this.selectGroup == 0) {
+    if(this.dataStructureReceived.component == CONSTANTES.CONST_COMPONENT_CATEGORIAS
+        && this.selectGroup == 0) {
         Swal.fire("Alerta","Debe seleccionar un grupo para esta categoría","info");
       return false;
     }
 
-    if(this.flagBlockAmountAccountFormulario == true && this.objectToFormShared.monto == '') {
-      Swal.fire("Alerta","El campo Monto se encuentra vacío","info");
-      return false;
+    if(this.dataStructureReceived.component == CONSTANTES.CONST_CUENTAS){
+
+      if(this.objectToFormShared.monto == CONSTANTES.CONST_TEXT_VACIO) {
+        Swal.fire("Alerta","El campo Monto se encuentra vacío","info");
+        return false;
+      }
+      console.log(Number(this.objectToFormShared.monto));
+      if(isNaN(Number(this.objectToFormShared.monto))) {
+        Swal.fire("Alerta","El campo Monto solo acepta números mayores a cero","info");
+        return false;
+      }
+
+      if(Number(this.objectToFormShared.monto) <= 0) {
+        Swal.fire("Alerta","El campo Monto solo acepta números mayores a cero","info");
+        return false;
+      }
+      
     }
 
     return true;
   }
 
-  chooseItem(){
+  chooseItemGroup(){
     this.objectToFormShared.group = new GroupModel();
-
     if(this.selectGroup == 0) {
       return;
     }
-
+    
     for (let index = 0; index <  this.dataStructureReceived.listGroupOnlyCategory.length; index++) {
       if(this.selectGroup == this.dataStructureReceived.listGroupOnlyCategory[index].id) {
         this.objectToFormShared.group =  this.dataStructureReceived.listGroupOnlyCategory[index];
@@ -214,6 +231,7 @@ export class FormularioSharedComponent implements OnInit {
         this.flagGroupSelectFormulario =true;
         this.flagBlockTransferFormulario=false;
         this.flagBlockAmountAccountFormulario=false;
+        this.flagActivateInputFile=true;
         break;
       case CONSTANTES.CONST_COMPONENT_ACUERDOS:
         this.dataStructureReceived.titleDos = (flagContentSeleccione===true)?CONSTANTES.CONST_TITLE_REGISTRAR_ITEM_ACUERDO:this.dataStructureReceived.title;
@@ -221,6 +239,7 @@ export class FormularioSharedComponent implements OnInit {
         this.flagGroupSelectFormulario =false;
         this.flagBlockTransferFormulario=false;
         this.flagBlockAmountAccountFormulario=false;
+        this.flagActivateInputFile=true;
         break;
       case CONSTANTES.CONST_COMPONENT_MEDIOSDEPAGO:
         this.dataStructureReceived.titleDos = (flagContentSeleccione===true)?CONSTANTES.CONST_TITLE_REGISTRAR_ITEM_MEDIOSDEPAGO:this.dataStructureReceived.title;
@@ -228,6 +247,7 @@ export class FormularioSharedComponent implements OnInit {
         this.flagGroupSelectFormulario =false;
         this.flagBlockTransferFormulario=false;
         this.flagBlockAmountAccountFormulario=false;
+        this.flagActivateInputFile=true;
         break;
       case CONSTANTES.CONST_TRANSFERENCIA_INTERNA:
         this.dataStructureReceived.titleDos = this.dataStructureReceived.title;
@@ -235,6 +255,7 @@ export class FormularioSharedComponent implements OnInit {
         this.flagGroupSelectFormulario =false;
         this.flagBlockTransferFormulario=true;
         this.flagBlockAmountAccountFormulario=false;
+        this.flagActivateInputFile=false;
         break;
       case CONSTANTES.CONST_TRANSFERENCIA_EXTERNA:
         this.dataStructureReceived.titleDos = this.dataStructureReceived.title;
@@ -242,6 +263,7 @@ export class FormularioSharedComponent implements OnInit {
         this.flagGroupSelectFormulario =false;
         this.flagBlockTransferFormulario=true;
         this.flagBlockAmountAccountFormulario=false;
+        this.flagActivateInputFile=false;
         break;
       case CONSTANTES.CONST_CUENTAS:
         this.dataStructureReceived.titleDos = this.dataStructureReceived.title;
@@ -249,6 +271,7 @@ export class FormularioSharedComponent implements OnInit {
         this.flagGroupSelectFormulario =false;
         this.flagBlockTransferFormulario=false;
         this.flagBlockAmountAccountFormulario=true;
+        this.flagActivateInputFile=false;
         break;
       default:
         break;

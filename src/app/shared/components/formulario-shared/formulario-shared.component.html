@@ -9,11 +9,11 @@
                     <!-- class="border-dotted item-action-selected upload"  -->
                     <div class="st_border">
                         <label for='myFileC'>
-                            <input accept=".png, .jpg, .jpeg"  
+                            <input *ngIf="flagActivateInputFile" accept=".png, .jpg, .jpeg"  
                                 (change)="uploadFoto($event)" 
                                 type="file" id="myFileC"
                                 class="st_img_upload"
-                                >
+                                readonly>
                                 <i class="fas fa-pen"></i>
                         </label>
                         <img #imgFormulary  *ngIf="dataStructureReceived.imagen" 
@@ -28,7 +28,7 @@
                 </div>
                 <div class="form_control" *ngIf="flagGroupSelectFormulario">
                     <label>Grupo</label>
-                    <select name="cars" [(ngModel)]="selectGroup" id="cars"  (change)="chooseItem()" class="st_aside_dropdown_wrkspc" >
+                    <select name="cars" [(ngModel)]="selectGroup" id="cars"  (change)="chooseItemGroup()" class="st_aside_dropdown_wrkspc" >
                         <option value="0">--- Seleccione tipo de categoría ----</option>
                         <option *ngFor="let itemGroup of this.dataStructureReceived.listGroupOnlyCategory"
                             value="{{itemGroup.id}}">
@@ -39,8 +39,8 @@
                 <div class="form_control" *ngIf="flagBlockTransferFormulario">
                     <label>Destino</label>
                     <div class="st_form_destiny d-flex justify-content-between align-items-center">
-                        <span>Seleccione</span>
-                        <span>S/ 0.00</span>
+                        <span>{{objectToFormShared.destino.accountName}}</span>
+                        <span>S/{{objectToFormShared.destino.balanceFlow}}</span>
                     </div>
                 </div>
                 <div class="form_control" *ngIf="flagBlockTransferFormulario && this.dataStructureReceived.title != 'Transferencia externa'">

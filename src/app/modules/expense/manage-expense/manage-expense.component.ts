@@ -169,6 +169,7 @@ export class ManageExpenseComponent implements OnInit {
     this.flagShowListCategories = false;
     this.flagShowListAccording = false;
     this.flagShowListPaymentMethod = false;
+    this.flagShowCalendar = false;
     this.show__list__items = false;
   }
 

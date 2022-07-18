@@ -39,8 +39,6 @@ export class DetailPeriodComponent implements OnInit {
 
     this._rutaActiva.params.subscribe(
       (params: Params) => {
-        //console.log("PARAM ROUTE");
-        //console.log(params.idPeriod);
         if(params.idPeriod != undefined) {
           let idPeriodReceivedFromListPeriod = params.idPeriod;
           this.getAllDataCardPeriod(idPeriodReceivedFromListPeriod);
@@ -52,9 +50,9 @@ export class DetailPeriodComponent implements OnInit {
 
   getAllDataCardPeriod(idPeriodReceived: number) {
     //Obtiene lista de periodos.
+    this.flagShowHeader = false;
     this._periodService.getPeriodDetailHeaderByPeriodId(idPeriodReceived).subscribe(
       response => {
-        console.log(response);
         this.periodDetailHeaderSend = response;
         this.flagShowHeader = true;
         this.getAllAccountByPeriodSelected(this.periodDetailHeaderSend.period.id);
@@ -69,7 +67,6 @@ export class DetailPeriodComponent implements OnInit {
   getAllAccountByPeriodSelected(idPeriodReceived: number) {
     this._accountService.getListAccountByIdPeriod(idPeriodReceived).subscribe(
       response => {
-        //console.log(response);
         this.accountListSend = response;
         this.flagShowBody = true;
       },
@@ -80,6 +77,11 @@ export class DetailPeriodComponent implements OnInit {
     );
   }
 
+  receivedUpdateAmountInitialHeader(account: any) {
+    console.log("RECEIVED");
+    console.log(account);
+    this.getAllDataCardPeriod(account.period.id);
+  }
 
   getSizeBloclListPeriod() {
     let windowHeight = window.innerHeight;

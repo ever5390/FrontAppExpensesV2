@@ -4,6 +4,7 @@
   height: 100vh;
   top: 0;
   right: 0;
+  z-index: 2;
 }
 
 .st_btn_goto_today {
