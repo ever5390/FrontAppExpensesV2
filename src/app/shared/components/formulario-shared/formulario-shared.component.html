@@ -1,12 +1,8 @@
 <ng-container *ngIf="show__popup">
     <div class="container-fluid" #popup__formulario>
-        <div class="container_form">
-            
-            <!-- <i class="far fa-times" (click)="hiddenPopUp()"></i> -->
-            <!-- <i *ngIf="dataStructureReceived.action==='Actualizar'" class="far fa-minus-circle" (click)="hiddenPopUp()" ></i> -->
+        <div class="container_form" #container_formulario>
             <div class="st_content">
                 <div class="st_form_control_header">
-                    <!-- class="border-dotted item-action-selected upload"  -->
                     <div class="st_border">
                         <label for='myFileC'>
                             <input *ngIf="flagActivateInputFile" accept=".png, .jpg, .jpeg"  
@@ -36,18 +32,20 @@
                         </option>
                     </select>
                 </div>
+                <div class="form_control" *ngIf="flagBlockTransferFormulario && this.dataStructureReceived.title != 'Transferencia externa'">
+                    <label>Origen</label>
+                    <ng-container *ngIf="objectToFormShared.origen.id==0; else accountOrigen;">
+                        <div (click)="selectAccountOrigenFromList()" class="st_aside_dropdown_wrkspc d-flex justify-content-between align-items-center">
+                            <span>Seleccione</span>
+                            <i class="fas fa-sort"></i>
+                        </div>
+                    </ng-container>
+                </div>
                 <div class="form_control" *ngIf="flagBlockTransferFormulario">
                     <label>Destino</label>
                     <div class="st_form_destiny d-flex justify-content-between align-items-center">
                         <span>{{objectToFormShared.destino.accountName}}</span>
-                        <span>S/{{objectToFormShared.destino.balanceFlow}}</span>
-                    </div>
-                </div>
-                <div class="form_control" *ngIf="flagBlockTransferFormulario && this.dataStructureReceived.title != 'Transferencia externa'">
-                    <label>Origen</label>
-                    <div class="st_aside_dropdown_wrkspc d-flex justify-content-between align-items-center">
-                        <span>Seleccione</span>
-                        <i class="fas fa-sort"></i>
+                        <span>S/{{objectToFormShared.destino.balanceFlow | number: '1.2-2'}}</span>
                     </div>
                 </div>
                 <div class="form_control" *ngIf="flagBlockTransferFormulario || flagBlockAmountAccountFormulario">
@@ -69,9 +67,30 @@
                     (click)="delete()">
                 Eliminar
             </button>
+
+            <!-- Lista de cuentas: caso Transferencia interna -->
+            <div class="st_list_account_origen" [ngStyle]="{'display':(flagShowListAccountOrigenSelect) ? 'block' : 'none' }">
+                <h6><i (click)="flagShowListAccountOrigenSelect=false;" class="fas fa-angle-double-left"></i> Seleccione una cuenta origen</h6>
+                <div #lisAccountOrigenSelect>
+                    <ng-container *ngFor="let accountorigen of dataStructureReceived.listAccoutOrigen">
+                        <div (click)="accountSelected(accountorigen)" class="st_account_select d-flex justify-content-between align-items-center">
+                            <label>{{accountorigen.accountName}}</label>
+                            <label><span style="font-size: .8rem; color:rgb(83, 40, 40)">disponible</span>
+                                <br>S/ {{accountorigen.balanceFlow | number: '1.2-2'}}
+                            </label>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
         </div>
        
     </div>
 </ng-container>
 
+<ng-template #accountOrigen>
+    <div (click)="selectAccountOrigenFromList()" class="st_form_destiny d-flex justify-content-between align-items-center">
+        <span>{{objectToFormShared.origen.accountName}}</span>
+        <span>S/ {{objectToFormShared.origen.balanceFlow | number: '1.2-2'}}</span>
+    </div>
+</ng-template>
 

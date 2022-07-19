@@ -23,7 +23,6 @@ export class DetailPeriodComponent implements OnInit {
   @ViewChild('idPeriod') idPeriod: ElementRef | any;
   
   constructor(
-    private _route: Router,
     private _accountService: AccountService,
     private _rutaActiva: ActivatedRoute,
     private _renderer: Renderer2,
@@ -72,15 +71,12 @@ export class DetailPeriodComponent implements OnInit {
       },
       error => {
         console.log(error);
-        //Swal.fire("","No se obtuvo datos del periodo buscado","error");
       }
     );
   }
 
-  receivedUpdateAmountInitialHeader(account: any) {
-    console.log("RECEIVED");
-    console.log(account);
-    this.getAllDataCardPeriod(account.period.id);
+  receivedUpdateAmountInitialHeader(object: any) {
+    this.getAllDataCardPeriod(object.period.id);
   }
 
   getSizeBloclListPeriod() {

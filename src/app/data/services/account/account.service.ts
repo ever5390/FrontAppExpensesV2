@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { URL_BASE_COMPLEMENT } from 'app/config/global.url';
 import { AccountModel } from 'app/data/models/business/account.model';
+import { TransferenciaModel } from 'app/data/models/business/transferencia.model';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -39,6 +40,10 @@ export class AccountService {
 
   deleteAccount(idAccount: number): Observable<any> {
     return this._http.delete(`${this.URLCOMPL}/account/${idAccount}`);
+  }
+
+  saveTransferenceAccount(transferToSave: TransferenciaModel): Observable<TransferenciaModel> {
+    return this._http.post<TransferenciaModel>(`${this.URLCOMPL}/transference`, transferToSave, {headers: this.httpHeaders});
   }
 
 }

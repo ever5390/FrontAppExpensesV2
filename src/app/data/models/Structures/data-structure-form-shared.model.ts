@@ -9,6 +9,7 @@ export class DataStructureFormShared implements IDataStructureListSharedFormShar
         public imagen: string = CONSTANTES.CONST_IMAGEN_DEFAULT,
         public action: string = '',
         public object:any = null,
-        public listGroupOnlyCategory:any = []
+        public listGroupOnlyCategory:any = [],
+        public listAccoutOrigen:any=[]
         ){}
 }

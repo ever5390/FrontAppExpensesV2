@@ -1,13 +1,11 @@
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { SLoaderService } from '@shared/components/loaders/s-loader/service/s-loader.service';
 import { CONSTANTES } from 'app/data/constantes';
 import { AccountModel } from 'app/data/models/business/account.model';
 import { PeriodModel } from 'app/data/models/business/period.model';
+import { TransferenciaModel } from 'app/data/models/business/transferencia.model';
 import { DataStructureFormShared } from 'app/data/models/Structures/data-structure-form-shared.model';
 import { AccountService } from 'app/data/services/account/account.service';
-import { Console } from 'console';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -17,6 +15,7 @@ import Swal from 'sweetalert2';
 })
 export class DetailBodyPeriodComponent implements OnInit {
 
+  transferObject: TransferenciaModel = new TransferenciaModel();
 
   accountParentShow: AccountModel = new AccountModel();
   accountListChildsShow: AccountModel[] = [];
@@ -41,8 +40,6 @@ export class DetailBodyPeriodComponent implements OnInit {
   @Output() sendUpdateAmountInitialHeader= new EventEmitter();
 
   constructor(
-    private _route: Router,
-    private _renderer: Renderer2,
     private _loadSpinnerService: SLoaderService,
     private _accountService: AccountService
   ) {
@@ -169,21 +166,6 @@ export class DetailBodyPeriodComponent implements OnInit {
     );
   }
 
-  showFormularyRegisterOrUpdate(order: any, object: any) {
-    this.flagFormulario = true;
-    this.dataStructure.title = "Cuentas";
-    this.dataStructure.component = "Cuentas";
-    this.dataStructure.action = CONSTANTES.CONST_TEXT_BTN_REGISTRAR;
-    this.dataStructure.object = new AccountModel();
-    this.dataStructure.imagen = CONSTANTES.CONST_IMAGEN_CUENTAS;
-
-    if(order == 'Actualizar') {
-      this.dataStructure.action = CONSTANTES.CONST_TEXT_BTN_ACTUALIZAR;
-      this.dataStructure.object = object;
-      console.log(this.dataStructure.object);
-    }
-  }
-
   deleteConfirmAccount(account: AccountModel) {
 
     let textMessage = "Se elminará por completo la subcuenta seleccionada";
@@ -220,27 +202,79 @@ export class DetailBodyPeriodComponent implements OnInit {
     );
   }
 
+  showFormularyRegisterOrUpdate(order: any, object: any) {
+    this.flagFormulario = true;
+    this.dataStructure.title = CONSTANTES.CONST_CUENTAS;
+    this.dataStructure.component = CONSTANTES.CONST_CUENTAS;
+    this.dataStructure.action = CONSTANTES.CONST_TEXT_BTN_REGISTRAR;
+    this.dataStructure.object = new AccountModel();
+    this.dataStructure.imagen = CONSTANTES.CONST_IMAGEN_CUENTAS;
+
+    if(order == 'Actualizar') {
+      this.dataStructure.action = CONSTANTES.CONST_TEXT_BTN_ACTUALIZAR;
+      this.dataStructure.object = object;
+      console.log(this.dataStructure.object);
+    }
+  }
+
   redirectToTransfer(titleTransferInternOrExtern: string, object: any) {
     this.flagFormulario = true;
     this.dataStructure.title = titleTransferInternOrExtern;
     this.dataStructure.component = titleTransferInternOrExtern;
     this.dataStructure.imagen = CONSTANTES.CONST_IMAGEN_TRANSFERENCIA;
-    this.dataStructure.object = object;
+
+    this.transferObject.accountDestiny = object;
+    this.transferObject.accountOrigin = new AccountModel();
+    this.transferObject.amount = "",
+    this.transferObject.createDate = new Date();
+    this.transferObject.period = object.period;
+    this.transferObject.reason = "";
+    this.transferObject.typeEntryExtern = false; //Extern
+
+    this.dataStructure.object = this.transferObject;
     this.dataStructure.action = 'Transferir';
+
+    if(titleTransferInternOrExtern=='Transferencia interna') {
+      this.transferObject.typeEntryExtern = true; //Intern
+      this.dataStructure.listAccoutOrigen = this.accountListChildsShow.filter(item => {
+        return item.id != object.id; 
+      });
+
+      this.dataStructure.listAccoutOrigen.push(this.accountParentShow);
+    }
   }
 
   receiveToSonComponent(dataStructureReceived:any) {
-    console.log("RECEIVE TO FATHER FROM SHARED ACCOUNT");
     this.flagFormulario = false;
+
     if(dataStructureReceived == null) return;
     this._loadSpinnerService.hideSpinner();
 
+    if(dataStructureReceived.component != CONSTANTES.CONST_CUENTAS) {
+      this.registerTransference(dataStructureReceived.object);
+      return;
+    }
     if(dataStructureReceived.object.id == 0){
       this.registerAccount(dataStructureReceived.object);
     } else {
       this.updateAccount(dataStructureReceived.object);
     }
+  }
 
+  registerTransference(transferToSave: TransferenciaModel) {
+
+    this._accountService.saveTransferenceAccount(transferToSave).subscribe(
+      (response :any)=> {
+        Swal.fire(response.title,response.message,response.status);
+        this.getAllAccountByPeriodSelected(response.object.period.id);
+        this.sendUpdateAmountInitialHeader.emit(response.object);
+      },
+      error => {
+        console.log(error);
+        Swal.fire(error.error.title,error.error.message,error.error.status);
+        this.getAllAccountByPeriodSelected(this.period.id);
+      }
+    );
   }
 
 }
