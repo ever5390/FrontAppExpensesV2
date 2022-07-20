@@ -31,8 +31,6 @@ export class HeaderExpenseComponent implements OnInit {
     if(this.period != null && this.period.id != 0) {
       this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
     }
-
-     console.log(this.period);
   }
 
   //Show and catching menu y height

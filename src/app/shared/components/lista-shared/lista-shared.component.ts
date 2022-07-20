@@ -43,7 +43,6 @@ export class ListaSharedComponent implements OnInit {
   ngOnInit() {
 
     this.hiddenButtonAddItemIfFromAccording();
-    console.log("INICIO DE LISTA SHARED");
     this.dataStructureList = this.dataStructureListReceived;
     this.listaShared = this.dataStructureList.lista;
     this.searchActivateFunction();
@@ -63,8 +62,6 @@ export class ListaSharedComponent implements OnInit {
   }
 
   hiddenButtonAddItemIfFromAccording() {
-    console.log("Hello");
-    console.log(this.dataStructureListReceived);
     if(this.dataStructureListReceived.component == CONSTANTES.CONST_COMPONENT_ACUERDOS) {
       this.hiddenButtonAddItemAccording = false;
     }

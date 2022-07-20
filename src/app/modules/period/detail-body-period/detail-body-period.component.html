@@ -32,7 +32,8 @@
             <div class="st_card_account" *ngFor="let account of accountListChildsShow; let i = index;">
 
                 <span class="icons icons-float-card">
-                    <i *ngIf="accountParentShow.statusAccount == 'INITIAL'" class="fas fa-edit" (click)="showFormularyRegisterOrUpdate('Actualizar', account)"></i>
+                    <!-- <i *ngIf="accountParentShow.statusAccount == 'INITIAL'" class="fas fa-edit" (click)="showFormularyRegisterOrUpdate('Actualizar', account)"></i> -->
+                    <i class="fas fa-edit" (click)="showFormularyRegisterOrUpdate('Actualizar', account)"></i>
                     <i *ngIf="accountParentShow.statusAccount == 'PROCESS'" class="far fa-exchange-alt" (click)="redirectToTransfer('Transferencia interna', account)"></i>
                     <i (click)="deleteConfirmAccount(account)" class="fas fa-minus-circle"></i>
                 </span>

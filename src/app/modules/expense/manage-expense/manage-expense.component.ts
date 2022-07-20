@@ -7,6 +7,7 @@ import { ExpenseModel } from 'app/data/models/business/expense.model';
 import { OwnerModel } from 'app/data/models/business/owner.model';
 import { PaymentMethodModel } from 'app/data/models/business/payment-method.model';
 import { PeriodModel } from 'app/data/models/business/period.model';
+import { TypeWSPC, Workspace } from 'app/data/models/business/workspace.model';
 import { DataStructureListShared } from 'app/data/models/data.model';
 import { ExpensesService } from 'app/data/services/expenses/expenses.service';
 import Swal from 'sweetalert2';
@@ -37,6 +38,8 @@ export class ManageExpenseComponent implements OnInit {
   // expense: Expense
   expense: ExpenseModel = new ExpenseModel();
   period: PeriodModel = new PeriodModel();
+
+  workspace: Workspace = new Workspace(1,"Workspace1");
   
   show__list__items: boolean = false;
   dataStructure: DataStructureListShared = new DataStructureListShared();
@@ -58,15 +61,18 @@ export class ManageExpenseComponent implements OnInit {
   ngOnInit(): void {
     this.owner = JSON.parse(localStorage.getItem('lcstrg_owner')!);
     this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
-    //this.startDate = this._utilService.convertDateToString(this.period);
+
+    this.workspace.owner = this.owner;
+    this.workspace.typeWSPC = new TypeWSPC(1,'SINGLE');
+    console.log("this.workspace");
+    console.log(this.workspace);
   }
 
 
   create() {
-    console.log("create expense");
+    
     this._expenseService.create(this.expense).subscribe(
       response => {
-        console.log(response);
         this.period = response.object.period;
         localStorage.setItem("lcstrg_periodo",JSON.stringify(this.period));
         Swal.fire("","Registro exitoso","success");
@@ -89,6 +95,9 @@ export class ManageExpenseComponent implements OnInit {
     if(this.period == null) this.period = new PeriodModel();
 
     this.expense.period = this.period;
+    this.expense.workspace = this.workspace;
+
+    console.log("create expense");
     console.log(this.expense);
     this.create();
 
@@ -143,9 +152,6 @@ export class ManageExpenseComponent implements OnInit {
   showCalendar() {
     this.show__list__items = true;
     this.flagShowCalendar = true;
-    // this.dataStructure.component=CONSTANTES.CONST_COMPONENT_MEDIOSDEPAGO;
-    // this.dataStructure.title=CONSTANTES.CONST_TITLE_SELECCIONE_ITEM_MEDIOSDEPAGO;
-    // this.dataStructure.imagen = CONSTANTES.CONST_IMAGEN_MEDIOSDEPAGO;
   }
 
   uploadFoto(event: any) {

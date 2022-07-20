@@ -58,14 +58,11 @@ export class FormularioSharedComponent implements OnInit {
 
   ngOnInit(): void {
     this.owner = JSON.parse(localStorage.getItem('lcstrg_owner')!);
-
-    console.log("INICIO DE FORM SHARED");
     this.switchDecideFormByComponent();
     this.seteoByComponentParent();
   }
 
   seteoByComponentParent() {
-    console.log(this.dataStructureReceived);
     this.objectToFormShared.image = this.dataStructureReceived.imagen;
 
     switch (this.dataStructureReceived.component) {
@@ -88,9 +85,6 @@ export class FormularioSharedComponent implements OnInit {
       case CONSTANTES.CONST_CUENTAS:
         this.objectToFormShared.name = this.dataStructureReceived.object.accountName;
         this.objectToFormShared.monto = this.dataStructureReceived.object.balance;
-
-        // this.objectToFormShared.name = (!this.dataStructureReceived.object.accountName)?CONSTANTES.CONST_TEXT_VACIO:this.dataStructureReceived.object.accountName;
-        // this.objectToFormShared.monto = (!this.dataStructureReceived.object.balance)?CONSTANTES.CONST_TEXT_VACIO:this.dataStructureReceived.object.accountName;
         break;
       default:
         break;
@@ -125,8 +119,6 @@ export class FormularioSharedComponent implements OnInit {
       
         this.dataStructureReceived.object.accountName  = this.objectToFormShared.name;
         this.dataStructureReceived.object.balance = this.objectToFormShared.monto;
-        console.log("OBKJECT FORM");
-        console.log(this.dataStructureReceived);
         this.responseToFatherComponent.emit(this.dataStructureReceived);
         return;
     }
@@ -265,7 +257,6 @@ export class FormularioSharedComponent implements OnInit {
     this.flagShowListAccountOrigenSelect = true;
     setTimeout(()=> {
       this.heightListContent = this.lisAccountOrigenSelect.nativeElement.clientHeight;
-      console.log("heift : " + this.heightListContent);
       if(this.heightListContent > (this.heightForm - 50) ) {
         this._renderer.setStyle(this.lisAccountOrigenSelect.nativeElement, "height",(this.heightForm - 70) + "px");
         this._renderer.setStyle(this.lisAccountOrigenSelect.nativeElement, "overflow-y","scroll");

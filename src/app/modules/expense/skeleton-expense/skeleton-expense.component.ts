@@ -31,8 +31,7 @@ export class SkeletonExpenseComponent implements OnInit {
     
   }
 
-  getAll(dateBegin: string, dateEnd: string) {
-    console.log(dateBegin);
+  getAll(dateBegin: string, dateEnd: string) {   
     this._expenseService.getAllExpenses(dateBegin, dateEnd).subscribe(
       response => {
         console.log(response);
@@ -41,7 +40,6 @@ export class SkeletonExpenseComponent implements OnInit {
         this.sendListExpensesToBody.forEach(element => {
           this.totalGastadoSend = this.totalGastadoSend + parseFloat(element.amount);
         });
-        console.log("TOTAL: " + this.totalGastadoSend);
       },
       error => {
         console.log(error);
@@ -68,11 +66,9 @@ export class SkeletonExpenseComponent implements OnInit {
     if(this.period == null) {
       this.getPeriodIfNotExist();
     } else {
-      console.log(this.period);
-          console.log(this._utilService.convertDateToString(this.period.startDate)
-            + " -- " + this._utilService.convertDateToString(this.period.finalDate));
+
       this.getAll(this._utilService.convertDateToString(this.period.startDate),
-                      this._utilService.convertDateToString(this.period.finalDate));      
+                       this._utilService.convertDateToString(this.period.finalDate));      
     }
   }
 
@@ -80,12 +76,9 @@ export class SkeletonExpenseComponent implements OnInit {
     this._periodService.getPeriodByWorkspaceIdAndSatusTrue(1).subscribe(
         response => {
           this.period = response;
-          
-
           if(this.period != null && this.period.id != 0) {
             localStorage.setItem("lcstrg_periodo", JSON.stringify(this.period));
-            this.getAll(this._utilService.convertDateToString(this.period.startDate),
-                      this._utilService.convertDateToString(this.period.finalDate));      
+            this.getAll(this._utilService.convertDateToString(this.period.startDate), this._utilService.convertDateToString(this.period.finalDate));      
           }
         }, error => {
           console.log(error);

@@ -45,13 +45,11 @@ export class ListAccordingComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log("INPUT RECEIVED ACCODRING");
-    console.log(this.receivedOrderSelectedItem);
+
     this.getAllAccording();
   }
 
   getAllAccording() {
-    console.log("all");
     this._accordingService.getAllAccording().subscribe(
       response => {
         this.listaAccording = response;

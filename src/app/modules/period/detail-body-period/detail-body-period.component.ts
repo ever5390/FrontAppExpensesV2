@@ -47,10 +47,6 @@ export class DetailBodyPeriodComponent implements OnInit {
 
   ngOnInit(): void {
     this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
-
-    console.log("DETAIL-ACCOUNT-PERIOD-BODY");
-    console.log(this.accountListReceived);
-
     this.catchAccountParent();
     this.catchAccountChilds();
   }
@@ -142,7 +138,6 @@ export class DetailBodyPeriodComponent implements OnInit {
   getAllAccountByPeriodSelected(idPeriodReceived: number) {
     this._accountService.getListAccountByIdPeriod(idPeriodReceived).subscribe(
       response => {
-        console.log(response);
         this.accountListReceived = response;
         this.catchAccountParent();
         this.catchAccountChilds();

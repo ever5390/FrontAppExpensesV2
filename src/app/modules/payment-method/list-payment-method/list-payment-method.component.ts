@@ -66,7 +66,6 @@ export class ListPaymentMethodComponent implements OnInit {
         this.flagListShared = true;
         this.dataStructureToListShared.lista = this.listaPaymentMethod;
         this._loadSpinnerService.hideSpinner();
-        // this.dataStructureToListShared.objectOfLista = new PaymentMethodModel();
       },
       error => {
         console.log(error);
@@ -96,16 +95,11 @@ export class ListPaymentMethodComponent implements OnInit {
     }
     // END :: IF FROM EXPENSES_MANAGER 
 
-
-    console.log("PAYMENT ::: RECEIVE OF LIST SHARED");
-    console.log(objectFromListToForm);
     this.dataStructureToForm = objectFromListToForm;
     this.flagFormulario = true;
   }
 
   receiveFromFormShared(objectFromLFormToTransaction:any) {
-    console.log("PAYMENT ::: RECEIVE OF FORM SHARED");
-    console.log(objectFromLFormToTransaction);
     this.flagFormulario = false;
     if(objectFromLFormToTransaction === null) return;
 
@@ -114,7 +108,6 @@ export class ListPaymentMethodComponent implements OnInit {
     this.paymentMethodReceivedToForm.name = objectFromLFormToTransaction.object.name;
     this.paymentMethodReceivedToForm.owner = this.owner;
 
-    console.log(this.paymentMethodReceivedToForm);
     if(objectFromLFormToTransaction.action == "delete") {
       this.delete(objectFromLFormToTransaction.object);
     } else {

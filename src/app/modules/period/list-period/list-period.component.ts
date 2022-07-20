@@ -46,7 +46,6 @@ export class ListPeriodComponent implements OnInit {
     //Obtiene lista de periodos.
     this._periodService.getAllPeriodDetailHeaderByWorkspaceId(this.period.workSpace.id).subscribe(
       response => {
-        console.log(response);
         this.listPeriodDetailHeader = response;
       },
       error => {

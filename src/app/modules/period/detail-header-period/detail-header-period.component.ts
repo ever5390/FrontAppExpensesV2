@@ -14,8 +14,6 @@ export class DetailHeaderPeriodComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    console.log("DETAIL-ACCOUNT-PERIOD-HEADER");
-    console.log(this.periodDetailHeaderReceived);
   }
 
 }

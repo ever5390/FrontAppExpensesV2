@@ -51,16 +51,10 @@ export class ListCategoryComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log("INICIO DE LISTA CATEGORÍA");
     this.owner = JSON.parse(localStorage.getItem('lcstrg_owner')!);
     this.getAllCategories();
     
   }
-
-  
-  // hiddenPopUp() {
-  //   this.sendItemSelectedToFormExpense.emit(false);
-  // }
 
   getAllGroups(objectFromListToForm:any) {
     this._categoryService.getAllGroups().subscribe(
@@ -84,11 +78,9 @@ export class ListCategoryComponent implements OnInit {
 
     this._categoryService.getAllCategories().subscribe(
       response => {
-        console.log("GET ALL CAT");
         this.listaCategories = response;
         this.flagListShared = true;
         this.dataStructureToListShared.lista = this.listaCategories;
-        console.log(this.dataStructureToListShared.lista );
         this._loadSpinnerService.hideSpinner();
       },
       error => {
@@ -118,8 +110,6 @@ export class ListCategoryComponent implements OnInit {
   }
 
   receiveFromFormShared(objectFromLFormToTransaction: any) {
-    console.log("CATEGORY ::: RECEIVE OF FORM SHARED");
-    console.log(objectFromLFormToTransaction);
     this.flagFormulario = false;
     if(objectFromLFormToTransaction === null) return;
 
@@ -138,9 +128,7 @@ export class ListCategoryComponent implements OnInit {
         this.updateElement(this.categoryReceivedToForm);
       };
     }
-    
-
-    console.log(this.categoryReceivedToForm);
+ 
   }
 
   delete(element: any) {
