@@ -1,6 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { CONSTANTES } from 'app/data/constantes';
-import { AccountModel } from 'app/data/models/business/account.model';
 import { GroupModel } from 'app/data/models/business/group.model';
 import { OwnerModel } from 'app/data/models/business/owner.model';
 import { ObjectFormularioShared } from 'app/data/models/Structures/data-object-form.model';
@@ -25,18 +24,11 @@ export class FormularioSharedComponent implements OnInit {
   groupListToSelect: GroupModel[] = [];
   selectGroup: number = 0;
 
-  // *** only transferencia interna
-  heightForm: number = 0;
-  heightListContent: number = 0;
-  flagShowListAccountOrigenSelect: boolean = false;
-
   // *** indicate show tags
   show__popup: boolean =  false;
   showCategoriesList: boolean = false;
   flagInputNameFormulario: boolean = true;
   flagGroupSelectFormulario: boolean = true;
-  flagBlockTransferFormulario: boolean = true;
-  flagBlockAmountAccountFormulario: boolean = true;
 
   @Input() dataStructureReceived: DataStructureFormShared = new DataStructureFormShared();
   @Output() responseToFatherComponent = new EventEmitter<any>();
@@ -44,7 +36,6 @@ export class FormularioSharedComponent implements OnInit {
   @ViewChild('imgFormulary') imgFormulary: ElementRef | any;
   @ViewChild('popup__formulario') popup__formulario: ElementRef | any;
   @ViewChild('container_formulario') container_formulario: ElementRef | any;
-  @ViewChild('lisAccountOrigenSelect') lisAccountOrigenSelect: ElementRef | any;
   
   flagActivateInputFile: boolean = true;
 
@@ -76,16 +67,6 @@ export class FormularioSharedComponent implements OnInit {
         break;
       case CONSTANTES.CONST_COMPONENT_ACUERDOS:
         break;
-      case CONSTANTES.CONST_TRANSFERENCIA_INTERNA:
-        this.objectToFormShared.destino = (!this.dataStructureReceived.object)?CONSTANTES.CONST_TEXT_VACIO:this.dataStructureReceived.object.accountDestiny;
-        break;
-      case CONSTANTES.CONST_TRANSFERENCIA_EXTERNA:
-        this.objectToFormShared.destino = (!this.dataStructureReceived.object)?CONSTANTES.CONST_TEXT_VACIO:this.dataStructureReceived.object.accountDestiny;
-        break;
-      case CONSTANTES.CONST_CUENTAS:
-        this.objectToFormShared.name = this.dataStructureReceived.object.accountName;
-        this.objectToFormShared.monto = this.dataStructureReceived.object.balance;
-        break;
       default:
         break;
     }
@@ -95,33 +76,6 @@ export class FormularioSharedComponent implements OnInit {
     if(this.validationForm() == false ) return;
 
     this._loadSpinnerService.showSpinner();
-
-    if(this.dataStructureReceived.component == CONSTANTES.CONST_TRANSFERENCIA_EXTERNA
-      || this.dataStructureReceived.component == CONSTANTES.CONST_TRANSFERENCIA_INTERNA ) {
-    
-      if(this.dataStructureReceived.component == CONSTANTES.CONST_TRANSFERENCIA_INTERNA
-        && this.objectToFormShared.monto > this.objectToFormShared.origen.balanceFlow) {
-        Swal.fire("Alerta","El monto a transferir supera al monto origen","info");
-        this._loadSpinnerService.hideSpinner();
-        return;
-      }
-
-      this.dataStructureReceived.object.accountDestiny  = this.objectToFormShared.destino;
-      this.dataStructureReceived.object.accountOrigin  = this.objectToFormShared.origen;
-      this.dataStructureReceived.object.amount = this.objectToFormShared.monto;
-
-
-      this.responseToFatherComponent.emit(this.dataStructureReceived);
-      return;
-    }
-
-    if(this.dataStructureReceived.component == CONSTANTES.CONST_CUENTAS) {
-      
-        this.dataStructureReceived.object.accountName  = this.objectToFormShared.name;
-        this.dataStructureReceived.object.balance = this.objectToFormShared.monto;
-        this.responseToFatherComponent.emit(this.dataStructureReceived);
-        return;
-    }
 
     if(this.dataStructureReceived.component == CONSTANTES.CONST_COMPONENT_CATEGORIAS
         || this.dataStructureReceived.component == CONSTANTES.CONST_COMPONENT_MEDIOSDEPAGO) {
@@ -189,19 +143,6 @@ export class FormularioSharedComponent implements OnInit {
 
   validationForm():boolean {
     
-    if(this.dataStructureReceived.component == CONSTANTES.CONST_TRANSFERENCIA_EXTERNA )
-    {      
-      return this.validMonto();
-    }
-
-    if(this.dataStructureReceived.component == CONSTANTES.CONST_TRANSFERENCIA_INTERNA) {
-      if(this.objectToFormShared.origen.id == 0){
-        Swal.fire("Alerta","No seleccionó la cuenta origen","info");
-        return false;
-      }
-      return this.validMonto();
-    }
-
     if(this.objectToFormShared.name == CONSTANTES.CONST_TEXT_VACIO) {
         Swal.fire("Alerta","El campo nombre se encuentra vacío","info");
         return false;
@@ -211,29 +152,6 @@ export class FormularioSharedComponent implements OnInit {
         && this.selectGroup == 0) {
         Swal.fire("Alerta","Debe seleccionar un grupo para esta categoría","info");
         return false;
-    }
-
-    if(this.dataStructureReceived.component == CONSTANTES.CONST_CUENTAS){
-      return this.validMonto();
-    }
-
-    return true;
-  }
-
-  validMonto():boolean {
-    if(this.objectToFormShared.monto == CONSTANTES.CONST_TEXT_VACIO) {
-      Swal.fire("Alerta","El campo Monto se encuentra vacío","info");
-      return false;
-    }
-    console.log(Number(this.objectToFormShared.monto));
-    if(isNaN(Number(this.objectToFormShared.monto))) {
-      Swal.fire("Alerta","El campo Monto solo acepta números mayores a cero","info");
-      return false;
-    }
-
-    if(Number(this.objectToFormShared.monto) <= 0) {
-      Swal.fire("Alerta","El campo Monto solo acepta números mayores a cero","info");
-      return false;
     }
 
     return true;
@@ -253,24 +171,6 @@ export class FormularioSharedComponent implements OnInit {
      }
   }
 
-  selectAccountOrigenFromList() {
-    this.flagShowListAccountOrigenSelect = true;
-    setTimeout(()=> {
-      this.heightListContent = this.lisAccountOrigenSelect.nativeElement.clientHeight;
-      if(this.heightListContent > (this.heightForm - 50) ) {
-        this._renderer.setStyle(this.lisAccountOrigenSelect.nativeElement, "height",(this.heightForm - 70) + "px");
-        this._renderer.setStyle(this.lisAccountOrigenSelect.nativeElement, "overflow-y","scroll");
-      } else {
-        this._renderer.setStyle(this.lisAccountOrigenSelect.nativeElement, "overflow-y","none");
-      }
-    },100);
-  }
-
-  accountSelected(accountorigenSelected: AccountModel) {
-    this.objectToFormShared.origen = accountorigenSelected;
-    this.flagShowListAccountOrigenSelect = false;
-  }
-
   switchDecideFormByComponent() {
     var flagContentSeleccione = false;
 
@@ -285,49 +185,19 @@ export class FormularioSharedComponent implements OnInit {
         this.dataStructureReceived.titleDos = (flagContentSeleccione===true)?CONSTANTES.CONST_TITLE_REGISTRAR_ITEM_CATEGORIA:this.dataStructureReceived.title;
         this.flagInputNameFormulario=true;
         this.flagGroupSelectFormulario =true;
-        this.flagBlockTransferFormulario=false;
-        this.flagBlockAmountAccountFormulario=false;
         this.flagActivateInputFile=true;
         break;
       case CONSTANTES.CONST_COMPONENT_ACUERDOS:
         this.dataStructureReceived.titleDos = (flagContentSeleccione===true)?CONSTANTES.CONST_TITLE_REGISTRAR_ITEM_ACUERDO:this.dataStructureReceived.title;
         this.flagInputNameFormulario=true;
         this.flagGroupSelectFormulario =false;
-        this.flagBlockTransferFormulario=false;
-        this.flagBlockAmountAccountFormulario=false;
         this.flagActivateInputFile=true;
         break;
       case CONSTANTES.CONST_COMPONENT_MEDIOSDEPAGO:
         this.dataStructureReceived.titleDos = (flagContentSeleccione===true)?CONSTANTES.CONST_TITLE_REGISTRAR_ITEM_MEDIOSDEPAGO:this.dataStructureReceived.title;
         this.flagInputNameFormulario=true;
         this.flagGroupSelectFormulario =false;
-        this.flagBlockTransferFormulario=false;
-        this.flagBlockAmountAccountFormulario=false;
         this.flagActivateInputFile=true;
-        break;
-      case CONSTANTES.CONST_TRANSFERENCIA_INTERNA:
-        this.dataStructureReceived.titleDos = this.dataStructureReceived.title;
-        this.flagInputNameFormulario=false;
-        this.flagGroupSelectFormulario =false;
-        this.flagBlockTransferFormulario=true;
-        this.flagBlockAmountAccountFormulario=false;
-        this.flagActivateInputFile=false;
-        break;
-      case CONSTANTES.CONST_TRANSFERENCIA_EXTERNA:
-        this.dataStructureReceived.titleDos = this.dataStructureReceived.title;
-        this.flagInputNameFormulario=false;
-        this.flagGroupSelectFormulario =false;
-        this.flagBlockTransferFormulario=true;
-        this.flagBlockAmountAccountFormulario=false;
-        this.flagActivateInputFile=false;
-        break;
-      case CONSTANTES.CONST_CUENTAS:
-        this.dataStructureReceived.titleDos = this.dataStructureReceived.title;
-        this.flagInputNameFormulario=true;
-        this.flagGroupSelectFormulario =false;
-        this.flagBlockTransferFormulario=false;
-        this.flagBlockAmountAccountFormulario=true;
-        this.flagActivateInputFile=false;
         break;
       default:
         break;
@@ -350,10 +220,6 @@ export class FormularioSharedComponent implements OnInit {
         this.responseToFatherComponent.emit(null);
       }
     });
-  }
-
-  ngAfterViewInit() {
-    this.heightForm = this.container_formulario.nativeElement.clientHeight;
   }
 
 }

@@ -21,8 +21,7 @@ import { ListAccordingComponent } from '@modules/according/list-according/list-a
     HeaderExpenseComponent,
 
     ListPaymentMethodComponent,
-    ListCategoryComponent,
-    ListAccordingComponent,
+    ListAccordingComponent
     
   ],
   imports: [

@@ -8,6 +8,7 @@ import { ListaSharedComponent } from './components/lista-shared/lista-shared.com
 import { FilterByItemSharedComponent } from './components/filter-by-item-shared/filter-by-item-shared.component';
 import { SLoaderComponent } from './components/loaders/s-loader/s-loader.component';
 import { CalendarComponent } from './components/calendar/calendar.component';
+import { ListCategoryComponent } from '@modules/category/list-category/list-category.component';
 
 @NgModule({
   imports: [
@@ -21,7 +22,9 @@ import { CalendarComponent } from './components/calendar/calendar.component';
     ListaSharedComponent,
     FilterByItemSharedComponent,
     SLoaderComponent,
-    CalendarComponent
+    CalendarComponent,
+    ListCategoryComponent
+
    // ...fromComponents.components, FormularioSharedComponent
   ],
   exports: [
@@ -34,7 +37,8 @@ import { CalendarComponent } from './components/calendar/calendar.component';
     ListaSharedComponent,
     FilterByItemSharedComponent,
     SLoaderComponent,
-   CalendarComponent
+    CalendarComponent,
+    ListCategoryComponent
 
     //...fromComponents.components
   ]

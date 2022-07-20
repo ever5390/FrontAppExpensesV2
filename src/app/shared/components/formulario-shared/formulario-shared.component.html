@@ -31,35 +31,7 @@
                             {{itemGroup.name}}
                         </option>
                     </select>
-                </div>
-                <div class="form_control" *ngIf="flagBlockTransferFormulario && this.dataStructureReceived.title != 'Transferencia externa'">
-                    <label>Origen</label>
-                    <ng-container *ngIf="objectToFormShared.origen.id==0; else accountOrigen;">
-                        <div (click)="selectAccountOrigenFromList()" class="st_aside_dropdown_wrkspc d-flex justify-content-between align-items-center">
-                            <span>Seleccione</span>
-                            <i class="fas fa-sort"></i>
-                        </div>
-                    </ng-container>
-                </div>
-                <div class="form_control" *ngIf="flagBlockTransferFormulario">
-                    <label>Destino</label>
-                    <div class="st_form_destiny d-flex justify-content-between align-items-center">
-                        <span>{{objectToFormShared.destino.accountName}}</span>
-                        <span>S/{{objectToFormShared.destino.balanceFlow | number: '1.2-2'}}</span>
-                    </div>
-                </div>
-                <div class="form_control" *ngIf="flagBlockTransferFormulario || flagBlockAmountAccountFormulario">
-                    <label>Monto</label>
-                    <div class="st_block_amount d-flex align-items-center">
-                        <span>S/</span>
-                        <input type="text" [(ngModel)]="objectToFormShared.monto" placeholder="0.00">
-                    </div>
-                </div>
-
-                <!-- <div class="st_container_categories" *ngIf="flagBlockAmountAccountFormulario">
-                    <app-lista-shared [onlyListItems]="false"></app-lista-shared>
-                </div> -->
-                
+                </div>                
             </div>
             <button (click)="saveOrUpdate()">{{dataStructureReceived.action}}</button>
             <button style="background-color: rgb(212, 33, 33);" 
@@ -67,30 +39,7 @@
                     (click)="delete()">
                 Eliminar
             </button>
-
-            <!-- Lista de cuentas: caso Transferencia interna -->
-            <div class="st_list_account_origen" [ngStyle]="{'display':(flagShowListAccountOrigenSelect) ? 'block' : 'none' }">
-                <h6><i (click)="flagShowListAccountOrigenSelect=false;" class="fas fa-angle-double-left"></i> Seleccione una cuenta origen</h6>
-                <div #lisAccountOrigenSelect>
-                    <ng-container *ngFor="let accountorigen of dataStructureReceived.listAccoutOrigen">
-                        <div (click)="accountSelected(accountorigen)" class="st_account_select d-flex justify-content-between align-items-center">
-                            <label>{{accountorigen.accountName}}</label>
-                            <label><span style="font-size: .8rem; color:rgb(83, 40, 40)">disponible</span>
-                                <br>S/ {{accountorigen.balanceFlow | number: '1.2-2'}}
-                            </label>
-                        </div>
-                    </ng-container>
-                </div>
-            </div>
         </div>
-       
     </div>
 </ng-container>
-
-<ng-template #accountOrigen>
-    <div (click)="selectAccountOrigenFromList()" class="st_form_destiny d-flex justify-content-between align-items-center">
-        <span>{{objectToFormShared.origen.accountName}}</span>
-        <span>S/ {{objectToFormShared.origen.balanceFlow | number: '1.2-2'}}</span>
-    </div>
-</ng-template>
 

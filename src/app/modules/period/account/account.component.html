@@ -1,0 +1,129 @@
+<ng-container *ngIf="show__popup">
+    <div class="container-fluid" #popup__formulario>
+        <div class="container_form" #container_formulario>
+            <div class="st_content">
+                <div class="st_form_control_header">
+                    <div class="st_border">
+                        <label for='myFileC'>
+                            <input *ngIf="flagActivateInputFile" accept=".png, .jpg, .jpeg"  
+                                type="file" id="myFileC"
+                                class="st_img_upload"
+                                readonly>
+                                <i class="fas fa-pen"></i>
+                        </label>
+                        <img #imgFormulary  *ngIf="dataStructureReceived.imagen" 
+                            src="{{objectToFormShared.image}}" alt="" srcset="">
+                    </div>
+                    <div class="st_form_header">
+                        <label>{{dataStructureReceived.title}}</label>
+                        <input *ngIf="flagInputNameFormulario" type="text" 
+                        [(ngModel)]="objectToFormShared.name"
+                        placeholder="Escribir nombre">
+                    </div>
+                </div>
+                <div class="form_control" *ngIf="flagBlockTransferFormulario && this.dataStructureReceived.title != 'Transferencia externa'">
+                    <label>Origen</label>
+                    <ng-container *ngIf="objectToFormShared.origen.id==0; else accountOrigen;">
+                        <div (click)="showListItemsForSelect('account')" class="st_aside_dropdown_wrkspc d-flex justify-content-between align-items-center">
+                            <span>Seleccione</span>
+                            <i class="fas fa-sort"></i>
+                        </div>
+                    </ng-container>
+                </div>
+                <div class="form_control" *ngIf="flagBlockTransferFormulario">
+                    <label>Destino</label>
+                    <div class="st_form_destiny d-flex justify-content-between align-items-center">
+                        <span>{{objectToFormShared.destino.accountName}}</span>
+                        <span>S/{{objectToFormShared.destino.balanceFlow | number: '1.2-2'}}</span>
+                    </div>
+                </div>
+                <div class="form_control" *ngIf="flagBlockTransferFormulario || flagBlockAmountAccountFormulario">
+                    <label>Monto</label>
+                    <div class="st_block_amount d-flex align-items-center">
+                        <span>S/</span>
+                        <input type="text" [(ngModel)]="objectToFormShared.monto" placeholder="0.00">
+                    </div>
+                </div>
+                <ng-container *ngIf="showBtnSelectCategoriesOnlyChildAccount">
+                    <div class="form_control">
+                        <!-- <label>Asocie Categorías a esta cuenta</label>
+                        <ng-container *ngIf="objectToFormShared.origen.id==0; else accountOrigen;"></ng-container> -->
+                    
+                        <div (click)="showListItemsForSelect('categories')" class="st_aside_dropdown_wrkspc d-flex justify-content-between align-items-center">
+                            <span>Asocie Categorías a esta cuenta</span>
+                            <i class="fas fa-sort"></i>
+                        </div>
+                    </div>
+                </ng-container>     
+            </div>
+            <button (click)="saveOrUpdate()">{{dataStructureReceived.action}}</button>
+            <button style="background-color: rgb(212, 33, 33);" 
+                    *ngIf="dataStructureReceived.action==='Actualizar'"
+                    (click)="delete()">
+                Eliminar
+            </button>
+
+            <!-- Lista de cuentas: caso Transferencia interna -->
+            <div class="st_list_account_origen" [ngStyle]="{'display':(flagShowListAccountOrigenSelect) ? 'block' : 'none' }">
+                <h6><i (click)="flagShowListAccountOrigenSelect=false;" class="fas fa-angle-double-left"></i> Seleccione una cuenta origen</h6>
+                <div #lisAccountOrigenSelect>
+                    <ng-container *ngFor="let accountorigen of dataStructureReceived.listAccoutOrigen">
+                        <!-- (click)="accountSelected(accountorigen)" -->
+                        <div  (click)="accountSelected(accountorigen)" class="st_account_select d-flex justify-content-between align-items-center">
+                            <label>{{accountorigen.accountName}}</label>
+                            <label><span style="font-size: .8rem; color:rgb(83, 40, 40)">disponible</span>
+                                <br>S/ {{accountorigen.balanceFlow | number: '1.2-2'}}
+                            </label>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+
+            <!-- Lista de categorias: caso Cuentas asociadas -->
+            <div class="st_list_account_origen" [ngStyle]="{'display':(flagShowListCategories) ? 'block' : 'none' }">
+                <h6><i (click)="flagShowListCategories=false;" class="fas fa-angle-double-left"></i> Seleccione las categorías para asociarlas</h6>
+                <div #lisCategoriesForSelect>
+                    <ng-container *ngFor="let category of listaCategories; let i = index">
+                        <label class="st_account_select d-flex justify-content-between align-items-center">
+                            <div>
+                                <input name="group1" class="check_item_list"
+                                [value] = "category.id"
+                                [checked] = "category.active"
+                                (change)="onChangeCategory($event)"
+                               
+                                 type="checkbox" 
+                                 id="check_categ+{{i}}"
+                                 >
+                                 <!-- [disabled]="disabledCheck" -->
+                                <img src="{{category.image}}" alt="" srcset="">
+                            </div>
+                            <span>{{category.name}}</span>
+                        </label>
+                    </ng-container>
+                </div>
+            </div>
+
+            
+        </div>
+       
+    </div>
+</ng-container>
+
+<ng-template #accountOrigen>
+    <div (click)="showListItemsForSelect('account')" class="st_form_destiny d-flex justify-content-between align-items-center">
+        <span>{{objectToFormShared.origen.accountName}}</span>
+        <span>S/ {{objectToFormShared.origen.balanceFlow | number: '1.2-2'}}</span>
+    </div>
+</ng-template>
+
+<!-- Lista de categorías: caso Asociar a ceuntas -->
+<!-- <div class="st_lista_items_select" *ngIf="show__list__items">
+    <app-list-category       
+        [receivedOrderSelectedItem]="flagShowListCategories"
+        *ngIf="flagShowListCategories">
+    </app-list-category>
+</div> -->
+
+
+
+

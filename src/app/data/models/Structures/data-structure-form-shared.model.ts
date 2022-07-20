@@ -10,6 +10,6 @@ export class DataStructureFormShared implements IDataStructureListSharedFormShar
         public action: string = '',
         public object:any = null,
         public listGroupOnlyCategory:any = [],
-        public listAccoutOrigen:any=[]
-        ){}
+        public listAccoutOrigen:any=[],
+    ){}
 }

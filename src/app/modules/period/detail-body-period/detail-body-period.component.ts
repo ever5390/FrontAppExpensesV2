@@ -202,8 +202,13 @@ export class DetailBodyPeriodComponent implements OnInit {
     this.dataStructure.title = CONSTANTES.CONST_CUENTAS;
     this.dataStructure.component = CONSTANTES.CONST_CUENTAS;
     this.dataStructure.action = CONSTANTES.CONST_TEXT_BTN_REGISTRAR;
-    this.dataStructure.object = new AccountModel();
     this.dataStructure.imagen = CONSTANTES.CONST_IMAGEN_CUENTAS;
+    this.dataStructure.object = new AccountModel();
+    console.log(object);
+    if(object == 'child') {
+      console.log(object);
+      this.dataStructure.object.accountType.id = 2;
+    }
 
     if(order == 'Actualizar') {
       this.dataStructure.action = CONSTANTES.CONST_TEXT_BTN_ACTUALIZAR;
@@ -245,10 +250,13 @@ export class DetailBodyPeriodComponent implements OnInit {
     if(dataStructureReceived == null) return;
     this._loadSpinnerService.hideSpinner();
 
+    //Transfer
     if(dataStructureReceived.component != CONSTANTES.CONST_CUENTAS) {
       this.registerTransference(dataStructureReceived.object);
       return;
     }
+    console.log(dataStructureReceived.object);
+    //Cuentas
     if(dataStructureReceived.object.id == 0){
       this.registerAccount(dataStructureReceived.object);
     } else {
