@@ -32,7 +32,7 @@ export class ListAccordingComponent implements OnInit {
     lista:[]
    };
 
-
+   flagListShared: boolean = false;
  flagFormulario: boolean = false;
  sendBtnText: string = '';
 
@@ -45,17 +45,17 @@ export class ListAccordingComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
+    
     this.getAllAccording2();
   }
 
   getAllAccording2() {
-    console.log("dererere");
+    this.flagListShared = false;
     this._accordingService.getAllAccording().subscribe(
       response => {
         
         this.listaAccording = response;
-
+        this.flagListShared = true;
         this.dataStructureToListShared.lista = this.listaAccording;
       },
       error => {

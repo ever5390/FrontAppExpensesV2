@@ -13,7 +13,7 @@ import { Subject } from 'rxjs';
 })
 export class ListaSharedComponent implements OnInit {
 
-  search = new FormControl('');
+  //search = new FormControl('');
 
   subject = new Subject();
 
@@ -48,11 +48,10 @@ export class ListaSharedComponent implements OnInit {
 
     this.hiddenButtonAddItemIfFromAccording();
     this.dataStructureList = this.dataStructureListReceived;
-    this.dataStructureList.lista.forEach( item => {
-      console.log("dererere: " +  item.description);
-    });
+    console.log(this.dataStructureListReceived.lista);
     this.listaShared = this.dataStructureList.lista;
-    this.searchActivateFunction();
+    console.log(this.listaShared);
+    //this.searchActivateFunction();
     
   }
 
