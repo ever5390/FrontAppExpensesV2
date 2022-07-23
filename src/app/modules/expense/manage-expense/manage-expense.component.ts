@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { CONSTANTES } from '@data/constantes';
 import { IDataListAccountShared } from '@data/interfaces/data-account-list-select-shared.interface';
 import { AccountModel } from '@data/models/business/account.model';
+import { AccordingService } from '@data/services/according/according.service';
 import { AccountService } from '@data/services/account/account.service';
 import { AccordingModel } from 'app/data/models/business/according.model';
 import { CategoryModel } from 'app/data/models/business/category.model';
@@ -64,10 +65,27 @@ export class ManageExpenseComponent implements OnInit {
     private _renderer: Renderer2,
     private _router: Router,
     private _expenseService: ExpensesService,
-    private _accountService: AccountService
+    private _accountService: AccountService,
+    private _accordingService: AccordingService
   ) {
     this.identifyEventClickOutWindow();
+    this.getAllAccording2();
    }
+   listaAccording: AccordingModel[] = [];
+
+   getAllAccording2() {
+    console.log("dererere");
+    this._accordingService.getAllAccording().subscribe(
+      response => {
+        this.listaAccording = response;
+        console.log(this.listaAccording);
+        
+      },
+      error => {
+        console.log(error);
+      }
+    );
+  }
 
 
   ngOnInit(): void {

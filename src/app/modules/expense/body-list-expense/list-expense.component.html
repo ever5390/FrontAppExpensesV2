@@ -10,14 +10,15 @@
                     <span [ngStyle]="{'background-color':(!expense.pendingPayment) ? '#47B152' : '#c9291e'}" *ngIf="!expense.pendingPayment">Pagado</span>
                     <span [ngStyle]="{'background-color':(expense.pendingPayment) ? '#c9291e' : '#47B152'}" *ngIf="expense.pendingPayment">Pendiente de pago</span>
                     <!-- <span *ngIf="expense.isPendingPayment">Pendiente de pago</span> -->
-                    <span>{{expense.accordingType.name}}</span>
+                    <span><strong>ACCORD:</strong> {{expense.accordingType.name}}</span>
+                    <span><strong>ACC:</strong> {{expense.account.accountName}}</span>
                 </div>
                 <div class="st_body_body">
                     {{expense.description}}
                 </div>
                 <div class="st_body_footer">
-                    <span>{{expense.category.name}}</span>
-                    <span>{{expense.paymentMethod.name}}</span>
+                    <span><strong>CATEG:</strong> {{expense.category.name}}</span>
+                    <span><strong>PM:</strong> {{expense.paymentMethod.name}}</span>
                 </div>
             </div>
             <div class="st_expense_footer">

@@ -31,7 +31,8 @@
         <div class="st_block_search d-flex align-items-center">
             <i class="fas fa-sort-amount-down" (click)="showMenuOptions()"></i>
             <i class="far fa-search" ></i>
-            <input type="text" placeholder=" Search">
+            <input placeholder=" Search" (keyup)="searchMethod($event)" type="text" 
+                spellcheck="false" autocomplete="none" >
         </div>
     </div>
 </div>

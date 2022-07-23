@@ -4,6 +4,7 @@ import { DataStructureFormShared } from 'app/data/models/Structures/data-structu
 import { CONSTANTES } from 'app/data/constantes';
 import { FormControl } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-lista-shared',
@@ -13,6 +14,9 @@ import { debounceTime } from 'rxjs/operators';
 export class ListaSharedComponent implements OnInit {
 
   search = new FormControl('');
+
+  subject = new Subject();
+
   txtSearch: string = '';
   listaShared : any[] = [];
   hiddenButtonAddItemAccording: boolean = true;
@@ -44,21 +48,39 @@ export class ListaSharedComponent implements OnInit {
 
     this.hiddenButtonAddItemIfFromAccording();
     this.dataStructureList = this.dataStructureListReceived;
+    this.dataStructureList.lista.forEach( item => {
+      console.log("dererere: " +  item.description);
+    });
     this.listaShared = this.dataStructureList.lista;
     this.searchActivateFunction();
     
   }
 
   searchActivateFunction() {
-    this.search.valueChanges.pipe(
-      debounceTime(200) // Cuando pare de escribir pasen 300 ms recíen enviará .
-    ).subscribe((value:string) => {
-          this.listaShared = this.dataStructureListReceived.lista.filter(item => {
-            return item.name.toUpperCase().includes(value.toUpperCase()) 
-          }
+    //Deprecated in v.6 , deleting in futures versions
+    // this.search.valueChanges.pipe(
+    //   debounceTime(200) // Cuando pare de escribir pasen 300 ms recíen enviará .
+    // ).subscribe((value:string) => {
+    //       this.listaShared = this.dataStructureListReceived.lista.filter(item => {
+    //         return item.name.toUpperCase().includes(value.toUpperCase()) 
+    //       }
+    //       );                    
+    //   }
+    // )
+      this.subject.pipe(
+        debounceTime(100)
+      ).subscribe((searchText:any) => {
+        this.listaShared = this.dataStructureListReceived.lista.filter(item => {
+          return item.name.toUpperCase().includes(searchText.toUpperCase()) 
+            }
           );                    
-      }
-    )
+        }
+      )
+  }
+
+  searchMethod(evt:any) {
+    const searchText = evt.target.value;
+    this.subject.next(searchText)
   }
 
   hiddenButtonAddItemIfFromAccording() {

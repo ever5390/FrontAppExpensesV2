@@ -2,6 +2,8 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, 
 import { AccountModel, TypeSatusAccountOPC } from '@data/models/business/account.model';
 import { AccountService } from '@data/services/account/account.service';
 import { PeriodModel } from 'app/data/models/business/period.model';
+import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-header-expense',
@@ -10,6 +12,7 @@ import { PeriodModel } from 'app/data/models/business/period.model';
 })
 export class HeaderExpenseComponent implements OnInit {
 
+  subject = new Subject();
   
   period: PeriodModel = new PeriodModel();
   accountMain: AccountModel =  new AccountModel();
@@ -24,6 +27,7 @@ export class HeaderExpenseComponent implements OnInit {
   heightHeader: number = 0;
   @ViewChild("container_header") container_header : ElementRef | any;
   @Output() emitterHeight= new EventEmitter();
+  @Output() emitterSearching= new EventEmitter();
   
   constructor(
     private _renderer: Renderer2,
@@ -36,6 +40,34 @@ export class HeaderExpenseComponent implements OnInit {
     this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
     if(this.period == null) return;
     this.showAvailableAmountFromAccountMain();
+
+    this.searchActivateFunction();
+    
+  }
+
+  searchActivateFunction() {
+    //Deprecated in v.6 , deleting in futures versions
+    // this.search.valueChanges.pipe(
+    //   debounceTime(200) // Cuando pare de escribir pasen 300 ms recíen enviará .
+    // ).subscribe((value:string) => {
+    //       this.listaShared = this.dataStructureListReceived.lista.filter(item => {
+    //         return item.name.toUpperCase().includes(value.toUpperCase()) 
+    //       }
+    //       );                    
+    //   }
+    // )
+      this.subject.pipe(
+        debounceTime(200)
+      ).subscribe((searchText:any) => {
+          
+          this.emitterSearching.emit(searchText);
+        }
+      )
+  }
+
+  searchMethod(evt:any) {
+    const searchText = evt.target.value;
+    this.subject.next(searchText)
   }
 
   showAvailableAmountFromAccountMain() {

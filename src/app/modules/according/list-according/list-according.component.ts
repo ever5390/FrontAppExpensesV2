@@ -46,13 +46,16 @@ export class ListAccordingComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.getAllAccording();
+    this.getAllAccording2();
   }
 
-  getAllAccording() {
+  getAllAccording2() {
+    console.log("dererere");
     this._accordingService.getAllAccording().subscribe(
       response => {
+        
         this.listaAccording = response;
+
         this.dataStructureToListShared.lista = this.listaAccording;
       },
       error => {

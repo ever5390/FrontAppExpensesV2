@@ -65,6 +65,11 @@
     /* .st_body_header span:nth-child(1) {
         background-color: #;
     } */
+        
+    .st_body_header span:nth-child(3) {
+        background-color: #424242;
+        /* color: #760B7A; */
+    }
 
     .st_body_header span:nth-child(2) {
         background-color: #14BCBC;

@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { URL_BASE_HOST, URL_BASE_COMPLEMENT } from 'app/config/global.url';
 import { AccordingModel } from 'app/data/models/business/according.model';
 import { Observable } from 'rxjs';
-import { map } from "rxjs/operators";
+import { map } from 'rxjs/internal/operators/map';
 import { of } from 'rxjs';
 
 @Injectable({

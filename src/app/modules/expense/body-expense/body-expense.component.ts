@@ -18,6 +18,8 @@ export class BodyExpenseComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log("HELLO BODY");
+    console.log(this.receivedListExpensesFromSkeleton);
     this.sendListExpensesToBodyList = this.receivedListExpensesFromSkeleton;
   }
 
