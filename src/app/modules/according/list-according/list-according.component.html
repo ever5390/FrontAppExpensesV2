@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid"  *ngIf="flagListShared">
     <app-lista-shared 
         [dataStructureListReceived]="dataStructureToListShared"
         (emitResponseToForm)="receiveItemSelectedFromListShared($event)"

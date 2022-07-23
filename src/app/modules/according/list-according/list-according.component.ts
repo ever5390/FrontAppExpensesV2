@@ -46,10 +46,10 @@ export class ListAccordingComponent implements OnInit {
 
   ngOnInit(): void {
     
-    this.getAllAccording2();
+    this.getAllAccording();
   }
 
-  getAllAccording2() {
+  getAllAccording() {
     this.flagListShared = false;
     this._accordingService.getAllAccording().subscribe(
       response => {
