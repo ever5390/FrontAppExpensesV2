@@ -104,6 +104,12 @@
             box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
         }
 
+        /* case card con saldo menor a s/0 */
+        .st_card_account_saldo_cero {
+            outline: 1px solid rgb(230, 13, 13);
+            box-shadow: rgba(219, 23, 23, 0.753) 0px 1px 2px 0px, rgba(224, 11, 11, 0.712) 0px 1px 3px 1px;
+        }
+
             .st_card_account p {
                 font-weight: 600;
             }

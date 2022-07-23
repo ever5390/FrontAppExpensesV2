@@ -3,7 +3,6 @@ import { CategoryModel } from '@data/models/business/category.model';
 import { CategoryService } from '@data/services/category/category.service';
 import { SLoaderService } from '@shared/components/loaders/s-loader/service/s-loader.service';
 import { CONSTANTES } from 'app/data/constantes';
-import { AccountModel } from 'app/data/models/business/account.model';
 import { OwnerModel } from 'app/data/models/business/owner.model';
 import { ObjectFormularioShared } from 'app/data/models/Structures/data-object-form.model';
 import { DataStructureFormShared } from 'app/data/models/Structures/data-structure-form-shared.model';
@@ -27,6 +26,7 @@ export class AccountComponent implements OnInit {
   listaCategories: CategoryModel[] = [];
   flagShowListAccountOrigenSelect: boolean = false;
 
+  activeOnChange: boolean = false;
   // *** indicate show tags
   show__popup: boolean =  false;
   flagInputNameFormulario: boolean = true;
@@ -35,6 +35,8 @@ export class AccountComponent implements OnInit {
 
   @Output() responseToFatherComponent = new EventEmitter<any>();
   @Input() dataStructureReceived: DataStructureFormShared = new DataStructureFormShared();
+  sendComponentToBlockListAccount: string = CONSTANTES.CONST_COMPONENT_CUENTAS;
+
 
   @ViewChild('imgFormulary') imgFormulary: ElementRef | any;
   @ViewChild('popup__formulario') popup__formulario: ElementRef | any;
@@ -63,6 +65,8 @@ export class AccountComponent implements OnInit {
     this.owner = JSON.parse(localStorage.getItem('lcstrg_owner')!);
     this.switchDecideFormByComponent();
     this.seteoByComponentParent();
+
+    this.categoriesChecked = this.dataStructureReceived.object.categories;
   }
 
   seteoByComponentParent() {
@@ -78,6 +82,7 @@ export class AccountComponent implements OnInit {
       case CONSTANTES.CONST_CUENTAS:
         this.objectToFormShared.name = this.dataStructureReceived.object.accountName;
         this.objectToFormShared.monto = this.dataStructureReceived.object.balance;
+        this.objectToFormShared.inputDisabled = this.dataStructureReceived.object.statusAccount.toString()=='PROCESS'?true:false;
         break;
       default:
         break;
@@ -112,18 +117,28 @@ export class AccountComponent implements OnInit {
         }  
         this.dataStructureReceived.object.accountName  = this.objectToFormShared.name;
         this.dataStructureReceived.object.balance = this.objectToFormShared.monto;
-        //this.dataStructureReceived.object.li = this.objectToFormShared.monto;
-        this.dataStructureReceived.object.categories =  this.categoriesChecked.length==0?this.dataStructureReceived.object.categories:this.categoriesChecked;
+        this.dataStructureReceived.object.categories =  this.categoriesChecked;
         this.responseToFatherComponent.emit(this.dataStructureReceived);
         return;
     }
   }
 
+  backToAccountWithCategoriesSelected() {
+    this.flagShowListCategories = false;
+    this.catchCategoriesSelectAssoc();
+  }
+
   catchCategoriesSelectAssoc() {
-    if(this.categoriesSelected.length == 0) return;
+    if(!this.activeOnChange) {
+      this.categoriesChecked = this.dataStructureReceived.object.categories;
+      return;
+    };
+    
     this.categoriesChecked = this.categoriesSelected.filter((category) => {
       return category.active === true
     });
+
+    console.log(this.categoriesChecked);
   }
 
   delete() {
@@ -188,16 +203,19 @@ export class AccountComponent implements OnInit {
   }
 
   showListItemsForSelect(itemShow: string) {
-    
+
     if(itemShow == 'categories') {
       this.flagShowListCategories = true;
       this.item = this.lisCategoriesForSelect.nativeElement;
+      this.resizingWindowList();
     } else {
       this.flagShowListAccountOrigenSelect = true;
-      this.item = this.lisAccountOrigenSelect.nativeElement;
     }
+  }
 
-    this.resizingWindowList();
+  receivedObjectAccountSelected(itemReceived: any) {
+    this.objectToFormShared.origen = itemReceived.itemSelected;
+    this.flagShowListAccountOrigenSelect = false;
   }
 
   getAllCategories() {
@@ -219,20 +237,13 @@ export class AccountComponent implements OnInit {
     });
 
     this.dataStructureReceived.object.categories.forEach((categAccount: CategoryModel)=>{
-      this.listaCategories.push(categAccount);
+      this.listaCategories.unshift(categAccount);
     });
 
   }
 
-  accountSelected(accountorigenSelected: AccountModel) {
-    this.objectToFormShared.origen = accountorigenSelected;
-    this.flagShowListAccountOrigenSelect = false;
-  }
-
   switchDecideFormByComponent() {
     var flagContentSeleccione = false;
-    console.log("this.dataStructureReceived");
-    console.log(this.dataStructureReceived);
     if(this.dataStructureReceived.title.toLocaleLowerCase().includes('seleccione'))
       flagContentSeleccione = true;
 
@@ -305,7 +316,7 @@ export class AccountComponent implements OnInit {
   }
 
   onChangeCategory(event: any) {
-
+    this.activeOnChange = true;
     const idCateSelected = event.target.value;
     const isChecked = event.target.checked;
 

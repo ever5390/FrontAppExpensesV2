@@ -6,6 +6,7 @@ export class CONSTANTES {
     public static CONST_COMPONENT_ACUERDOS = 'according';
     public static CONST_COMPONENT_MEDIOSDEPAGO = 'paymentmethod';
     public static CONST_COMPONENT_CALENDAR = 'calendar';
+    public static CONST_COMPONENT_CUENTAS = 'Cuentas';
 
     public static CONST_TRANSFERENCIA_INTERNA = 'Transferencia interna';
     public static CONST_TRANSFERENCIA_EXTERNA = 'Transferencia externa';

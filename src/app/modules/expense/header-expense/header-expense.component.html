@@ -1,7 +1,20 @@
 <div #container_header>
     <div class="st_container_header">
-        <label for="">Total Gastado</label>
-        <span class="fs-3">S/ {{totalGastadoReceived | number: '1.2-2'}}</span>
+        <div class="st_container_title_spent_available">
+            <div class="st_block_subtitle">
+                <label>Total Gastado</label>
+                <span>S/ {{totalGastadoReceived | number: '1.2-2'}}</span>
+            </div>
+            <div class="st_block_subtitle" *ngIf="accountMain.id != 0">
+                <label>Disponible</label>
+                <span [ngSwitch]="accountMain.balanceFlow" >
+                    <span *ngSwitchCase="80" style="color:'yellow'">S/ {{accountMain.balanceFlow | number: '1.2-2'}}</span>
+                    <span *ngSwitchCase="40" style="color:'orange'">S/ {{accountMain.balanceFlow | number: '1.2-2'}}</span>
+                    <span *ngSwitchCase="0" style="color:'red'">    S/ {{accountMain.balanceFlow | number: '1.2-2'}}</span>
+                    <span  *ngSwitchDefault style="color:'black'">  S/ {{accountMain.balanceFlow | number: '1.2-2'}}</span>
+                </span>
+            </div>
+        </div>
         <div class="st_fc_header mt-1 d-flex align-items-center justify-content-center w-100">
             <img class="mx-2" src="../../../../assets/images/icon calendar.png" alt="" srcset="">
             <ng-container *ngIf="period.activate; else elsePeriodActivateEqualsFalse;">

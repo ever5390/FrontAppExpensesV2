@@ -29,7 +29,9 @@
             </ng-container>
         </ng-container>
         <div #listAccount class="st_list_account">
-            <div class="st_card_account" *ngFor="let account of accountListChildsShow; let i = index;">
+            <div class="st_card_account" 
+                [ngClass]="account.balanceFlow == '0'?'st_card_account_saldo_cero':'st_card_account'"
+                *ngFor="let account of accountListChildsShow; let i = index;">
 
                 <span class="icons icons-float-card">
                     <!-- <i *ngIf="accountParentShow.statusAccount == 'INITIAL'" class="fas fa-edit" (click)="showFormularyRegisterOrUpdate('Actualizar', account)"></i> -->
@@ -46,7 +48,9 @@
                     </div>
                     <div class="st_acc_act_data">
                         <label>Disponible</label>
-                        <span>S/ {{account.balanceFlow | number: '1.2-2'}}</span>
+                        <span  [ngStyle]="{'color':(account.balanceFlow == '0') ? 'red' : 'none' }">
+                            S/ {{account.balanceFlow | number: '1.2-2'}}
+                        </span>
                     </div>
                 </div>
                 <div class="st_account_estimated" *ngIf="account.statusAccount=='CLOSED'">

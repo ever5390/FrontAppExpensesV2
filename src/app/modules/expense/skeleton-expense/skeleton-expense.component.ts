@@ -31,7 +31,9 @@ export class SkeletonExpenseComponent implements OnInit {
     
   }
 
-  getAll(dateBegin: string, dateEnd: string) {   
+  getAll(dateBegin: string, dateEnd: string) {  
+    console.log(dateBegin);
+    console.log(dateEnd);
     this._expenseService.getAllExpenses(dateBegin, dateEnd).subscribe(
       response => {
         console.log(response);
@@ -66,7 +68,10 @@ export class SkeletonExpenseComponent implements OnInit {
     if(this.period == null) {
       this.getPeriodIfNotExist();
     } else {
+      console.log("PERIOD DATES");
 
+      console.log(this.period.startDate);
+      console.log(this.period.finalDate);
       this.getAll(this._utilService.convertDateToString(this.period.startDate),
                        this._utilService.convertDateToString(this.period.finalDate));      
     }
@@ -78,6 +83,8 @@ export class SkeletonExpenseComponent implements OnInit {
           this.period = response;
           if(this.period != null && this.period.id != 0) {
             localStorage.setItem("lcstrg_periodo", JSON.stringify(this.period));
+
+
             this.getAll(this._utilService.convertDateToString(this.period.startDate), this._utilService.convertDateToString(this.period.finalDate));      
           }
         }, error => {

@@ -1,4 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
+import { AccountModel, TypeSatusAccountOPC } from '@data/models/business/account.model';
+import { AccountService } from '@data/services/account/account.service';
 import { PeriodModel } from 'app/data/models/business/period.model';
 
 @Component({
@@ -10,6 +12,7 @@ export class HeaderExpenseComponent implements OnInit {
 
   
   period: PeriodModel = new PeriodModel();
+  accountMain: AccountModel =  new AccountModel();
 
   @Input() totalGastadoReceived: number = 0.00;
 
@@ -23,16 +26,31 @@ export class HeaderExpenseComponent implements OnInit {
   @Output() emitterHeight= new EventEmitter();
   
   constructor(
-    private _renderer: Renderer2
+    private _renderer: Renderer2,
+    private _accountService: AccountService
   ) { 
   }
 
   ngOnInit(): void {
-    if(this.period != null && this.period.id != 0) {
-      this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
-    }
+   
+    this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
+    if(this.period == null) return;
+    this.showAvailableAmountFromAccountMain();
   }
 
+  showAvailableAmountFromAccountMain() {
+    console.log(TypeSatusAccountOPC.PROCESS + "--" + this.period.id);
+    this._accountService.findAccountByTypeAccountAndStatusAccountAndPeriodId(1, TypeSatusAccountOPC.PROCESS, this.period.id)
+      .subscribe(
+        response => {
+          console.log(response);
+          this.accountMain = response;
+        },
+        error => {
+          console.error(error.error);
+        }
+      );
+  }
   //Show and catching menu y height
   showMenuOptions() {
     this.sendFlagShowMenuFilterMain = true;

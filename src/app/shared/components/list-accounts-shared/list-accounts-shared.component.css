@@ -1,0 +1,33 @@
+/* caso select origen */
+.st_list_account_origen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 10px;
+    display: block;
+}
+
+.st_list_account_origen h6 {
+    padding: 10px; 
+}
+
+.st_account_select {
+    padding: 5px 10px ;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    border-radius: 10px;
+}
+
+.st_account_select:hover {
+    cursor: pointer;
+    background-color: rgba(230, 230, 230, 0.473);
+}
+
+.st_account_select label{
+    color: rgb(99, 99, 99);
+    font-weight: 600;
+}

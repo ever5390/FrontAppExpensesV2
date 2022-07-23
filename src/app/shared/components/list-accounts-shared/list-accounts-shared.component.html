@@ -1,0 +1,14 @@
+<!-- Lista de cuentas: caso Transferencia interna -->
+<div class="st_list_account_origen" [ngStyle]="{'display':(flagShowComponentReceived) ? 'block' : 'none' }">
+    <h6><i (click)="backToEmitAccount()" class="fas fa-angle-double-left"></i> Seleccione una cuenta origen</h6>
+    <div #lisCategoriesForSelect>
+        <ng-container *ngFor="let account of listaAccountReceived">
+            <div  (click)="catchAccountSelected(account)" class="st_account_select d-flex justify-content-between align-items-center">
+                <label>{{account.accountName}}</label>
+                <label><span style="font-size: .8rem; color:rgb(83, 40, 40)">disponible</span>
+                    <br>S/ {{account.balanceFlow | number: '1.2-2'}}
+                </label>
+            </div>
+        </ng-container>
+    </div>
+</div>

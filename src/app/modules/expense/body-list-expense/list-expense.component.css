@@ -62,16 +62,17 @@
         color: #fff;
     }
 
-    .st_body_header span:nth-child(1) {
-        background-color: #47B152;
-    }
+    /* .st_body_header span:nth-child(1) {
+        background-color: #;
+    } */
 
     .st_body_header span:nth-child(2) {
         background-color: #14BCBC;
     }
 
     .st_body_footer span:nth-child(1) {
-        background-color: #972D05;
+        background-color: #eedfd9;
+        color: #760B7A;
     }
 
     .st_body_footer span:nth-child(2) {

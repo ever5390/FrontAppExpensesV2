@@ -7,7 +7,9 @@
             </div>
             <div class="st_expense_body">
                 <div class="st_body_header">
-                    <span>Pagado</span>
+                    <span [ngStyle]="{'background-color':(!expense.pendingPayment) ? '#47B152' : '#c9291e'}" *ngIf="!expense.pendingPayment">Pagado</span>
+                    <span [ngStyle]="{'background-color':(expense.pendingPayment) ? '#c9291e' : '#47B152'}" *ngIf="expense.pendingPayment">Pendiente de pago</span>
+                    <!-- <span *ngIf="expense.isPendingPayment">Pendiente de pago</span> -->
                     <span>{{expense.accordingType.name}}</span>
                 </div>
                 <div class="st_body_body">

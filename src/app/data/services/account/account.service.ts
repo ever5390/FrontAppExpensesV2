@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { URL_BASE_COMPLEMENT } from 'app/config/global.url';
-import { AccountModel } from 'app/data/models/business/account.model';
+import { AccountModel, TypeSatusAccountOPC } from 'app/data/models/business/account.model';
 import { TransferenciaModel } from 'app/data/models/business/transferencia.model';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -46,4 +46,10 @@ export class AccountService {
     return this._http.post<TransferenciaModel>(`${this.URLCOMPL}/transference`, transferToSave, {headers: this.httpHeaders});
   }
 
+  findAccountByTypeAccountAndStatusAccountAndPeriodId(idAccountType: number, status: TypeSatusAccountOPC, idPeriod: number): Observable<AccountModel>  {
+    return this._http.get(`${this.URLCOMPL}/account/account-main-available-process?idAccountType=${idAccountType}&status=${status}&idPeriod=${idPeriod}`)
+    .pipe(
+      map(response => response as AccountModel)
+    );
+  }
 }

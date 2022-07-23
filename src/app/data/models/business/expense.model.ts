@@ -1,4 +1,5 @@
 import { AccordingModel } from "./according.model";
+import { AccountModel } from "./account.model";
 import { CategoryModel } from "./category.model";
 import { OwnerModel } from "./owner.model";
 import { PaymentMethodModel } from "./payment-method.model";
@@ -15,13 +16,15 @@ export class ExpenseModel {
         public payer:           string = '',
         public createAt:        Date     = new Date(),
         public paymentMethod:   PaymentMethodModel = new PaymentMethodModel(),
-        public isPendingPayment:boolean = false,
+        public pendingPayment:boolean = false,
         public accordingType:   AccordingModel = new AccordingModel(),
         public category:        CategoryModel = new CategoryModel(),
+        public account :        AccountModel = new AccountModel(),
         public registerPerson:  OwnerModel = new OwnerModel(),
         public period:          PeriodModel = new PeriodModel(),
         public workspace:       Workspace = new Workspace(),
-        public tag:             Tag[] = []
+        public tag:             Tag[] = [],
+        public strSearchAllJoin: string = ''
     ){}
 }
 

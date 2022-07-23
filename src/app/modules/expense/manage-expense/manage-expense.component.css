@@ -191,6 +191,24 @@
     background-color: rgba(204, 204, 204, 0.178);
 }
 
+/* Block account selected */
+.st_form_destiny {
+    width: 100%;
+    font-size: .8rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    border-radius: 8px !important;
+    color: #366351;
+    padding: 12px;
+    text-align: center;
+    border: 1px dashed #77bba3;
+    /* background-color: #dffaf0; */
+}
+
+.st_form_destiny:hover {
+    cursor: pointer;
+}
+
 @media (max-width: 480px) {
 
 .container-fluid {

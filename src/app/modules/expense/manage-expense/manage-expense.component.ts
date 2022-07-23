@@ -1,6 +1,9 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { CONSTANTES } from '@data/constantes';
+import { IDataListAccountShared } from '@data/interfaces/data-account-list-select-shared.interface';
+import { AccountModel } from '@data/models/business/account.model';
+import { AccountService } from '@data/services/account/account.service';
 import { AccordingModel } from 'app/data/models/business/according.model';
 import { CategoryModel } from 'app/data/models/business/category.model';
 import { ExpenseModel } from 'app/data/models/business/expense.model';
@@ -24,20 +27,27 @@ export class ManageExpenseComponent implements OnInit {
   owner : OwnerModel = new OwnerModel();
 
   sendComponentParentToCalendar: string = CONSTANTES.CONST_COMPONENT_EXPENSEREGISTER;
+  sendComponentToBlockListAccount: string = CONSTANTES.CONST_COMPONENT_EXPENSEREGISTER;
 
-  flagShowListCategories: boolean = false;
   flagShowListAccording: boolean = false;
+  flagShowListCategories: boolean = false;
   flagShowListPaymentMethod: boolean = false;
+  flagShowListAccountSelect: boolean = false;
   flagShowCalendar: boolean = false;
 
   itemPaymentMethod: PaymentMethodModel =  new PaymentMethodModel();
   itemCategory: CategoryModel =  new CategoryModel();
   itemAccording: AccordingModel =  new AccordingModel();
+  itemAccount: AccountModel = new AccountModel();
   dateRangeCalendarSelected: any;
 
   // expense: Expense
   expense: ExpenseModel = new ExpenseModel();
   period: PeriodModel = new PeriodModel();
+  heightFormRegisterExpense: number = 0;
+
+  //Account
+  accountListSelected: AccountModel[] = [];
 
   workspace: Workspace = new Workspace(1,"Workspace1");
   
@@ -48,11 +58,13 @@ export class ManageExpenseComponent implements OnInit {
   @Output() sendHiddenFormRegister: EventEmitter<boolean> = new EventEmitter();
   @ViewChild('popup__formulario') popup__formulario: ElementRef | any;
   @ViewChild('formRegister') formRegister: ElementRef | any;
+  @ViewChild('formRegisterContainerToAccountListBlock') formRegisterContainerToAccountListBlock: ElementRef | any;
   
   constructor(
     private _renderer: Renderer2,
     private _router: Router,
-    private _expenseService: ExpensesService
+    private _expenseService: ExpensesService,
+    private _accountService: AccountService
   ) {
     this.identifyEventClickOutWindow();
    }
@@ -66,28 +78,34 @@ export class ManageExpenseComponent implements OnInit {
     this.workspace.typeWSPC = new TypeWSPC(1,'SINGLE');
     console.log("this.workspace");
     console.log(this.workspace);
+    if(this.period != null) this.getAllAccountByPeriodSelected(this.period.id);
   }
 
 
   create() {
-    
     this._expenseService.create(this.expense).subscribe(
       response => {
         this.period = response.object.period;
+        console.log("period post create expense");
+        console.log(this.period);
         localStorage.setItem("lcstrg_periodo",JSON.stringify(this.period));
         Swal.fire("","Registro exitoso","success");
         this._router.navigate(["/"]);
       },
       error => {
         console.log(error.error);
+        Swal.fire(error.error.title,error.error.message,error.error.status);
       }
     );
   }
 
   registerOrUpdateExpense() {
+
+    if(this.validAmount() == false) return;
     this.expense.payer = this.owner.name;
     this.expense.amount = this.expense.amountShow;
     this.expense.registerPerson = this.owner;
+    this.expense.account = this.itemAccount;
     this.expense.category = this.itemCategory;
     this.expense.accordingType = this.itemAccording;
     this.expense.paymentMethod = this.itemPaymentMethod;
@@ -108,15 +126,39 @@ export class ManageExpenseComponent implements OnInit {
     
     
   }
+  validAmount(): boolean{
+    if(isNaN(Number(this.expense.amountShow)) || Number(this.expense.amountShow) <= 0) {
+      Swal.fire("Alerta","El campo Monto solo acepta números mayores a cero","info");
+      return false;
+    }
+
+    return true;
+  }
+
+  getAllAccountByPeriodSelected(idPeriodReceived: number) {
+    this._accountService.getListAccountByIdPeriod(idPeriodReceived).subscribe(
+      response => {
+        this.accountListSelected = response.filter( account => {
+          return account.accountType.id == 2 && account.statusAccount.toString() == 'PROCESS';
+        });
+      },
+      error => {
+        console.log(error);
+        //Swal.fire("","No se obtuvo datos del periodo buscado","error");
+      }
+    );
+  }
 
   ngAfterViewInit() {
+
+    this.heightFormRegisterExpense = this.formRegisterContainerToAccountListBlock.nativeElement.clientHeight;
     let windowHeight = window.innerHeight;
-    let heightForm = this.formRegister.nativeElement.clientHeight;
+    let heightFormRegister = this.formRegister.nativeElement.clientHeight;
 
     //IF onlyListItems is FALSE :: Viene desde una cuenta para anadir categorias
     //Definiendo valores de acuerdo a de donde es llamado este componente
 
-    if(heightForm > windowHeight -100){
+    if(heightFormRegister > windowHeight -100){
       this._renderer.setStyle(this.formRegister.nativeElement,"height",(windowHeight*0.8)+"px");
       this._renderer.setStyle(this.formRegister.nativeElement,"overflow-y","scroll");
     }
@@ -154,6 +196,11 @@ export class ManageExpenseComponent implements OnInit {
     this.flagShowCalendar = true;
   }
 
+  showListAccountSelect() {
+    this.show__list__items = true;
+    this.flagShowListAccountSelect = true;
+  }
+
   uploadFoto(event: any) {
     if( event.target.files) {
       for (let index = 0; index <  event.target.files.length; index++) {
@@ -172,9 +219,10 @@ export class ManageExpenseComponent implements OnInit {
   }
 
   hiddenPopUp() {
+    this.flagShowListPaymentMethod = false;
+    this.flagShowListAccountSelect = false;
     this.flagShowListCategories = false;
     this.flagShowListAccording = false;
-    this.flagShowListPaymentMethod = false;
     this.flagShowCalendar = false;
     this.show__list__items = false;
   }
@@ -186,6 +234,7 @@ export class ManageExpenseComponent implements OnInit {
         break;
       case CONSTANTES.CONST_COMPONENT_CATEGORIAS:
         this.itemCategory = element.itemSelected;
+        this.catchAccountByCategorySelected();
         break;
       case CONSTANTES.CONST_COMPONENT_ACUERDOS:
         this.itemAccording = element.itemSelected;
@@ -194,6 +243,10 @@ export class ManageExpenseComponent implements OnInit {
         console.log(element.dateRange);
         this.dateRangeCalendarSelected = element.dateRange;
         break;
+      case CONSTANTES.CONST_COMPONENT_CUENTAS:
+        console.log(element.itemSelected);
+        this.itemAccount = element.itemSelected;
+        break;
       default:
         //received ONLY close order, not object
         this.show__list__items = false;
@@ -201,6 +254,19 @@ export class ManageExpenseComponent implements OnInit {
     }
     
     this.hiddenPopUp();
+  }
+
+  catchAccountByCategorySelected() {
+    this.itemAccount = new AccountModel();
+    this.accountListSelected.forEach( account => {
+      account.categories.forEach(categ => {
+        if(categ.id == this.itemCategory.id) {
+          console.log(account);
+          this.itemAccount = account;
+          return;
+        }
+      })
+    });
   }
 
   identifyEventClickOutWindow() {

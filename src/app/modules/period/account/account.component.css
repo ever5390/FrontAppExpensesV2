@@ -116,6 +116,7 @@ img {
     padding-left: 10px;
 }
 
+
 input[type=text]{
     width: 100%;
     outline: none;
@@ -227,6 +228,59 @@ select:hover
 
 .check_item_list {
     margin-right: 10px;
+}
+
+/* .weekdays {
+    width: 100%;
+    padding: 10px;
+    display: inline-grid;
+    grid-template-columns: repeat(7, calc(100%/7));
+    font-weight: 500;
+    border-bottom: 1px solid #f1e8de;
+    color: rgb(173, 173, 173);
+    font-size: .7rem;
+  }
+
+      .weekdays div {
+        text-align: center;
+      }
+  
+  .days {
+    width: 100%;
+    padding: 10px;
+    display: inline-grid;
+    grid-template-columns: repeat(7, calc(100%/7));
+    grid-template-rows: repeat(6, 38px);
+  } */
+
+/* Caso lista categories selected show */
+.st_list_categ_selected {
+    font-size: .7rem;
+    text-transform: lowercase;
+    width: 100%;
+    border: 1px solid #BCBCBC;
+    border-radius: 10px;
+    padding: 10px;
+    display: inline-grid;
+    grid-template-columns: repeat(5, calc(100%/5));
+}
+
+.st_list_categ_selected div{
+    margin-right: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+}
+
+.st_list_categ_selected div label{
+    text-align: center;
+}
+
+.st_list_categ_selected img {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
 }
 
 @media (max-width: 370px) {
