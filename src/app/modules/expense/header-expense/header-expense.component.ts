@@ -1,6 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { AccountModel, TypeSatusAccountOPC } from '@data/models/business/account.model';
 import { AccountService } from '@data/services/account/account.service';
+import { UtilService } from '@shared/services/util.service';
 import { PeriodModel } from 'app/data/models/business/period.model';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -30,9 +31,10 @@ export class HeaderExpenseComponent implements OnInit {
   @Output() emitterSearching= new EventEmitter();
   
   constructor(
-    private _renderer: Renderer2,
-    private _accountService: AccountService
+    private _accountService: AccountService,
+    private _utilitariesService: UtilService
   ) { 
+    this.receivingTotalSpentBySearchingExpense();
   }
 
   ngOnInit(): void {
@@ -90,6 +92,17 @@ export class HeaderExpenseComponent implements OnInit {
 
   receivingFlagHiddenMenuFilterMain(hidden: boolean) {
     this.sendFlagShowMenuFilterMain = hidden;
+  }
+
+  receivingTotalSpentBySearchingExpense() {
+    this.totalGastadoReceived = 0;
+    this._utilitariesService.receivingTotalSpentToHeaderFromExpenseListMessage().subscribe(
+      response => {
+        this.totalGastadoReceived = response;  
+      }, 
+      error =>{
+        console.log(error.error);
+      });
   }
 
   ngAfterViewInit() {

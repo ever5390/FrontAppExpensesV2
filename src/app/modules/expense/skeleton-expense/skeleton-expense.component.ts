@@ -88,10 +88,20 @@ export class SkeletonExpenseComponent implements OnInit {
       }
     );
     
+    this.getTotalSpentBySearching();
+
     setTimeout(() => {
       this.showBody = true; 
     }, 100);
 
+  }
+
+  getTotalSpentBySearching() {
+    let totalSend = 0;
+    this.sendListExpensesToBody.forEach(element => {                           
+      totalSend = totalSend + parseFloat(element.amount);
+    });
+    this._utilService.sendTotalSpentToHeaderFromExpenseListMessage(totalSend);
   }
 
   catchPeriodAndGetAllListExpenses() {

@@ -1,7 +1,7 @@
 <!-- <div class="cst_container_list"> -->
     <ng-container *ngFor="let expense of expenseList; let i = index;">
         <div class="st_block_expense">
-            <div class="st_expense_header">
+            <div class="st_expense_header" [ngStyle]="{'color':(expense.accordingType.id == 3) ? '#95A5A6' : '#000'}">
                 <label>S/ {{expense.amountShow | number : '1.2-2'}}</label>
                 <label>{{expense.createAt | date: 'EEE dd MMM  HH:mm:ss' | uppercase}}</label>
             </div>
