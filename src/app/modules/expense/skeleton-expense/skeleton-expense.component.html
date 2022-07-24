@@ -1,9 +1,18 @@
-<app-header-expense 
+<!-- <app-header-expense 
     (emitterHeight)="receivedHeightHeader($event)"
     (emitterSearching)="receivedSearchingEmitFromHeader($event)"
     [totalGastadoReceived]="totalGastadoSend"
+    > -->
+<app-header-expense 
+    (emitterHeight)="receivedHeightHeader($event)"
+    [totalGastadoReceived]="totalGastadoSend"
     >
 </app-header-expense>
+
+<app-searching
+    (emitterSearching)="receivedSearchingEmitFromHeader($event)"
+    >
+</app-searching>
 
 <app-body-expense *ngIf="showBody" 
     [receivedHeightHeaderToBody]="sendHeightHeaderToBody"

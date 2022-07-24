@@ -25,22 +25,7 @@
             <img class="mx-2"  src="../../../../assets/images/icon calendar.png" alt="" srcset="">
         </div>
     </div>
-    <!-- Search block -->
-    <div class="form_control" >
-        <!-- <label >Filtrar</label> -->
-        <div class="st_block_search d-flex align-items-center">
-            <i class="fas fa-sort-amount-down" (click)="showMenuOptions()"></i>
-            <i class="far fa-search" ></i>
-            <input placeholder=" Search" (keyup)="searchMethod($event)" type="text" 
-                spellcheck="false" autocomplete="none" >
-        </div>
-    </div>
 </div>
-
-<app-filter-expense *ngIf="sendFlagShowMenuFilterMain" 
-    [receivedFlagShowMenuFilterMain]="sendFlagShowMenuFilterMain"
-    (emitterFlagHiddenMenuFilterMain)="receivingFlagHiddenMenuFilterMain($event)">
-</app-filter-expense>
 
 <ng-template #elsePeriodActivateEqualsFalse>
     <span>Del {{period.startDate | date: 'dd MMM YYY' | uppercase}}

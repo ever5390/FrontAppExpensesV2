@@ -1,0 +1,15 @@
+<div #container_header>
+    <div class="form_control" >
+        <div class="st_block_search d-flex align-items-center">
+            <i class="fas fa-sort-amount-down" (click)="showMenuOptions()"></i>
+            <i class="far fa-search" ></i>
+            <input placeholder=" Search" (keyup)="searchMethod($event)" type="text" 
+                spellcheck="false" autocomplete="none" >
+        </div>
+    </div>
+</div>
+
+<app-filter-expense *ngIf="sendFlagShowMenuFilterMain" 
+    [receivedFlagShowMenuFilterMain]="sendFlagShowMenuFilterMain"
+    (emitterFlagHiddenMenuFilterMain)="receivingFlagHiddenMenuFilterMain($event)">
+</app-filter-expense>

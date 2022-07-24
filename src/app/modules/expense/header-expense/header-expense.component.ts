@@ -12,17 +12,11 @@ import { debounceTime } from 'rxjs/operators';
   styleUrls: ['./header-expense.component.css']
 })
 export class HeaderExpenseComponent implements OnInit {
-
-  subject = new Subject();
-  
+ 
   period: PeriodModel = new PeriodModel();
   accountMain: AccountModel =  new AccountModel();
 
   @Input() totalGastadoReceived: number = 0.00;
-
-
-  //Show component menu
-  sendFlagShowMenuFilterMain: boolean = false;
 
   //Catching & send height header component
   heightHeader: number = 0;
@@ -42,34 +36,7 @@ export class HeaderExpenseComponent implements OnInit {
     this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
     if(this.period == null) return;
     this.showAvailableAmountFromAccountMain();
-
-    this.searchActivateFunction();
     
-  }
-
-  searchActivateFunction() {
-    //Deprecated in v.6 , deleting in futures versions
-    // this.search.valueChanges.pipe(
-    //   debounceTime(200) // Cuando pare de escribir pasen 300 ms recíen enviará .
-    // ).subscribe((value:string) => {
-    //       this.listaShared = this.dataStructureListReceived.lista.filter(item => {
-    //         return item.name.toUpperCase().includes(value.toUpperCase()) 
-    //       }
-    //       );                    
-    //   }
-    // )
-      this.subject.pipe(
-        debounceTime(200)
-      ).subscribe((searchText:any) => {
-          
-          this.emitterSearching.emit(searchText);
-        }
-      )
-  }
-
-  searchMethod(evt:any) {
-    const searchText = evt.target.value;
-    this.subject.next(searchText)
   }
 
   showAvailableAmountFromAccountMain() {
@@ -84,14 +51,6 @@ export class HeaderExpenseComponent implements OnInit {
           console.error(error.error);
         }
       );
-  }
-  //Show and catching menu y height
-  showMenuOptions() {
-    this.sendFlagShowMenuFilterMain = true;
-  }
-
-  receivingFlagHiddenMenuFilterMain(hidden: boolean) {
-    this.sendFlagShowMenuFilterMain = hidden;
   }
 
   receivingTotalSpentBySearchingExpense() {
