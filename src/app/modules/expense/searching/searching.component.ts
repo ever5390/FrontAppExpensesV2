@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
@@ -13,6 +13,7 @@ export class SearchingComponent implements OnInit {
   //Show component menu
   sendFlagShowMenuFilterMain: boolean = false;
   @Output() emitterSearching= new EventEmitter();
+  @Input("receivedListExpensesFromSkeleton") receivedListExpensesFromSkeleton:any = [];
   constructor() { }
 
   ngOnInit(): void {

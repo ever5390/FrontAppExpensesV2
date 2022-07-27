@@ -8,6 +8,7 @@ providedIn: 'root'
 export class UtilService {
     
     private subject$ = new Subject<any>();
+    private subjectItemFilterSelected$ = new Subject<any>();
 
     constructor() { }
 
@@ -24,5 +25,13 @@ export class UtilService {
 
     receivingTotalSpentToHeaderFromExpenseListMessage():Observable<any> {
         return this.subject$.asObservable();
+    }
+
+    sendItemResumeSelected(objectSend:any) {
+        this.subjectItemFilterSelected$.next(objectSend);
+    }
+
+    receivingItemResumeSelected():Observable<any> {
+        return this.subjectItemFilterSelected$.asObservable();
     }
 }

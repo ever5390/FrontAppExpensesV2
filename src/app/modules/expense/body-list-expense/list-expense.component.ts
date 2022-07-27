@@ -14,8 +14,8 @@ export class ListExpenseComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    console.log("BODY LIST");
-    console.log(this.expenseList);
+    //console.log("BODY LIST");
+   // console.log(this.expenseList);
     
     this.expenseList = this.receivedListExpensesToBodyList;
 

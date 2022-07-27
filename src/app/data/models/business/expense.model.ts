@@ -24,7 +24,8 @@ export class ExpenseModel {
         public period:          PeriodModel = new PeriodModel(),
         public workspace:       Workspace = new Workspace(),
         public tag:             Tag[] = [],
-        public strSearchAllJoin: string = ''
+        public strSearchAllJoin: string = '',
+        public strFilterParamsJoin: string = ''
     ){}
 }
 

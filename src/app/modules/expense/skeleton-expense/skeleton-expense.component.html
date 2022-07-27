@@ -1,8 +1,3 @@
-<!-- <app-header-expense 
-    (emitterHeight)="receivedHeightHeader($event)"
-    (emitterSearching)="receivedSearchingEmitFromHeader($event)"
-    [totalGastadoReceived]="totalGastadoSend"
-    > -->
 <app-header-expense 
     (emitterHeight)="receivedHeightHeader($event)"
     [totalGastadoReceived]="totalGastadoSend"
@@ -10,6 +5,7 @@
 </app-header-expense>
 
 <app-searching
+    [receivedListExpensesFromSkeleton]="sendListExpensesToBody"
     (emitterSearching)="receivedSearchingEmitFromHeader($event)"
     >
 </app-searching>

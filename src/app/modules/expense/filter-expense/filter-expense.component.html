@@ -43,8 +43,10 @@
             <app-filter-by-item-shared 
                 *ngIf="showMenuFilterSecundary"
                 [title]="sendTitleMenuSecundary"
+                [receivedListSendFilterBytemResume]="sendListFilterBytemResumeShow"
                 [active_menu]="showMenuFilterSecundaryTranslate"
                 (reditectToMenu)="ReceivingHiddenMenuFilterSecundary($event)"
+                (listendFather)="receivingDataFromChildFilter($event)"
             > 
             </app-filter-by-item-shared>
 

@@ -1,4 +1,7 @@
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, OnInit } from '@angular/core';
+import { CONSTANTES } from '@data/constantes';
+import { FilterExpensesModel } from '@data/models/Structures/data-object-filtering.model';
 import { UtilService } from '@shared/services/util.service';
 import { ExpenseModel, Tag } from 'app/data/models/business/expense.model';
 import { PeriodModel } from 'app/data/models/business/period.model';
@@ -25,39 +28,46 @@ export class SkeletonExpenseComponent implements OnInit {
     private _expenseService: ExpensesService,
     private _periodService: PeriodService,
     private _utilService: UtilService
-  ) { }
+  ) {
+    
+   }
 
   ngOnInit(): void {
-
+    this.receivedItemFilterSeleceted();
     
   }
 
   getAll(dateBegin: string, dateEnd: string) {  
-    console.log(dateBegin);
-    console.log(dateEnd);
     this._expenseService.getAllExpenses(dateBegin, dateEnd).subscribe(
       response => {
         
         this.showBody = true;
         this.sendListExpensesToBody = response;
         this.listExpensesToBody = response;
+
         this.sendListExpensesToBody.forEach(element => {                           
           this.totalGastadoSend = this.totalGastadoSend + parseFloat(element.amount);
         });
 
-        this.sendListExpensesToBody.map(element => {
-          element.strSearchAllJoin =  this.getPayedOrPendingPay(element.pendingPayment) + " " + element.amountShow 
-                            + " " + element.description + " " + element.category.name
-                            + " " + element.paymentMethod.name + " " + element.accordingType.name 
-                            + " " + element.account.accountName + " " + element.payer 
-                            + " " + element.registerPerson.name + " " + this.concatTags(element.tag);          
-        });
-        console.log(this.sendListExpensesToBody);
+        this.createNewColumnWithDataBySearching();
       },
       error => {
         console.log(error);
       }
     );
+  }
+
+  private createNewColumnWithDataBySearching() {
+    this.sendListExpensesToBody.map(element => {
+      element.strSearchAllJoin = this.getPayedOrPendingPay(element.pendingPayment) + " " + element.amountShow
+        + " " + element.description + " " + element.category.name
+        + " " + element.paymentMethod.name + " " + element.accordingType.name
+        + " " + element.account.accountName + " " + element.payer
+        + " " + element.registerPerson.name + " " + this.concatTags(element.tag);
+      
+      element.strFilterParamsJoin = element.paymentMethod.name + " " + element.accordingType.name
+        + " " + element.category.name;
+    });
   }
 
   getPayedOrPendingPay(pendingPayment: boolean): string {
@@ -81,27 +91,13 @@ export class SkeletonExpenseComponent implements OnInit {
 
   receivedSearchingEmitFromHeader(strSearch: string) {
     this.showBody = false;
-    console.log(strSearch);
     this.sendListExpensesToBody = this.listExpensesToBody;
     this.sendListExpensesToBody = this.sendListExpensesToBody.filter(item => {
         return item.strSearchAllJoin.toUpperCase().includes(strSearch.toUpperCase()) 
       }
     );
     
-    this.getTotalSpentBySearching();
-
-    setTimeout(() => {
-      this.showBody = true; 
-    }, 100);
-
-  }
-
-  getTotalSpentBySearching() {
-    let totalSend = 0;
-    this.sendListExpensesToBody.forEach(element => {                           
-      totalSend = totalSend + parseFloat(element.amount);
-    });
-    this._utilService.sendTotalSpentToHeaderFromExpenseListMessage(totalSend);
+    this.getTotalSpentByFilterAndReloadListExpenses();
   }
 
   catchPeriodAndGetAllListExpenses() {
@@ -111,10 +107,6 @@ export class SkeletonExpenseComponent implements OnInit {
     if(this.period == null) {
       this.getPeriodIfNotExist();
     } else {
-      console.log("PERIOD DATES");
-
-      console.log(this.period.startDate);
-      console.log(this.period.finalDate);
       this.getAll(this._utilService.convertDateToString(this.period.startDate),
                        this._utilService.convertDateToString(this.period.finalDate));      
     }
@@ -136,4 +128,91 @@ export class SkeletonExpenseComponent implements OnInit {
       );
   }
 
+  listaSelcetedFilter: any[] = [];
+  beforeItem: FilterExpensesModel = new FilterExpensesModel();
+  listShowExpenses: ExpenseModel[] = [];
+  receivedItemFilterSeleceted() {
+    
+   
+    this._utilService.receivingItemResumeSelected().subscribe(
+      response => {
+        let listActive = response.filter( (itemActive: { active: boolean; }) => itemActive.active === true);
+      
+        this.showBody = false;
+        let cont = 0;
+        this.sendListExpensesToBody = this.listExpensesToBody;
+        if(listActive.length == 0) this.listShowExpenses = this.sendListExpensesToBody;
+
+        listActive.forEach( (itemActive: FilterExpensesModel) => {
+          cont++;
+          if(cont == 1) {
+            this.listShowExpenses = this.sendListExpensesToBody.filter( item => {
+              return item.strFilterParamsJoin.includes(itemActive.name);
+            });
+          } else {
+            let listaNew = this.sendListExpensesToBody.filter( item => {
+              return item.strFilterParamsJoin.includes(itemActive.name);
+            });
+            this.listShowExpenses = this.listShowExpenses.concat(listaNew);
+          }
+          
+        });
+        console.log(this.listShowExpenses);
+
+        this.sendListExpensesToBody =  this.listShowExpenses;
+
+        this.getTotalSpentByFilterAndReloadListExpenses();
+
+      }, 
+      error =>{
+        console.log(error.error);
+      });
+
+      
+  }
+
+  newListFiltered: ExpenseModel[] = [];
+
+  filterByListParams(paramList : ExpenseModel[], paramFilter : FilterExpensesModel): ExpenseModel[] {
+      let listReturn : ExpenseModel[] = [];
+      console.log("paramList");
+      console.log(paramList);
+      console.log("paramFilter");
+      console.log(paramFilter);
+      listReturn =  paramList.filter( (row)=> {
+          if(paramFilter.component == CONSTANTES.CONST_COMPONENT_CATEGORIAS)  {
+            return row.category.name == paramFilter.name
+          }
+
+          if(paramFilter.component == CONSTANTES.CONST_COMPONENT_ACUERDOS)  {
+            return row.accordingType.name == paramFilter.name;
+          }
+
+          if(paramFilter.component == CONSTANTES.CONST_COMPONENT_MEDIOSDEPAGO)  {
+            return row.paymentMethod.name == paramFilter.name;
+          }
+
+          return row;
+      });
+
+      return listReturn;
+  }
+
+  private getTotalSpentByFilterAndReloadListExpenses() {
+    this.getTotalSpentBySearching();
+    setTimeout(() => {
+      this.showBody = true;
+    }, 100);
+  }
+
+  getTotalSpentBySearching() {
+    let totalSend = 0;
+    this.sendListExpensesToBody.forEach(element => {                           
+      totalSend = totalSend + parseFloat(element.amount);
+    });
+    this._utilService.sendTotalSpentToHeaderFromExpenseListMessage(totalSend);
+  }
+
 }
+
+

@@ -85,5 +85,20 @@ input[type=text]{
     .item {
         padding: 3px 10px;
     }
+}
+
+@media (max-width: 300px) {
+
+    .st_aside_dropdown_wrkspc {
+        flex-direction: column;
+    }
+
+    .st_block_detail {
+        flex-direction: column;
+    }
+
+    .st_b_items_left {
+        text-align: center;
+    }
 
 }

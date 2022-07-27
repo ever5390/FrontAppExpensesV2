@@ -1,0 +1,139 @@
+.container_login_comp {
+    width: 100%;
+    height: 100vh;
+    /* background-color: aqua; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(243, 243, 243);
+}
+
+.container_login_box {
+    border: 1px solid rgb(235, 232, 232);
+    background-color: #fff;
+    padding: 30px;
+    text-align: center;
+    width: 400px;
+    border-radius: 5px;
+}
+
+.container_login_box p {
+    margin: 7px 0;
+    font-size: 0.9rem;
+    color: rgb(70, 70, 70);
+}
+
+.container_login_box p span{
+    color: rgb(18, 119, 214);
+}
+
+.container_login_box p span:hover{
+    cursor: pointer;
+}
+
+
+input[type=button] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    color: #fff;
+    border: none;
+    font-size: 1.1rem;
+    border-radius: 5px;
+    background-color: rgb(20, 136, 245);
+}
+
+input[type=button]:hover {
+   cursor: pointer;
+   background-color: rgb(18, 119, 214);
+}
+
+input:focus {
+    outline: none;
+}
+
+.form_control_bar {
+    padding: 5px 0;
+    border-radius: 10px;
+    text-align: left;
+}
+
+/* .form_control_bar P {
+    font-size: .9rem;
+    margin: 5px 0;
+    color: aliceblue;
+} */
+
+    .range_bar_cointainer {
+        background-color: rgb(228, 238, 247);
+        height: 10px;
+        border-radius: 10px;
+    }
+
+    #range_bar_mobile {
+        width: 0%;
+        height: 10px;
+        display: block;
+        border-radius: 10px;
+        background-color: transparent;
+        transition: .3s all;
+    }
+
+.form_control {
+    border: 1px solid rgb(238, 234, 227);
+    margin-top: 20px;
+    padding: 0;
+    display: flex;
+    border-radius: 5px;
+    height: 40px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+    .input_username, .input_password,
+    .input_fullname, .input_email {
+        padding: 10px;
+        height: 30px;
+        border-radius: 0;
+        margin: 0;
+        background-color: #fff !important;
+        background-color: rgb(238, 234, 227);
+        width: 100% !important;
+        border: none;
+    }
+
+
+    .button_view_password {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 40px;
+        height: 100%;
+        background-color: rgb(228, 238, 247);
+    }
+        .button_view_password .fas {
+            margin-left: 0 !important;
+            padding: 0 !important;
+        }
+
+        .button_view_password:hover {
+            cursor: pointer;
+        }
+
+        .fas:hover {
+            cursor: pointer;
+            color: #000 !important;
+            background-color: transparent !important;
+        }
+
+        /* .fa-eye-slash {
+            font-size: .8rem !important;
+        } */
+
+@media (max-width: 600px) {
+
+    .container_login_box {
+        width: 95%;
+        
+    }
+}

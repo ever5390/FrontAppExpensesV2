@@ -1,0 +1,38 @@
+<div class="container_login_comp">
+    <div class="container_login_box">
+        <h2>{{titleAction}}</h2>
+        <p>{{textDescription}}
+            <span (click)="changeAction()">{{textAction}}</span>
+        </p>
+        <div class="form_control" *ngIf="!flagIsLoginAction">
+            <input type="text" class="input_fullname" placeholder="Enter full name" 
+            [(ngModel)]="usuario.name" required>
+        </div>
+        <div class="form_control" *ngIf="!flagIsLoginAction" >
+            <input type="text" class="input_email" placeholder="Enter email" 
+            [(ngModel)]="usuario.email"  required>
+        </div>
+        <div class="form_control">
+            <input type="text" class="input_username" placeholder="Enter username" 
+            [(ngModel)]="usuario.username"  required>
+        </div>
+        <div class="form_control">
+            <input type="password" class="input_password" id="password" placeholder="Enter password" 
+            [(ngModel)]="usuario.password"  (keyup)="detectedValidPassword()" required>
+            <span  class="button_view_password" (click)="changeInputTypeForViewPassword()">
+                <i *ngIf="!btnViewPassword" class="fas fa-eye"></i>
+                <i *ngIf="btnViewPassword"  class="fas fa-eye-slash"></i>
+            </span>
+        </div>
+        <div class="form_control_bar" *ngIf="!flagIsLoginAction">
+            <div class="range_bar_cointainer">
+                <span id="range_bar_mobile"></span>
+            </div>
+            <p>{{textValidatePassword}}</p>
+        </div>
+        <input *ngIf="flagIsLoginAction" (click)="loginOwner()"  type="button" value="Login">
+        <input *ngIf="!flagIsLoginAction" (click)="signUpOwner()"  type="button" value="SignUp">
+        <p>@2022 <a href="">WebAppExpenseManagment</a>. All rights reserved</p>
+    </div>
+</div>
+

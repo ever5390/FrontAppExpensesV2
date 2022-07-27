@@ -1,4 +1,4 @@
-<div #container_header>
+<div>
     <div class="form_control" >
         <div class="st_block_search d-flex align-items-center">
             <i class="fas fa-sort-amount-down" (click)="showMenuOptions()"></i>
@@ -10,6 +10,7 @@
 </div>
 
 <app-filter-expense *ngIf="sendFlagShowMenuFilterMain" 
+    [receivedListExpensesFromSearching]="receivedListExpensesFromSkeleton"
     [receivedFlagShowMenuFilterMain]="sendFlagShowMenuFilterMain"
     (emitterFlagHiddenMenuFilterMain)="receivingFlagHiddenMenuFilterMain($event)">
 </app-filter-expense>

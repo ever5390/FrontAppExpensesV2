@@ -3,8 +3,6 @@ import { AccountModel, TypeSatusAccountOPC } from '@data/models/business/account
 import { AccountService } from '@data/services/account/account.service';
 import { UtilService } from '@shared/services/util.service';
 import { PeriodModel } from 'app/data/models/business/period.model';
-import { Subject } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-header-expense',
@@ -40,11 +38,9 @@ export class HeaderExpenseComponent implements OnInit {
   }
 
   showAvailableAmountFromAccountMain() {
-    console.log(TypeSatusAccountOPC.PROCESS + "--" + this.period.id);
     this._accountService.findAccountByTypeAccountAndStatusAccountAndPeriodId(1, TypeSatusAccountOPC.PROCESS, this.period.id)
       .subscribe(
         response => {
-          console.log(response);
           this.accountMain = response;
         },
         error => {

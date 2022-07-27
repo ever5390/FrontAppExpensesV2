@@ -31,13 +31,12 @@ const routes: Routes = [
         path:'',
         loadChildren: ()=> import('@modules/payment-method/payment-method.module')
               .then( m => m.PaymentMethodModule)
+      },
+      {
+        path:'',
+        loadChildren: ()=> import('@modules/user/user.module')
+              .then( m => m.UserModule)
       }
-      // ,
-      // {
-      //   path:'',
-      //   loadChildren: ()=> import('@shared/shared.module')
-      //         .then( m => m.SharedModule)
-      // }
     ]
   }
 ];

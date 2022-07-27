@@ -5,7 +5,10 @@ export class OwnerModel {
         public id:       number = 0,
         public image:    string = '',
         public name:     string = '',
-        public username: string = ''
+        public username: string = '',
+        public password:    string = '',
+        public enabled:     string = '',
+        public roles: string[] = []
     ){
 
     }   
