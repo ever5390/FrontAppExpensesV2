@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { URL_BASE_COMPLEMENT, URL_BASE_HOST } from 'app/config/global.url';
+import { URL_BASE_API_V1, URL_BASE_HOST } from 'app/config/global.url';
 import { PeriodModel } from 'app/data/models/business/period.model';
 import { PeriodDetailHeader } from 'app/data/models/business/periodDetailHeader.model';
 import { Observable } from 'rxjs';
@@ -11,7 +11,7 @@ import { map } from 'rxjs/internal/operators/map';
 })
 export class PeriodService {
 
-  private URLCOMPL: string =  URL_BASE_COMPLEMENT;
+  private URLCOMPL: string =  URL_BASE_API_V1;
   private httpHeaders = new HttpHeaders({'Content-type':'application/json'});
 
   constructor(private _http: HttpClient) { }

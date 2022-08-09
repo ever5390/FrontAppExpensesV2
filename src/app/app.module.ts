@@ -5,12 +5,13 @@ import { ListNotificationComponent } from '@modules/notification/list-notificati
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { CoreModule } from './core/core.module';
 import { AsideComponent } from './layout/aside/aside.component';
 import { HeaderComponent } from './layout/header/header.component';
 import { SkeletonComponent } from './layout/skeleton/skeleton.component';
 import { SharedModule } from './shared/shared.module';
 import { SearchPipe } from './data/pipe/search.pipe';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+
 
 @NgModule({
   declarations: [
@@ -29,7 +30,6 @@ import { SearchPipe } from './data/pipe/search.pipe';
     BrowserModule,
 
     //Core
-    CoreModule,
     SharedModule,
     CommonModule,
     AppRoutingModule
@@ -39,7 +39,8 @@ import { SearchPipe } from './data/pipe/search.pipe';
     {
       provide: LocationStrategy,
       useClass: PathLocationStrategy
-    }
+    },
+    //{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

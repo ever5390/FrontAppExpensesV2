@@ -1,6 +1,8 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { UserService } from '@data/services/user/user.service';
 import { PeriodModel } from 'app/data/models/business/period.model';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-aside',
@@ -19,7 +21,8 @@ export class AsideComponent implements OnInit {
   
   constructor(
     private _renderer: Renderer2,
-    private _routes: Router
+    private _routes: Router,
+    private _userService: UserService
   ) {
 
     this._renderer.listen('window','click', (e: Event)=> {
@@ -37,27 +40,33 @@ export class AsideComponent implements OnInit {
     }
   }
 
+  loggout() {
+    Swal.fire("",`Hola ${this._userService.usuario.username}, nos vemos luego`,"info");
+    this._userService.logoutSession();
+    this._routes.navigate(["/"]);
+  }
+
 
   redirectRoutes(destiny: string){
 
     switch (destiny) {
       case 'expense':
-        this._routes.navigate(['/']);
+        this._routes.navigate(['/dashboard']);
         break;
       case 'expense-register':
-        this._routes.navigate(['/expense-detail']);
+        this._routes.navigate(['/dashboard/expense-detail']);
         break;
       case 'according':
-        this._routes.navigate(['/according-list']);
+        this._routes.navigate(['/dashboard/according-list']);
         break;
       case 'category':
-        this._routes.navigate(['/category-list']);
+        this._routes.navigate(['/dashboard/category-list']);
         break;
       case 'paymentmethod':
-        this._routes.navigate(['/payment-method-list']);
+        this._routes.navigate(['/dashboard/payment-method-list']);
         break;
       case 'period':
-        this._routes.navigate(['/period-list']);
+        this._routes.navigate(['/dashboard/period-list']);
         break;
       default:
         break;

@@ -29,7 +29,7 @@ export class HeaderComponent implements OnInit {
 
   showFormRegisterExpense() {
     this.showFormRgister = true;
-    this._router.navigate(['/expense-detail']);
+    this._router.navigate(['/dashboard/expense-detail']);
   }
 
   // receivedHiddenFormRegister() {

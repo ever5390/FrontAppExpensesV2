@@ -108,7 +108,7 @@ export class ManageExpenseComponent implements OnInit {
         console.log(this.period);
         localStorage.setItem("lcstrg_periodo",JSON.stringify(this.period));
         Swal.fire("","Registro exitoso","success");
-        this._router.navigate(["/"]);
+        this._router.navigate(["/dashboard"]);
       },
       error => {
         console.log(error.error);
@@ -290,7 +290,7 @@ export class ManageExpenseComponent implements OnInit {
   identifyEventClickOutWindow() {
     this._renderer.listen('window','click', (e: Event)=> {
       if( this.popup__formulario && e.target === this.popup__formulario.nativeElement){
-        this._router.navigate(['/']);
+        this._router.navigate(['/dashboard']);
       }
     });
   }

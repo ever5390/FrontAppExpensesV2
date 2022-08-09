@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { UserService } from '@data/services/user/user.service';
 import { OwnerModel } from 'app/data/models/business/owner.model';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-skeleton',
@@ -11,8 +14,12 @@ export class SkeletonComponent implements OnInit {
   active_menu_click: boolean = false;
   showAside: boolean = false;
   jsonOwner : OwnerModel = new OwnerModel();
+  
 
-  constructor() {
+  constructor(
+    private _usuarioService: UserService,
+    private _router: Router
+  ) {
     this.jsonOwner.id=1;
     this.jsonOwner.username="erosales";
     this.jsonOwner.name="Ever Rosales Peña";

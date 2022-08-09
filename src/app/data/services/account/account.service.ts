@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { URL_BASE_COMPLEMENT } from 'app/config/global.url';
+import { URL_BASE_API_V1 } from 'app/config/global.url';
 import { AccountModel, TypeSatusAccountOPC } from 'app/data/models/business/account.model';
 import { TransferenciaModel } from 'app/data/models/business/transferencia.model';
 import { Observable } from 'rxjs';
@@ -12,7 +12,7 @@ import { map } from 'rxjs/operators';
 export class AccountService {
 
 
-  private URLCOMPL: string = URL_BASE_COMPLEMENT;
+  private URLCOMPL: string = URL_BASE_API_V1;
   private httpHeaders = new HttpHeaders({'Content-Type':'application/json'});
 
   constructor(

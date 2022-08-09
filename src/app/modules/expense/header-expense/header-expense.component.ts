@@ -32,7 +32,10 @@ export class HeaderExpenseComponent implements OnInit {
   ngOnInit(): void {
    
     this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
-    if(this.period == null) return;
+    if(this.period == null) {
+      this.period = new PeriodModel();
+      return;
+    }
     this.showAvailableAmountFromAccountMain();
     
   }

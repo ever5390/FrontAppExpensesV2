@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { URL_BASE_COMPLEMENT } from 'app/config/global.url';
+import { URL_BASE_API_V1 } from 'app/config/global.url';
 import { ExpenseModel } from 'app/data/models/business/expense.model';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/internal/operators/map';
@@ -10,7 +10,7 @@ import { map } from 'rxjs/internal/operators/map';
 })
 export class ExpensesService {
 
-  private URLCOMPL: string = URL_BASE_COMPLEMENT;
+  private URLCOMPL: string = URL_BASE_API_V1;
   private httpHeaders =  new HttpHeaders({'Content-type':'application/json'});
   
   constructor(
