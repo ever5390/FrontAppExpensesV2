@@ -15,8 +15,8 @@ export class PaymentMethodService {
 
   constructor(private _http: HttpClient) { }
 
-  getAllPaymentMethod(): Observable<PaymentMethodModel[]>  {
-    return this._http.get(`${this.URLCOMPL}/paymentMethod/owner/1`)
+  getAllPaymentMethod(idOwner: number): Observable<PaymentMethodModel[]>  {
+    return this._http.get(`${this.URLCOMPL}/paymentMethod/owner/${idOwner}`)
     .pipe(
       map(response => response as PaymentMethodModel[])
     );

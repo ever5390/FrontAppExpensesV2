@@ -17,8 +17,8 @@ export class ExpensesService {
     private _http: HttpClient
   ) { }
 
-  getAllExpenses(dateBegin: string, dateEnd: string): Observable<ExpenseModel[]>  {
-    return this._http.get(`${this.URLCOMPL}/expense?dateBegin=${dateBegin}&dateEnd=${dateEnd}`)
+  getAllExpensesByWorkspaceAndDateRangePeriod(idWorkspace: number, dateBegin: string, dateEnd: string): Observable<ExpenseModel[]>  {
+    return this._http.get(`${this.URLCOMPL}/expense?idWorkspace=${idWorkspace}&dateBegin=${dateBegin}&dateEnd=${dateEnd}`)
     .pipe(
       map(response => response as ExpenseModel[])
     );

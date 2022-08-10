@@ -1,6 +1,9 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { OwnerModel } from '@data/models/business/owner.model';
+import { Workspace } from '@data/models/business/workspace.model';
 import { UserService } from '@data/services/user/user.service';
+import { WorkspacesService } from '@data/services/workspace/workspaces.service';
 import { PeriodModel } from 'app/data/models/business/period.model';
 import Swal from 'sweetalert2';
 
@@ -13,6 +16,8 @@ export class AsideComponent implements OnInit {
 
 
   flagShowOptionPeriod: boolean = false;
+  owner : OwnerModel = new OwnerModel();
+  wrkspc: Workspace = new Workspace();
   period : PeriodModel = new PeriodModel();
 
   @ViewChild('aside') aside: ElementRef | any;
@@ -22,7 +27,8 @@ export class AsideComponent implements OnInit {
   constructor(
     private _renderer: Renderer2,
     private _routes: Router,
-    private _userService: UserService
+    private _userService: UserService,
+    private _workspaceService: WorkspacesService
   ) {
 
     this._renderer.listen('window','click', (e: Event)=> {
@@ -34,10 +40,24 @@ export class AsideComponent implements OnInit {
    }
   
   ngOnInit(): void {
+    this.owner = JSON.parse(localStorage.getItem('lcstrg_owner')!);
+    
     this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
     if(this.period != null && this.period.id != 0) {
         this.flagShowOptionPeriod = true;     
     }
+
+    this.getAllWorkspaceByOwnerId();
+  }
+
+  getAllWorkspaceByOwnerId() {
+    this._workspaceService.getAllWorkspaceByOwnerId(this.owner.id).subscribe(
+      response => {
+        this.wrkspc = response.filter( item => item.active == true)[0];
+      }, error => {
+        console.log(error);
+      }
+    );
   }
 
   loggout() {

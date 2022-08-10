@@ -76,7 +76,7 @@ export class ListCategoryComponent implements OnInit {
   getAllCategories() {
     this.flagListShared = false;
 
-    this._categoryService.getAllCategories().subscribe(
+    this._categoryService.getAllCategories(this.owner.id).subscribe(
       response => {
         this.listaCategories = response;
         this.flagListShared = true;

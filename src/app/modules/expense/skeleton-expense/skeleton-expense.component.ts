@@ -1,12 +1,17 @@
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { CONSTANTES } from '@data/constantes';
+import { OwnerModel } from '@data/models/business/owner.model';
+import { Workspace } from '@data/models/business/workspace.model';
 import { FilterExpensesModel } from '@data/models/Structures/data-object-filtering.model';
+import { WorkspacesService } from '@data/services/workspace/workspaces.service';
 import { UtilService } from '@shared/services/util.service';
 import { ExpenseModel, Tag } from 'app/data/models/business/expense.model';
 import { PeriodModel } from 'app/data/models/business/period.model';
 import { ExpensesService } from 'app/data/services/expenses/expenses.service';
 import { PeriodService } from 'app/data/services/period/period.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-skeleton-expense',
@@ -21,24 +26,70 @@ export class SkeletonExpenseComponent implements OnInit {
   // expense: Expense
   listExpensesToBody: ExpenseModel[] = [];
   sendListExpensesToBody: ExpenseModel[] = [];
-  period: PeriodModel = new PeriodModel();
   totalGastadoSend: number = 0;
+
+
+  owner : OwnerModel = new OwnerModel();
+  wrkspc: Workspace = new Workspace();
+  period : PeriodModel = new PeriodModel();
 
   constructor(
     private _expenseService: ExpensesService,
     private _periodService: PeriodService,
-    private _utilService: UtilService
+    private _workspaceService: WorkspacesService,
+    private _utilService: UtilService,
+    private _router: Router
   ) {
-    
+    this.owner = JSON.parse(localStorage.getItem('lcstrg_owner')!);
    }
 
   ngOnInit(): void {
+    console.log("dd");
     this.receivedItemFilterSeleceted();
-    
+    this.getAllWorkspaceByOwnerId();
   }
 
-  getAll(dateBegin: string, dateEnd: string) {  
-    this._expenseService.getAllExpenses(dateBegin, dateEnd).subscribe(
+  getAllWorkspaceByOwnerId() {
+    this._workspaceService.getAllWorkspaceByOwnerId(this.owner.id).subscribe(
+      response => {
+        this.wrkspc = response.filter( item => item.active == true)[0];
+        this.getAllPeriodsByWorskpaceId();
+
+      }, error => {
+        console.log(error);
+      }
+    );
+  }
+
+  getAllPeriodsByWorskpaceId() {
+    //Obtiene lista de periodos.
+    this._periodService.getAllPeriodaByWorkspace(this.wrkspc.id).subscribe(
+      response => {
+        if(response.length == 0){ 
+          this.getAllExpensesByWorkspaceAndDateRangePeriod(this.wrkspc.id,
+            this._utilService.convertDateToString(new Date()),
+            this._utilService.convertDateToString(new Date()));
+        } else {
+          this.period = response.filter( item => item.activate == true)[0];
+          if(this.period.id != null){
+            this.getAllExpensesByWorkspaceAndDateRangePeriod(
+              this.wrkspc.id,
+              this._utilService.convertDateToString(this.period.startDate),
+              this._utilService.convertDateToString(this.period.finalDate));
+          } else {
+            this._router.navigate(["/dashboard/period-list"]);
+          }
+        }
+      },
+      error => {
+          console.log(error);
+          Swal.fire("","Error al obtener la lista de periodos","error");
+      }
+    );
+  }
+
+  getAllExpensesByWorkspaceAndDateRangePeriod(idWrkspc: number, dateBegin: string, dateEnd: string) {  
+    this._expenseService.getAllExpensesByWorkspaceAndDateRangePeriod(idWrkspc, dateBegin, dateEnd).subscribe(
       response => {
         
         this.showBody = true;
@@ -107,8 +158,10 @@ export class SkeletonExpenseComponent implements OnInit {
     if(this.period == null) {
       this.getPeriodIfNotExist();
     } else {
-      this.getAll(this._utilService.convertDateToString(this.period.startDate),
-                       this._utilService.convertDateToString(this.period.finalDate));      
+      this.getAllExpensesByWorkspaceAndDateRangePeriod(
+        this.wrkspc.id,
+        this._utilService.convertDateToString(this.period.startDate),
+        this._utilService.convertDateToString(this.period.finalDate));
     }
   }
 
@@ -118,15 +171,20 @@ export class SkeletonExpenseComponent implements OnInit {
           this.period = response;
           if(this.period != null && this.period.id != 0) {
             localStorage.setItem("lcstrg_periodo", JSON.stringify(this.period));
-
-
-            this.getAll(this._utilService.convertDateToString(this.period.startDate), this._utilService.convertDateToString(this.period.finalDate));      
+            this.getAllExpensesByWorkspaceAndDateRangePeriod(
+              this.wrkspc.id,
+              this._utilService.convertDateToString(this.period.startDate),
+              this._utilService.convertDateToString(this.period.finalDate));
           }
         }, error => {
           console.log(error);
         }
       );
   }
+
+
+
+
 
   listaSelcetedFilter: any[] = [];
   beforeItem: FilterExpensesModel = new FilterExpensesModel();

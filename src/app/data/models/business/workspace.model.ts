@@ -4,6 +4,7 @@ export class Workspace {
     constructor(
         public id:       number = 1,
         public name:     string = '',
+        public active:     boolean = false,
         public owner:    OwnerModel = new OwnerModel(),
         public typeWSPC: TypeWSPC = new TypeWSPC(),
     ){}

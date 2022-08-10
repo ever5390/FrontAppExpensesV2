@@ -22,6 +22,12 @@ export class PeriodService {
     );
   }
 
+  getAllPeriodaByWorkspace(workspaceId: number): Observable<PeriodModel[]>  {
+    return this._http.get(`${this.URLCOMPL}/list-period/workspace/${workspaceId}`).pipe(
+      map(response => response as PeriodModel[])
+    );
+  }
+
   getAllPeriodDetailHeaderByWorkspaceId(workspaceId: number): Observable<PeriodDetailHeader[]>  {
     return this._http.get(`${this.URLCOMPL}/list-period-detail/workspace/${workspaceId}`).pipe(
       map(response => response as PeriodDetailHeader[])

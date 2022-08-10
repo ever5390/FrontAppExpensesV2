@@ -31,11 +31,12 @@ export class UserComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log(this._usuarioService.isAuthenticated());
-    if(this._usuarioService.isAuthenticated()) {
-        Swal.fire("Login",`Hola ${this._usuarioService.usuario.username}, ya estás loggeado`,"info");
-        this._router.navigate(['/dashboard']);
-    }
+    // console.log("this._usuarioService.isAuthenticated()");
+    // console.log(this._usuarioService.token);
+    // if(this._usuarioService.isAuthenticated()) {
+    //     Swal.fire("Login",`Hola ${this._usuarioService.usuario.username}, ya estás loggeado`,"info");
+    //     this._router.navigate(['/dashboard']);
+    // }
   }
 
   signUpOwner() {
@@ -46,6 +47,7 @@ export class UserComponent implements OnInit {
     this._usuarioService.create(this.usuario).subscribe(
         response => {
           Swal.fire(response.title, response.message, response.status);
+          console.log(response);
           this._router.navigate(['/dashboard']);
         //   if(response.status == "success") {
         //     this.router.navigate(['/verifyemail']);

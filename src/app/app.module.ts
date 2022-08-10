@@ -9,8 +9,8 @@ import { AsideComponent } from './layout/aside/aside.component';
 import { HeaderComponent } from './layout/header/header.component';
 import { SkeletonComponent } from './layout/skeleton/skeleton.component';
 import { SharedModule } from './shared/shared.module';
-import { SearchPipe } from './data/pipe/search.pipe';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { TokenInterceptor } from '@core/interceptor/token-interceptor';
 
 
 @NgModule({
@@ -23,8 +23,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
     HeaderComponent,
     
     // ManageExpenseComponent,
-    ListNotificationComponent,
-    SearchPipe
+    ListNotificationComponent
   ],
   imports: [
     BrowserModule,
@@ -40,7 +39,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
       provide: LocationStrategy,
       useClass: PathLocationStrategy
     },
-    //{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

@@ -51,8 +51,6 @@ import { Observable } from 'rxjs';
       params.set("username",usuario.username);
       params.set("password",usuario.password);
       params.set("grant_type","password");
-      console.log(credentialsApplications);
-      console.log(params.toString());
       return  this._http.post(urlEndPointAuth, params.toString(), {headers: httpHeadersLogin});
     }
   
@@ -69,7 +67,7 @@ import { Observable } from 'rxjs';
         this._usuario.roles = payLoad.authorities;
         this._usuario.enabled = payLoad.enabled;
         
-        localStorage.setItem("usuario",JSON.stringify(this._usuario));
+        localStorage.setItem("lcstrg_owner",JSON.stringify(this._usuario));
     }
   
     guardarToken(access_token: string) : void {
@@ -78,20 +76,33 @@ import { Observable } from 'rxjs';
     }
   
     obtenerDatosToken(accesToken :string) :any {
-        console.log("accstoken: "+this.token);
+
         if(accesToken != null && accesToken != '') {
           return JSON.parse(atob(accesToken.split(".")[1]));
+        } else {
+
+          let accesTokenLCSTG = localStorage.getItem("token");
+          if(accesTokenLCSTG != null && accesTokenLCSTG != '') {
+            return JSON.parse(atob(accesTokenLCSTG.split(".")[1]));
+          }
         }
+
         return null;
     }
   
     isAuthenticated() : boolean {
-      let payload = this.obtenerDatosToken(this.token); //Hace uso del método get token líneas arriba
-      if(payload != null && payload.username && payload.username.length > 0) {
-          return true;
-      }
-  
+
+        let payload = this.obtenerDatosToken(this.token); //Hace uso del método get token líneas arriba
+        if(payload != null && payload.username && payload.username.length > 0) {
+            return true;
+        }
+       
       return false;
+    }
+
+
+    getToken(): string{
+      return localStorage.getItem("token")!;
     }
   
     logoutSession() {
@@ -110,7 +121,8 @@ import { Observable } from 'rxjs';
     }
 
     create(owner: OwnerModel) : Observable<any> {
-      return this._http.post<OwnerModel>(`${URL_BASE_API_V1}/owner`,owner,{ headers: this.httpHeaders})
+      return this._http.post<OwnerModel>(`${URL_BASE_API_V1}/owner`,owner);
+      //return this._http.post<OwnerModel>(`${URL_BASE_API_V1}/owner`,owner,{ headers: this.httpHeaders})
 
      // return this._http.post<OwnerModel>(`${this.URLCOMPL}/owner`,owner, { context: skipApiKey() });
 

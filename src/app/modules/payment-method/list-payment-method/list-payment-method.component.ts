@@ -60,7 +60,7 @@ export class ListPaymentMethodComponent implements OnInit {
   
   getAllPaymentMethod() {
     this.flagListShared = false;
-    this._paymentMethodService.getAllPaymentMethod().subscribe(
+    this._paymentMethodService.getAllPaymentMethod(this.owner.id).subscribe(
       response => {
         this.listaPaymentMethod = response;
         this.flagListShared = true;

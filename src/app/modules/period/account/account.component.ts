@@ -219,7 +219,7 @@ export class AccountComponent implements OnInit {
   }
 
   getAllCategories() {
-    this._categoryService.getAllCategories().subscribe(
+    this._categoryService.getAllCategories(this.owner.id).subscribe(
       response => {
         this.listaCategories = response;
         this.showCategoriesActivesByAccountAndPendings();

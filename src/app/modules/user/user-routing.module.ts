@@ -5,10 +5,6 @@ import { UserComponent } from "./user-login-register/user.component";
 
 const routes: Routes = [
     {
-        path:'',
-        component: SkeletonComponent
-    },
-    {
         path:'sign-up',
         component: UserComponent
     }
