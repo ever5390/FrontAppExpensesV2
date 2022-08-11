@@ -2,7 +2,7 @@
     (showMenuNow)="ReceivedshowMenuNow($event)">
 </app-header>
 
-<div class="container-fluid">
+<div class="container-fluid" *ngIf="showBody" >
     <router-outlet></router-outlet>
 </div>
 

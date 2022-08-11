@@ -5,6 +5,8 @@ import { IDataListAccountShared } from '@data/interfaces/data-account-list-selec
 import { AccountModel } from '@data/models/business/account.model';
 import { AccordingService } from '@data/services/according/according.service';
 import { AccountService } from '@data/services/account/account.service';
+import { PeriodService } from '@data/services/period/period.service';
+import { WorkspacesService } from '@data/services/workspace/workspaces.service';
 import { AccordingModel } from 'app/data/models/business/according.model';
 import { CategoryModel } from 'app/data/models/business/category.model';
 import { ExpenseModel } from 'app/data/models/business/expense.model';
@@ -69,17 +71,14 @@ export class ManageExpenseComponent implements OnInit {
     private _accordingService: AccordingService
   ) {
     this.identifyEventClickOutWindow();
-    this.getAllAccording2();
+    this.getAllAccording();
    }
    listaAccording: AccordingModel[] = [];
 
-   getAllAccording2() {
-    console.log("dererere");
+  getAllAccording() {
     this._accordingService.getAllAccording().subscribe(
       response => {
-        this.listaAccording = response;
-        console.log(this.listaAccording);
-        
+        this.listaAccording = response;      
       },
       error => {
         console.log(error);
@@ -89,13 +88,11 @@ export class ManageExpenseComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.owner = JSON.parse(localStorage.getItem('lcstrg_owner')!);
+    
     this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
+    this.workspace = JSON.parse(localStorage.getItem("lcstrg_worskpace")!);
+    this.owner = this.workspace.owner;
 
-    this.workspace.owner = this.owner;
-    this.workspace.typeWSPC = new TypeWSPC(1,'SINGLE');
-    console.log("this.workspace");
-    console.log(this.workspace);
     if(this.period != null) this.getAllAccountByPeriodSelected(this.period.id);
   }
 

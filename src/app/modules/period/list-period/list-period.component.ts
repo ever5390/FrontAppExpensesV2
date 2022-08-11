@@ -56,7 +56,7 @@ export class ListPeriodComponent implements OnInit {
   }
 
   redirectToDetailPeriod( idPeriod: number) {
-    this._route.navigate(['/period-detail/' + idPeriod]);
+    this._route.navigate(['dashboard/period-detail/' + idPeriod]);
   }
 
   getSizeBloclListPeriod() {

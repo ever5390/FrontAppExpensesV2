@@ -2,8 +2,8 @@
     <div  class="st_aside">
         <div class="st_aside_header">
             <div class="d-flex justify-content-start align-items-center">
-                <img width="30" src="https://www.disneyplusinformer.com/wp-content/uploads/2021/09/The-Simpsons-Profile-Icons-8.png" alt="img_prof" srcset="">
-                <span class="px-2">Ever Rosales</span>
+                <img width="30" src="{{owner.image}}" alt="img_prof" srcset="">
+                <span class="px-2">{{owner.username}}</span>
             </div>
             <i class="far fa-times" (click)="this.active_menu=false;this.hiddenMenuNow.emit(false);"></i>
         </div>

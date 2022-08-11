@@ -5,13 +5,13 @@
                 <label>Total Gastado</label>
                 <span>S/ {{totalGastadoReceived | number: '1.2-2'}}</span>
             </div>
-            <div class="st_block_subtitle" *ngIf="accountMain.id != 0">
+            <div class="st_block_subtitle" *ngIf="accountMain != null  && accountMain.id != 0">
                 <label>Disponible</label>
                 <span [ngSwitch]="accountMain.balanceFlow" >
-                    <span *ngSwitchCase="80" style="color:'yellow'">S/ {{accountMain.balanceFlow | number: '1.2-2'}}</span>
-                    <span *ngSwitchCase="40" style="color:'orange'">S/ {{accountMain.balanceFlow | number: '1.2-2'}}</span>
-                    <span *ngSwitchCase="0" style="color:'red'">    S/ {{accountMain.balanceFlow | number: '1.2-2'}}</span>
-                    <span  *ngSwitchDefault style="color:'black'">  S/ {{accountMain.balanceFlow | number: '1.2-2'}}</span>
+                    <span *ngSwitchCase="80" style="color:'yellow'">S/ {{availableAmount | number: '1.2-2'}}</span>
+                    <span *ngSwitchCase="40" style="color:'orange'">S/ {{availableAmount | number: '1.2-2'}}</span>
+                    <span *ngSwitchCase="0" style="color:'red'">    S/ {{availableAmount | number: '1.2-2'}}</span>
+                    <span  *ngSwitchDefault style="color:'black'">  S/ {{availableAmount | number: '1.2-2'}}</span>
                 </span>
             </div>
         </div>

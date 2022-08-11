@@ -1,4 +1,3 @@
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CONSTANTES } from '@data/constantes';
@@ -11,7 +10,6 @@ import { ExpenseModel, Tag } from 'app/data/models/business/expense.model';
 import { PeriodModel } from 'app/data/models/business/period.model';
 import { ExpensesService } from 'app/data/services/expenses/expenses.service';
 import { PeriodService } from 'app/data/services/period/period.service';
-import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-skeleton-expense',
@@ -41,57 +39,26 @@ export class SkeletonExpenseComponent implements OnInit {
     private _router: Router
   ) {
     this.owner = JSON.parse(localStorage.getItem('lcstrg_owner')!);
+    this.wrkspc = JSON.parse(localStorage.getItem("lcstrg_worskpace")!);
+    this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
    }
 
   ngOnInit(): void {
-    console.log("dd");
-    this.receivedItemFilterSeleceted();
-    this.getAllWorkspaceByOwnerId();
-  }
-
-  getAllWorkspaceByOwnerId() {
-    this._workspaceService.getAllWorkspaceByOwnerId(this.owner.id).subscribe(
-      response => {
-        this.wrkspc = response.filter( item => item.active == true)[0];
-        this.getAllPeriodsByWorskpaceId();
-
-      }, error => {
-        console.log(error);
+      if(this.period != null){
+        this.getAllExpensesByWorkspaceAndDateRangePeriod(
+          this.wrkspc.id,
+          this._utilService.convertDateToString(this.period.startDate),
+          this._utilService.convertDateToString(this.period.finalDate));
+      } else {
+        this.getAllExpensesByWorkspaceAndDateRangePeriod(this.wrkspc.id,
+          this._utilService.convertDateToString(new Date()),
+          this._utilService.convertDateToString(new Date()));
       }
-    );
-  }
-
-  getAllPeriodsByWorskpaceId() {
-    //Obtiene lista de periodos.
-    this._periodService.getAllPeriodaByWorkspace(this.wrkspc.id).subscribe(
-      response => {
-        if(response.length == 0){ 
-          this.getAllExpensesByWorkspaceAndDateRangePeriod(this.wrkspc.id,
-            this._utilService.convertDateToString(new Date()),
-            this._utilService.convertDateToString(new Date()));
-        } else {
-          this.period = response.filter( item => item.activate == true)[0];
-          if(this.period.id != null){
-            this.getAllExpensesByWorkspaceAndDateRangePeriod(
-              this.wrkspc.id,
-              this._utilService.convertDateToString(this.period.startDate),
-              this._utilService.convertDateToString(this.period.finalDate));
-          } else {
-            this._router.navigate(["/dashboard/period-list"]);
-          }
-        }
-      },
-      error => {
-          console.log(error);
-          Swal.fire("","Error al obtener la lista de periodos","error");
-      }
-    );
   }
 
   getAllExpensesByWorkspaceAndDateRangePeriod(idWrkspc: number, dateBegin: string, dateEnd: string) {  
     this._expenseService.getAllExpensesByWorkspaceAndDateRangePeriod(idWrkspc, dateBegin, dateEnd).subscribe(
       response => {
-        
         this.showBody = true;
         this.sendListExpensesToBody = response;
         this.listExpensesToBody = response;
@@ -113,7 +80,7 @@ export class SkeletonExpenseComponent implements OnInit {
       element.strSearchAllJoin = this.getPayedOrPendingPay(element.pendingPayment) + " " + element.amountShow
         + " " + element.description + " " + element.category.name
         + " " + element.paymentMethod.name + " " + element.accordingType.name
-        + " " + element.account.accountName + " " + element.payer
+        + " " + (element.account!=null?element.account.accountName:'') + " " + element.payer
         + " " + element.registerPerson.name + " " + this.concatTags(element.tag);
       
       element.strFilterParamsJoin = element.paymentMethod.name + " " + element.accordingType.name
@@ -136,7 +103,7 @@ export class SkeletonExpenseComponent implements OnInit {
   receivedHeightHeader(e:number) {
     this.sendHeightHeaderToBody = e.toString();
     setTimeout(()=> {
-      this.catchPeriodAndGetAllListExpenses();
+      //this.catchPeriodAndGetAllListExpenses();
     },50);
   }
 

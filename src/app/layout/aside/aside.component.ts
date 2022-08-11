@@ -40,30 +40,21 @@ export class AsideComponent implements OnInit {
    }
   
   ngOnInit(): void {
-    this.owner = JSON.parse(localStorage.getItem('lcstrg_owner')!);
-    
+    this.wrkspc = JSON.parse(localStorage.getItem('lcstrg_worskpace')!);
     this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
+    this.owner = this.wrkspc.owner;
+    // this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
     if(this.period != null && this.period.id != 0) {
-        this.flagShowOptionPeriod = true;     
+        this.flagShowOptionPeriod = true;
     }
 
-    this.getAllWorkspaceByOwnerId();
   }
 
-  getAllWorkspaceByOwnerId() {
-    this._workspaceService.getAllWorkspaceByOwnerId(this.owner.id).subscribe(
-      response => {
-        this.wrkspc = response.filter( item => item.active == true)[0];
-      }, error => {
-        console.log(error);
-      }
-    );
-  }
 
   loggout() {
     Swal.fire("",`Hola ${this._userService.usuario.username}, nos vemos luego`,"info");
     this._userService.logoutSession();
-    this._routes.navigate(["/"]);
+    this._routes.navigate(["/login"]);
   }
 
 

@@ -65,11 +65,11 @@
                 </ng-container>     
             </div>
             <button (click)="saveOrUpdate()">{{dataStructureReceived.action}}</button>
-            <button style="background-color: rgb(212, 33, 33);" 
+            <!-- <button style="background-color: rgb(212, 33, 33);" 
                     *ngIf="dataStructureReceived.action==='Actualizar'"
                     (click)="delete()">
                 Eliminar
-            </button>
+            </button> -->
             
             <!-- Lista de cuentas: caso Transferencia interna -->
             <app-list-accounts-shared *ngIf="flagShowListAccountOrigenSelect"

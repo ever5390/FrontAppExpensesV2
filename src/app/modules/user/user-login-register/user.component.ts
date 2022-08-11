@@ -75,19 +75,7 @@ export class UserComponent implements OnInit {
 
                 let usuario = this._usuarioService.usuario;
                 Swal.fire("Login",`Hola ${usuario.username}, has iniciado sessión con éxito`,"success")
-                this._router.navigate(['/dashboard']);
-                // this._periodService.getAllResumePeriodByOwnerId(usuario.id).subscribe(
-                // response => {
-
-                //     if(response != null && response.length > 0) {
-                //         this._router.navigate(['/maintenance/dashboard']);
-                //     } else {
-                //         this._router.navigate(['/maintenance/periodo']);
-                //     }
-                // }
-                // );
-
-                
+                this._router.navigate(['/dashboard']);                
             }, err => {
                 Swal.fire("Error Login",err.message,"error")
                 console.log(err);

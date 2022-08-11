@@ -11,7 +11,7 @@
                     <span [ngStyle]="{'background-color':(expense.pendingPayment) ? '#c9291e' : '#47B152'}" *ngIf="expense.pendingPayment">Pendiente de pago</span>
                     <!-- <span *ngIf="expense.isPendingPayment">Pendiente de pago</span> -->
                     <span><strong>ACCORD:</strong> {{expense.accordingType.name}}</span>
-                    <span><strong>ACC:</strong> {{expense.account.accountName}}</span>
+                    <span *ngIf="expense.account!=null"><strong>ACC:</strong> {{expense.account.accountName}}</span>
                 </div>
                 <div class="st_body_body">
                     {{expense.description}}
