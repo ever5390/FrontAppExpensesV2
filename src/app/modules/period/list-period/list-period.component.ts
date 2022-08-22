@@ -1,6 +1,7 @@
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { UtilService } from '@shared/services/util.service';
 import { PeriodModel } from 'app/data/models/business/period.model';
 import { PeriodDetailHeader } from 'app/data/models/business/periodDetailHeader.model';
 import { PeriodService } from 'app/data/services/period/period.service';
@@ -14,8 +15,7 @@ import Swal from 'sweetalert2';
 export class ListPeriodComponent implements OnInit {
 
 
-  period: PeriodModel = new PeriodModel();
-  periodDetailHeader: PeriodDetailHeader = new PeriodDetailHeader();
+  periodReceivedFromLocalStorage: PeriodModel = new PeriodModel();
   listPeriodDetailHeader: PeriodDetailHeader[] =[];
 
   @ViewChild('idFormShared') idFormShared: ElementRef | any;
@@ -23,30 +23,33 @@ export class ListPeriodComponent implements OnInit {
   constructor(
     private _periodService: PeriodService,
     private _route: Router,
-    private _renderer: Renderer2
+    private _renderer: Renderer2,
+    private _utilitariesService: UtilService
   ) {
   }
 
   ngAfterViewInit() {
-    this.getSizeBloclListPeriod();
+    console.log("ngAfter");
+      this.getSizeBloclListPeriod();   
   }
 
   ngOnInit(): void {
-    this.catchPeriod();
+    this.periodReceivedFromLocalStorage = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
     this.getAllDataCardPeriod();
-  }
-
-  catchPeriod() {
-    if(this.period != null && this.period.id != 0) {
-      this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
-    }
   }
 
   getAllDataCardPeriod() {
     //Obtiene lista de periodos.
-    this._periodService.getAllPeriodDetailHeaderByWorkspaceId(this.period.workSpace.id).subscribe(
+    this._periodService.getAllPeriodDetailHeaderByWorkspaceId(this.periodReceivedFromLocalStorage.workSpace.id).subscribe(
       response => {
         this.listPeriodDetailHeader = response;
+        this.listPeriodDetailHeader = response.filter( item => {
+          item.period.finalDate = this._utilitariesService.getDateAddHoursOffset(item.period.finalDate.toString(), "plus").toString();
+          item.period.startDate = this._utilitariesService.getDateAddHoursOffset(item.period.startDate.toString(), "plus").toString();
+          return item;
+        });
+
+        this.getSizeBloclListPeriod();
       },
       error => {
           console.log(error);
@@ -56,17 +59,22 @@ export class ListPeriodComponent implements OnInit {
   }
 
   redirectToDetailPeriod( idPeriod: number) {
+    console.log(idPeriod);
     this._route.navigate(['dashboard/period-detail/' + idPeriod]);
   }
 
   getSizeBloclListPeriod() {
-    let windowHeight = window.innerHeight;
-    let heightForm = this.idFormShared.nativeElement.clientHeight;
 
-    if(heightForm > (windowHeight-20)){
-      this._renderer.setStyle(this.idFormShared.nativeElement,"height",(windowHeight*0.8)+"px");
-      this._renderer.setStyle(this.idFormShared.nativeElement,"overflow-y","scroll");
-    }
+    setTimeout(() => {
+      let windowHeight = window.innerHeight;
+      let heightForm = this.idFormShared.nativeElement.clientHeight;
+      console.log(windowHeight + " -- " + heightForm);
+      if(heightForm > (windowHeight-20)){
+        this._renderer.setStyle(this.idFormShared.nativeElement,"height",(windowHeight*0.8)+"px");
+        this._renderer.setStyle(this.idFormShared.nativeElement,"overflow-y","scroll");
+      }
+    }, 20);
+   
   }
 
 

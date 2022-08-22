@@ -29,6 +29,10 @@
             font-weight: 600;
             text-align: center;
         }
+
+        .st_fc_subheader :hover {
+            cursor: pointer;
+        }
     
     .st_resume_data {
         display: flex;
@@ -99,6 +103,24 @@ label {
 
 .fa-search {
     margin-right: 5px;
+}
+
+
+
+
+
+/* CALENDAR POP UP */
+
+.st_container_calendar_popup {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: #6a6a6a17;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 @media (max-width: 580px) {

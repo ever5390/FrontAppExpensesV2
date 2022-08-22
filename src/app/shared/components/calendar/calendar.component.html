@@ -29,11 +29,11 @@
                 </div>
                 <div class="next-date" *ngFor="let day of daysMonthNext" >{{day}}</div>
             </div>
-            <div class="fw-bold mt-0 p-3 border-top ft_hover" (click)="showSpecificsFilters()">
+            <div *ngIf="flagFilterOptions" class="fw-bold mt-0 p-3 border-top ft_hover" (click)="showSpecificsFilters()">
                 <i class="fas fa-angle-up"></i>
                 <span class="px-2">Filtros específicos</span>
             </div>
-            <div class="st_fast_filters" #hashIDFilters>
+            <div *ngIf="flagFilterOptions" class="st_fast_filters" #hashIDFilters>
                 <div class="fw-bold mt-3 pb-2" (click)="showSpecificsFilters()">
                     <i class="fas fa-angle-down"></i>
                     <span class="px-2 ft_hover">Filtros específicos</span>
@@ -49,6 +49,18 @@
                 <div (click)="catchDate(1,-1,1)">El mes pasado</div>
                 <div (click)="catchDate(0,0,-7)">Esta semana</div>
                 <div (click)="catchDate(0,-3,0)">Hace 3 meses</div>
+            </div>
+            <div *ngIf="flagPeriodOptions" class="fw-bold mt-0 p-3 border-top ft_hover" (click)="showSpecificsFilters()">
+                <i class="fas fa-angle-up"></i>
+                <span class="px-2">Finalizar periodo por:</span>
+            </div>
+            <div *ngIf="flagPeriodOptions" class="st_fast_filters" #hashIDFilters>
+                <div class="fw-bold mt-3 pb-2" (click)="showSpecificsFilters()">
+                    <i class="fas fa-angle-down"></i>
+                    <span class="px-2 ft_hover">Finalizar periodo por:</span>
+                </div>
+                <div (click)="catchDateSingleSelectPeriod('quincenal')">Quincenal</div>
+                <div (click)="catchDateSingleSelectPeriod('mensual')">Mensual</div>
             </div>
         </div>
         <!-- <div class="actions__filter">

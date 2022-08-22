@@ -3,7 +3,7 @@
         [periodDetailHeaderReceived]="periodDetailHeaderSend"
     ></app-detail-header-period>
     <!-- <h3>text</h3> -->
-    <app-detail-body-period *ngIf="flagShowBody"
+    <app-detail-body-period *ngIf="flagShowBody && blockAccount"
         [accountListReceived]="accountListSend"
         (sendUpdateAmountInitialHeader)="receivedUpdateAmountInitialHeader($event)"
     ></app-detail-body-period>

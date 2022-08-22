@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AccountClosedStructure } from '@data/models/Structures/data-account.model';
 import { SLoaderService } from '@shared/components/loaders/s-loader/service/s-loader.service';
 import { CONSTANTES } from 'app/data/constantes';
-import { AccountModel } from 'app/data/models/business/account.model';
+import { AccountModel, TypeSatusAccountOPC } from 'app/data/models/business/account.model';
 import { PeriodModel } from 'app/data/models/business/period.model';
 import { TransferenciaModel } from 'app/data/models/business/transferencia.model';
 import { DataStructureFormShared } from 'app/data/models/Structures/data-structure-form-shared.model';
@@ -19,6 +20,8 @@ export class DetailBodyPeriodComponent implements OnInit {
 
   accountParentShow: AccountModel = new AccountModel();
   accountListChildsShow: AccountModel[] = [];
+  accountClosedStructureList: AccountClosedStructure[] = [];
+  accountClosedStructure: AccountClosedStructure = new AccountClosedStructure();
 
   accountParentInit: AccountModel = new AccountModel();
   accountParentProcess: AccountModel = new AccountModel();
@@ -33,6 +36,7 @@ export class DetailBodyPeriodComponent implements OnInit {
   title:string = "";
   sendBtnText:string='';
   flagFormulario: boolean = false;
+  blockAccount: boolean = false;
 
   dataStructure: DataStructureFormShared = new DataStructureFormShared();
 
@@ -49,12 +53,59 @@ export class DetailBodyPeriodComponent implements OnInit {
     this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
     this.catchAccountParent();
     this.catchAccountChilds();
+    this.validateShowBlockAccounts();
+  }
+
+  validateShowBlockAccounts() {
+    this.blockAccount = true;
+    console.log(this.accountParentShow);
+    console.log(this.accountClosedStructureList);
+    if(!this.accountParentShow.period.statusPeriod && this.accountClosedStructureList.length == 0) {
+      console.log("ddd");
+      this.blockAccount = false;
+    }
   }
 
   catchAccountChilds() {
-    this.accountListChildsShow = this.accountListReceived.filter(item => {
-      return item.accountType.id == 2 && item.statusAccount.toString() == this.accountParentShow.statusAccount; 
-    });
+    //Case Closed
+    if(this.accountParentShow.statusAccount.toString() == TypeSatusAccountOPC.CLOSED) {
+      this.accountListChildsShow = this.accountListReceived.filter(item => {
+        return item.accountType.id == 2 && item.statusAccount.toString() == this.accountParentShow.statusAccount; 
+      });
+
+      this.accountListChildsInit = this.accountListReceived.filter(item => {
+        return item.accountType.id == 2 && item.statusAccount.toString() == TypeSatusAccountOPC.INITIAL; 
+      });
+
+      this.accountListChildsShow.forEach(itemClosed=> {
+        this.accountListChildsInit.forEach(itemInit=> {
+          if(itemClosed.accountNumber == itemInit.accountNumber){
+            this.accountClosedStructure = new AccountClosedStructure();
+            this.accountClosedStructure.account = itemClosed;
+            this.accountClosedStructure.amountInitial = parseFloat(itemInit.balance);
+            this.accountClosedStructure.spent = parseFloat(itemClosed.balance) - parseFloat(itemClosed.balanceFlow);
+            this.accountClosedStructure.diferenciaAmountByStatus = parseFloat(itemInit.balance) - this.accountClosedStructure.spent;
+            this.accountClosedStructureList.push(this.accountClosedStructure);
+          }
+        })
+      })
+
+      return;
+    } else {
+      this.accountClosedStructureList = []; 
+      this.accountListChildsShow = this.accountListReceived.filter(item => {
+        return item.accountType.id == 2 && item.statusAccount.toString() == this.accountParentShow.statusAccount; 
+      });
+      
+      for (let index = 0; index < this.accountListChildsShow.length; index++) {
+        this.accountClosedStructure = new AccountClosedStructure();
+        this.accountClosedStructure.account = this.accountListChildsShow[index];
+        this.accountClosedStructureList.push(this.accountClosedStructure);
+      }
+    }
+
+    console.log(this.accountParentShow);
+
   }
 
   catchAccountParent() {
@@ -86,19 +137,39 @@ export class DetailBodyPeriodComponent implements OnInit {
     }
 
     //Caso existe ParentInitial
-    if(this.accountParentProcess.id == 0) {
+    if(this.accountParentInit.id != 0) {
       this.accountParentShow = this.accountParentInit;
-      return;
+      //return;
     }
 
     //Caso existe ParentProcess
-    if(this.accountParentClosed.id == 0) {
+    if(this.accountParentProcess.id != 0) {
       this.accountParentShow = this.accountParentProcess;
-      return;
+      //return;
     }
 
-    //Caso exista parentCLOSED => Mostrar el parentFinal
-    this.accountParentShow = this.accountParentClosed;
+    //Caso existe accountParentClosed
+    if(this.accountParentClosed.id != 0) {
+      this.accountParentShow = this.accountParentClosed;
+      //return;
+    }
+
+    //*** CODE ANTERIOR *** */
+
+    // //Caso existe ParentInitial
+    // if(this.accountParentProcess.id == 0) {
+    //   this.accountParentShow = this.accountParentInit;
+    //   //return;
+    // }
+
+    // //Caso existe ParentProcess
+    // if(this.accountParentClosed.id == 0) {
+    //   this.accountParentShow = this.accountParentProcess;
+    //   return;
+    // }
+
+    // //Caso exista parentCLOSED => Mostrar el parentFinal
+    // this.accountParentShow = this.accountParentClosed;
 
   }
 
@@ -204,6 +275,7 @@ export class DetailBodyPeriodComponent implements OnInit {
     this.dataStructure.action = CONSTANTES.CONST_TEXT_BTN_REGISTRAR;
     this.dataStructure.imagen = CONSTANTES.CONST_IMAGEN_CUENTAS;
     this.dataStructure.object = new AccountModel();
+    this.dataStructure.object.accountName = "Principal";
     console.log(object);
     if(object == 'child') {
       console.log(object);

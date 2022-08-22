@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
+import { UtilService } from '@shared/services/util.service';
 import { CONSTANTES } from 'app/data/constantes';
 
 @Component({
@@ -16,7 +17,8 @@ export class HeaderComponent implements OnInit {
   
   @Output() showMenuNow: EventEmitter<boolean> = new EventEmitter();
   constructor(
-    private _router: Router
+    private _router: Router,
+    private _utilService: UtilService
   ) { }
 
   ngOnInit(): void {
@@ -48,8 +50,9 @@ export class HeaderComponent implements OnInit {
   receiveResponseFromCalendarToParent(data: any) {
     this.flagCalendarpPopUp = false;
     if(data.dateRange == undefined) return;
-    console.log("RECEIVED date begin: " + data.dateRange.startDate );
-    console.log("RECEIVED date end: " + data.dateRange.finalDate );
+
+    this._utilService.sendDatesFromCalendarSelected(data.dateRange);
+
   }
  
 

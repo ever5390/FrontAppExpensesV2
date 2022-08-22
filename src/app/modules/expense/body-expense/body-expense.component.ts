@@ -25,7 +25,7 @@ export class BodyExpenseComponent implements OnInit {
 
   ngAfterViewInit() {
     setTimeout(()=>{      
-      this._renderer.setStyle(this.contentList.nativeElement,"height", (parseInt(this.receivedHeightHeaderToBody) - 60)+"px");
+      this._renderer.setStyle(this.contentList.nativeElement,"height", (parseInt(this.receivedHeightHeaderToBody) - 110)+"px");
       this._renderer.setStyle(this.contentList.nativeElement,"overflow-y","scroll");
     },500);
   }

@@ -119,6 +119,10 @@
                 justify-content: space-between;
             }
 
+            .st_account_estimated{
+                margin-top: 10px;
+            }
+
                 .st_acc_act_data, .st_acc_act_data {
                     display: flex;
                     flex-direction: column;

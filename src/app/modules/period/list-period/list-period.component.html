@@ -7,13 +7,15 @@
                 <h1 class="fs-6">PERIODO</h1>
                 <div class=" d-flex align-items-center justify-content-center w-100">
                     <img class="mx-2" src="../../../../assets/images/icon calendar.png" alt="" srcset="">
-                    <ng-container *ngIf="dataHeader.period.activate; else elsePeriodActivateEqualsFalse;">
-                        <span>Del {{dataHeader.period.startDate | date: 'dd MMM YYY' | uppercase}}
-                            hasta {{dataHeader.period.finalDate | date: 'dd MMM YYY' | uppercase}}
-                       </span>
+                    <ng-container 
+                        [ngTemplateOutlet]="dataHeader.period.activate === true? elsePeriodActivateEqualsTrue : elsePeriodActivateEqualsFalse"
+                        [ngTemplateOutletContext]="{dataHeader:dataHeader}"
+                        >
                     </ng-container>
                     <img class="mx-2"  src="../../../../assets/images/icon calendar.png" alt="" srcset="">
                 </div>
+                <div style="font-size: .7rem;" *ngIf="dataHeader.period.statusPeriod == false">FINALIZADO</div>
+                <div style="font-size: .7rem;" *ngIf="dataHeader.period.statusPeriod == true">ACTUAL</div>
             </div>
             <div class="form_control d-flex flex-wrap justify-content-between align-items-center" >
                 <div class="st_resume_data text-center">
@@ -26,7 +28,14 @@
                 </div>
                 <div class="st_resume_data text-center">
                     <label >S/ {{dataHeader.saving | number:'1.2-2'}}</label>
-                    <span>AHORRO</span>
+                    <span class="st_resume_ahorro_perdida" *ngIf="dataHeader.saving < 0">
+                        <i style="color: rgb(202, 41, 41);" class="fas fa-caret-down"></i> 
+                         PÉRDIDA
+                    </span>
+                    <span class="st_resume_ahorro_perdida" *ngIf="dataHeader.saving >= 0">
+                        <i style="color: rgb(66, 170, 66);" class="fas fa-caret-up"></i> 
+                         AHORRADO
+                    </span>
                 </div>
             </div>             
         </div>        
@@ -35,8 +44,14 @@
     
   </div>
 
-  <ng-template #elsePeriodActivateEqualsFalse>
-    <span>Del {{period.startDate | date: 'dd MMM YYY' | uppercase}}
+  <ng-template #elsePeriodActivateEqualsTrue let-dataHeader='dataHeader'>
+    <span style="text-align: center;">Del {{dataHeader.period.startDate | date: 'dd MMM YYY  HH:mm:ss' | uppercase}}
+        hasta {{dataHeader.period.finalDate | date: 'dd MMM YYY  HH:mm:ss' | uppercase}}
+   </span>
+</ng-template>
+
+  <ng-template #elsePeriodActivateEqualsFalse let-dataHeader='dataHeader'>
+    <span style="text-align: center;">Del {{dataHeader.period.startDate | date: 'dd MMM YYY  HH:mm:ss' | uppercase}}
         hasta Actualidad
    </span>
 </ng-template>

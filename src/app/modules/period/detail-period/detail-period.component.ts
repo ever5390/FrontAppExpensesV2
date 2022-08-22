@@ -1,6 +1,5 @@
 import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { FormularioSharedComponent } from '@shared/components/formulario-shared/formulario-shared.component';
 import { AccountModel } from 'app/data/models/business/account.model';
 import { PeriodDetailHeader } from 'app/data/models/business/periodDetailHeader.model';
 import { AccountService } from 'app/data/services/account/account.service';
@@ -16,6 +15,7 @@ export class DetailPeriodComponent implements OnInit {
 
   flagShowHeader: boolean = false;
   flagShowBody: boolean = false;
+  blockAccount: boolean = false;
 
   periodDetailHeaderSend: PeriodDetailHeader = new PeriodDetailHeader();
   accountListSend: AccountModel[] = [];
@@ -46,6 +46,14 @@ export class DetailPeriodComponent implements OnInit {
     );
 
   }
+  
+  validateShowBlockAccounts() {
+    this.blockAccount = true;
+    if(!this.periodDetailHeaderSend.period.statusPeriod && this.accountListSend.length == 0) {
+      this.blockAccount = false;
+      return;
+    }
+  }
 
   getAllDataCardPeriod(idPeriodReceived: number) {
     //Obtiene lista de periodos.
@@ -63,11 +71,14 @@ export class DetailPeriodComponent implements OnInit {
     );
   }
 
+
   getAllAccountByPeriodSelected(idPeriodReceived: number) {
     this._accountService.getListAccountByIdPeriod(idPeriodReceived).subscribe(
       response => {
+        console.log(response);
         this.accountListSend = response;
         this.flagShowBody = true;
+        this.validateShowBlockAccounts();
       },
       error => {
         console.log(error);

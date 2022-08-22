@@ -5,6 +5,7 @@ import { Workspace } from '@data/models/business/workspace.model';
 import { PeriodService } from '@data/services/period/period.service';
 import { UserService } from '@data/services/user/user.service';
 import { WorkspacesService } from '@data/services/workspace/workspaces.service';
+import { UtilService } from '@shared/services/util.service';
 import { OwnerModel } from 'app/data/models/business/owner.model';
 import Swal from 'sweetalert2';
 
@@ -23,14 +24,15 @@ export class SkeletonComponent implements OnInit {
   owner : OwnerModel = new OwnerModel();
   wrkspc: Workspace = new Workspace();
   period : PeriodModel = new PeriodModel();
-  
 
   constructor(
-    private _usuarioService: UserService,
     private _router: Router,
+    private _usuarioService: UserService,
     private _periodService: PeriodService,
+    private _utilitariesService: UtilService,
     private _workspaceService: WorkspacesService
-  ) { }
+  ) { 
+  }
 
   ngOnInit(): void {
     if(!this._usuarioService.isAuthenticated()) {
@@ -64,7 +66,7 @@ export class SkeletonComponent implements OnInit {
         if(response.length != 0){ 
           this.period = response.filter( item => item.statusPeriod == true)[0];
           if(this.period.id != null){
-            localStorage.setItem("lcstrg_periodo", JSON.stringify(this.period));
+            this._periodService.saveToLocalStorage(this.period);
           } else {
             this._router.navigate(["/dashboard/period-list"]);
           }

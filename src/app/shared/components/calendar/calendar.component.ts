@@ -13,6 +13,8 @@ export class CalendarComponent implements OnInit {
   @Input() receivedComponentParent: String = '';
   @Output() sendResponseFromCalendarToParent : EventEmitter<any> = new EventEmitter();
   
+  flagFilterOptions: boolean = false;
+  flagPeriodOptions: boolean = false;
 
   date : Date =  new Date();
   dateSend: DateSend = new DateSend();
@@ -82,6 +84,15 @@ export class CalendarComponent implements OnInit {
 
   ngOnInit(): void {
     //this.catchDate(1,0,1);
+
+    if(this.receivedComponentParent == CONSTANTES.CONST_COMPONENT_PERIOD){
+      this.flagPeriodOptions = true;
+    }
+
+    if(this.receivedComponentParent == CONSTANTES.CONST_COMPONENT_HEADER){
+      this.flagFilterOptions = true;
+    }
+
     this.renderCalendar();
   }
 
@@ -158,7 +169,7 @@ export class CalendarComponent implements OnInit {
         this.validIfMonthInitialIsEqualsMonthFinal(lista);
 
         //Emite dates to Parent
-        this.sendDateRangeToFather();
+        this.sendDateRangeToFather("two");
         
         return;
     }
@@ -171,9 +182,9 @@ export class CalendarComponent implements OnInit {
 
         console.log("CLICK ITEM DATE");
 
-    if(this.receivedComponentParent == CONSTANTES.CONST_COMPONENT_EXPENSEREGISTER) {
+    if(this.receivedComponentParent != CONSTANTES.CONST_COMPONENT_HEADER) {
       //Emite dates to Parent
-      this.sendDateRangeToFather();
+      this.sendDateRangeToFather("only");
       return;
     }
     
@@ -458,17 +469,39 @@ export class CalendarComponent implements OnInit {
 
   };
 
-  sendDateRangeToFather() {
-
-    // this.dateSend.startDate = this.inputValueDateInit.getFullYear() + "-" + (this.inputValueDateInit.getMonth()+1) + "-" + this.inputValueDateInit.getDate();
-    // this.dateSend.finalDate = this.inputValueDateEnd.getFullYear() + "-" + (this.inputValueDateEnd.getMonth()+1) + "-" + this.inputValueDateEnd.getDate()+ " 23:59:59";
-
+  sendDateRangeToFather(order: string) {
     this.dateSend.startDate = this.dateSelectedInitial.dateSelected;
-    this.dateSend.finalDate = this.dateSelectedFinal.dateSelected;
-    // console.log(this.inputValueDateInit);
-    // console.log(this.inputValueDateEnd);
+    this.dateSend.finalDate = (order == "only")?this.dateSelectedInitial.dateSelected:this.dateSelectedFinal.dateSelected;
+
     this.sendResponseFromCalendarToParent.emit({
       "component": CONSTANTES.CONST_COMPONENT_CALENDAR,
+      "action": null,
+      "dateRange": this.dateSend
+    });
+  }
+
+  catchDateSingleSelectPeriod(type: string) {
+
+    if(type == "quincenal") {
+      this.dateSend.startDate = new Date(
+        this.date.getFullYear(),
+        this.date.getMonth(),
+        15
+      )
+    }
+
+    if(type == "mensual") {
+      this.dateSend.startDate = new Date(
+        this.date.getFullYear(),
+        this.date.getMonth()+1,
+        0
+      )
+    }
+
+    //console.log(this.dateSend.startDate);
+    this.sendResponseFromCalendarToParent.emit({
+      "component": CONSTANTES.CONST_COMPONENT_CALENDAR,
+      "action": type,
       "dateRange": this.dateSend
     });
   }
@@ -501,7 +534,7 @@ export class CalendarComponent implements OnInit {
       this.inputValueDateEnd = new Date();
     }
     //this.showSelectDateFilter();
-    this.sendDateRangeToFather();
+    this.sendDateRangeToFather("only");
   }
 
   getLastDayByMonthAndYear() {

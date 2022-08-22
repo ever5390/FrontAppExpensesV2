@@ -18,9 +18,12 @@
         <div class="st_fc_header mt-1 d-flex align-items-center justify-content-center w-100">
             <img class="mx-2" src="../../../../assets/images/icon calendar.png" alt="" srcset="">
             <ng-container *ngIf="period.activate; else elsePeriodActivateEqualsFalse;">
-                <span>Del {{period.startDate | date: 'dd MMM YYY' | uppercase}}
+                <!-- <span>Del {{period.startDate | date: 'dd MMM YYY HH:mm:ss' | uppercase}}
                     hasta {{period.finalDate | date: 'dd MMM YYY' | uppercase}}
-               </span>
+               </span> -->
+            <span>Del {{period.startDate | date: 'EEE dd MMM  HH:mm:ss' | uppercase}}
+                hasta {{period.finalDate | date: 'EEE dd MMM  HH:mm:ss' | uppercase}}
+           </span>
             </ng-container>
             <img class="mx-2"  src="../../../../assets/images/icon calendar.png" alt="" srcset="">
         </div>
@@ -28,7 +31,7 @@
 </div>
 
 <ng-template #elsePeriodActivateEqualsFalse>
-    <span>Del {{period.startDate | date: 'dd MMM YYY' | uppercase}}
+    <span>Del {{period.startDate | date: 'EEE dd MMM  HH:mm:ss' | uppercase}}
         hasta Actualidad
    </span>
 </ng-template>

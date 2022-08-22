@@ -18,7 +18,7 @@ export class ExpensesService {
   ) { }
 
   getAllExpensesByWorkspaceAndDateRangePeriod(idWorkspace: number, dateBegin: string, dateEnd: string): Observable<ExpenseModel[]>  {
-    return this._http.get(`${this.URLCOMPL}/expense?idWorkspace=${idWorkspace}&dateBegin=${dateBegin}&dateEnd=${dateEnd}`)
+    return this._http.get(`${this.URLCOMPL}/expense-workspace?idWorkspace=${idWorkspace}&dateBegin=${dateBegin}&dateEnd=${dateEnd}`)
     .pipe(
       map(response => response as ExpenseModel[])
     );

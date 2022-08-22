@@ -52,7 +52,7 @@ export class AsideComponent implements OnInit {
 
 
   loggout() {
-    Swal.fire("",`Hola ${this._userService.usuario.username}, nos vemos luego`,"info");
+    Swal.fire("",`Hola ${this.owner.username}, nos vemos luego`,"info");
     this._userService.logoutSession();
     this._routes.navigate(["/login"]);
   }

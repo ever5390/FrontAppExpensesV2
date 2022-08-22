@@ -1,3 +1,4 @@
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { AccountModel, TypeSatusAccountOPC } from '@data/models/business/account.model';
 import { Workspace } from '@data/models/business/workspace.model';
@@ -34,33 +35,69 @@ export class HeaderExpenseComponent implements OnInit {
   ) { 
     
     this.receivingTotalSpentBySearchingExpense();
+    this.receivingDataCalendar();
+  }
+
+  receivingDataCalendar() {
+    this._utilitariesService.receivingdDatesFromCalendarSelected().subscribe(
+      response => {
+        console.log("RECEIVED date begin: " + response.startDate );
+        console.log("RECEIVED date end: " + response.finalDate );
+        this.period.startDate = this._utilitariesService.convertDateGMTToString(new Date(response.startDate), "initial");
+        this.period.finalDate = this._utilitariesService.convertDateGMTToString(new Date(response.finalDate), "final");
+        this.getAllExpensesByWorkspaceAndDateRangePeriod(this.wrkspc.id, this.period.startDate, this.period.finalDate);
+  
+      }, 
+      error => {
+        console.log(error.error);
+        this.period.startDate = this._utilitariesService.convertDateGMTToString(new Date(), "initial");
+        this.period.finalDate = this._utilitariesService.convertDateGMTToString(new Date(), "initial");
+        this.getAllExpensesByWorkspaceAndDateRangePeriod(this.wrkspc.id, this.period.startDate, this.period.finalDate);
+      }
+    );
   }
 
   ngOnInit(): void {
     this.wrkspc = JSON.parse(localStorage.getItem("lcstrg_worskpace")!);
     this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
-
+    
     if(this.period == null) {
       this.period = new PeriodModel();
+      this.validateHourIfExistPeriod();
       return;
     }
     this.showAvailableAmountFromAccountMain();
-    this.getAllExpensesByWorkspaceAndDateRangePeriod(
-      this.wrkspc.id,
-      this._utilitariesService.convertDateToString(this.period.startDate),
-      this._utilitariesService.convertDateToString(this.period.finalDate));
+    
   }
-
+  
   showAvailableAmountFromAccountMain() {
     this._accountService.findAccountByTypeAccountAndStatusAccountAndPeriodId(1, TypeSatusAccountOPC.PROCESS, this.period.id)
       .subscribe(
         response => {
           this.accountMain = response;
+          this.getAllExpensesByWorkspaceAndDateRangePeriod(
+            this.wrkspc.id,
+            this._utilitariesService.convertDateGMTToString(new Date(this.period.startDate), "initial"),
+            this._utilitariesService.convertDateGMTToString(new Date( this.period.finalDate), "final")
+            );
+            this.validateHourIfExistPeriod();
         },
         error => {
           console.error(error.error);
         }
       );
+  }
+
+  validateHourIfExistPeriod() {
+    console.log(this.period);
+    if(this.period.id != 0) {
+      this.period.startDate = this._utilitariesService.getDateAddHoursOffset(this.period.startDate.toString(), "plus").toString();
+      this.period.finalDate = this._utilitariesService.getDateAddHoursOffset(this.period.finalDate.toString(), "plus").toString();
+      return;
+    }
+
+    this.period.startDate =new Date().toString();
+    this.period.finalDate =new Date().toString();
   }
 
   getAllExpensesByWorkspaceAndDateRangePeriod(idWrkspc: number, dateBegin: string, dateEnd: string) {  
@@ -71,10 +108,13 @@ export class HeaderExpenseComponent implements OnInit {
         response.forEach(element => {                           
           this.totalGastadoReceived = this.totalGastadoReceived + parseFloat(element.amount);
         });
-        this.availableAmount =  parseFloat(this.accountMain.balance) - this.totalGastadoReceived;
+        if(this.accountMain != null){
+          this.availableAmount =  parseFloat(this.accountMain.balance) - this.totalGastadoReceived;
+        }
       },
       error => {
         console.log(error);
+   
       }
     );
   }

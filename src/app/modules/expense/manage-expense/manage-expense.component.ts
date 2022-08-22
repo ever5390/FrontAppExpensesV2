@@ -1,12 +1,10 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { CONSTANTES } from '@data/constantes';
-import { IDataListAccountShared } from '@data/interfaces/data-account-list-select-shared.interface';
 import { AccountModel } from '@data/models/business/account.model';
 import { AccordingService } from '@data/services/according/according.service';
 import { AccountService } from '@data/services/account/account.service';
 import { PeriodService } from '@data/services/period/period.service';
-import { WorkspacesService } from '@data/services/workspace/workspaces.service';
 import { AccordingModel } from 'app/data/models/business/according.model';
 import { CategoryModel } from 'app/data/models/business/category.model';
 import { ExpenseModel } from 'app/data/models/business/expense.model';
@@ -68,7 +66,8 @@ export class ManageExpenseComponent implements OnInit {
     private _router: Router,
     private _expenseService: ExpensesService,
     private _accountService: AccountService,
-    private _accordingService: AccordingService
+    private _accordingService: AccordingService,
+    private _periodService: PeriodService
   ) {
     this.identifyEventClickOutWindow();
     this.getAllAccording();
@@ -103,7 +102,7 @@ export class ManageExpenseComponent implements OnInit {
         this.period = response.object.period;
         console.log("period post create expense");
         console.log(this.period);
-        localStorage.setItem("lcstrg_periodo",JSON.stringify(this.period));
+        this._periodService.saveToLocalStorage(response.object.period);
         Swal.fire("","Registro exitoso","success");
         this._router.navigate(["/dashboard"]);
       },
@@ -154,8 +153,15 @@ export class ManageExpenseComponent implements OnInit {
     this._accountService.getListAccountByIdPeriod(idPeriodReceived).subscribe(
       response => {
         this.accountListSelected = response.filter( account => {
-          return account.accountType.id == 2 && account.statusAccount.toString() == 'PROCESS';
+          //return account.accountType.id == 2 && account.statusAccount.toString() == 'PROCESS';
+          return account.statusAccount.toString() == 'PROCESS';
         });
+
+        if(response.length > 0 && this.accountListSelected.length == 0) {
+          console.log("MAYOA ACERO");
+          Swal.fire("","Tiene cuentas pendientes por confirmar, previo a registrar algún gasto","info");
+          this._router.navigate(["/dashboard/period-detail/" + this.period.id]);
+        }
       },
       error => {
         console.log(error);
@@ -165,19 +171,24 @@ export class ManageExpenseComponent implements OnInit {
   }
 
   ngAfterViewInit() {
+    this.validateResizeHeightForm();
+  }
 
-    this.heightFormRegisterExpense = this.formRegisterContainerToAccountListBlock.nativeElement.clientHeight;
-    let windowHeight = window.innerHeight;
-    let heightFormRegister = this.formRegister.nativeElement.clientHeight;
-
-    //IF onlyListItems is FALSE :: Viene desde una cuenta para anadir categorias
-    //Definiendo valores de acuerdo a de donde es llamado este componente
-
-    if(heightFormRegister > windowHeight -100){
-      this._renderer.setStyle(this.formRegister.nativeElement,"height",(windowHeight*0.8)+"px");
-      this._renderer.setStyle(this.formRegister.nativeElement,"overflow-y","scroll");
-    }
-
+  private validateResizeHeightForm() {
+    //setTimeout(() => {
+      this.heightFormRegisterExpense = this.formRegisterContainerToAccountListBlock.nativeElement.clientHeight;
+      let windowHeight = window.innerHeight;
+      let heightFormRegister = this.formRegister.nativeElement.clientHeight;
+      console.log("windowHeight heightFormRegister");
+      console.log(windowHeight + "--" + heightFormRegister);
+      //IF onlyListItems is FALSE :: Viene desde una cuenta para anadir categorias
+      //Definiendo valores de acuerdo a de donde es llamado este componente
+      if (heightFormRegister > windowHeight - 150) {
+        this._renderer.setStyle(this.formRegister.nativeElement, "height", (windowHeight * 0.8) + "px");
+        this._renderer.setStyle(this.formRegister.nativeElement, "overflow-y", "scroll");
+      }
+      console.log("post modify: " + this.formRegister.nativeElement.clientHeight);
+    //}, 100);
   }
 
   showListCategories() {
@@ -195,7 +206,6 @@ export class ManageExpenseComponent implements OnInit {
     this.dataStructure.component=CONSTANTES.CONST_COMPONENT_ACUERDOS;
     this.dataStructure.title=CONSTANTES.CONST_TITLE_SELECCIONE_ITEM_ACUERDOS;
     this.dataStructure.imagen = CONSTANTES.CONST_IMAGEN_ACUERDOS
-    
   } 
 
   showListPaymentMethods() {
@@ -226,11 +236,13 @@ export class ManageExpenseComponent implements OnInit {
           this.imagenesUpload.push(event.target.result);
         }
       }
+      this.validateResizeHeightForm();
     }
   }
 
   removeVoucherFromList(index: number) {
     this.imagenesUpload.splice(index, 1);
+    this.validateResizeHeightForm();
   }
 
   hiddenPopUp() {
@@ -253,6 +265,12 @@ export class ManageExpenseComponent implements OnInit {
         break;
       case CONSTANTES.CONST_COMPONENT_ACUERDOS:
         this.itemAccording = element.itemSelected;
+        this.validateResizeHeightForm();
+        // if(this.itemAccording.name == "CON REPOSICION" ||
+        //   this.itemAccording.name == "COMPARTIDO" ||
+        //   this.itemAccording.name == "POR REGISTRAR" ){
+        //   this.validateResizeHeightForm();
+        // }
         break;
       case CONSTANTES.CONST_COMPONENT_CALENDAR:
         console.log(element.dateRange);

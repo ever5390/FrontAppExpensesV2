@@ -25,6 +25,10 @@
     border-radius: 10px;
 }
 
+button {
+    margin-top: 5px;
+}
+
 .fa-times {
     position: absolute;
     top: 20px;

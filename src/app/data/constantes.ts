@@ -1,6 +1,7 @@
 export class CONSTANTES {
 
     public static CONST_COMPONENT_HEADER = 'header';
+    public static CONST_COMPONENT_PERIOD = 'periodo';
     public static CONST_COMPONENT_EXPENSEREGISTER = 'expenseregister';
     public static CONST_COMPONENT_CATEGORIAS = 'categories';
     public static CONST_COMPONENT_ACUERDOS = 'according';
@@ -34,5 +35,7 @@ export class CONSTANTES {
     public static CONST_TEXT_BTN_REGISTRAR = 'Registrar';
     public static CONST_TEXT_BTN_ACTUALIZAR = 'Actualizar';
     public static CONST_TEXT_VACIO = '';
+
+    public static CONST_ORDER_TO_CALENDAR = 'SINGLE_SELECT_DATE';
 
 }
