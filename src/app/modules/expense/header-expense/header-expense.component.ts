@@ -89,7 +89,6 @@ export class HeaderExpenseComponent implements OnInit {
   }
 
   validateHourIfExistPeriod() {
-    console.log(this.period);
     if(this.period.id != 0) {
       this.period.startDate = this._utilitariesService.getDateAddHoursOffset(this.period.startDate.toString(), "plus").toString();
       this.period.finalDate = this._utilitariesService.getDateAddHoursOffset(this.period.finalDate.toString(), "plus").toString();

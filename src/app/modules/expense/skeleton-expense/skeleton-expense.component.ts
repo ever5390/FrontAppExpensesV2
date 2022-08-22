@@ -46,9 +46,6 @@ export class SkeletonExpenseComponent implements OnInit {
       response => {
         this.period.startDate = this._utilitariesService.convertDateGMTToString(new Date(response.startDate), "initial");
         this.period.finalDate = this._utilitariesService.convertDateGMTToString(new Date(response.finalDate), "final");
-        console.log("SEARCH EXPENSE");
-        console.log(this.period.startDate);
-        console.log(this.period.finalDate);
         this.getAllExpensesByWorkspaceAndDateRangePeriod(
           this.wrkspc.id,
           this.period.startDate,
@@ -69,20 +66,14 @@ export class SkeletonExpenseComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log("this.period");
-    console.log(this.period);
-
       if(this.period != null){
-        console.log("this.dates range");
-        console.log((this.period.startDate));
-        console.log((this.period.finalDate));
         this.getAllExpensesByWorkspaceAndDateRangePeriod(
           this.wrkspc.id,
-          this.period.startDate,
-          this.period.finalDate
+          this._utilitariesService.convertDateGMTToString(new Date(this.period.startDate), "initial"),
+          this._utilitariesService.convertDateGMTToString(new Date(this.period.finalDate), "final")
         );
       } else {
-        console.log("null");
+        console.log("Periodo null");
         this.getAllExpensesByWorkspaceAndDateRangePeriod(this.wrkspc.id,
           this._utilitariesService.convertDateToString(new Date()),
           this._utilitariesService.convertDateToString(new Date()));
@@ -155,8 +146,6 @@ export class SkeletonExpenseComponent implements OnInit {
 
   catchPeriodAndGetAllListExpenses() {
     this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
-    console.log("his.period - list exénses");
-    console.log(this.period);
     //Workspace Id : caprturarlo desde WORKSPACE inicial
     if(this.period == null) {
       this.getPeriodIfNotExist();
@@ -238,10 +227,6 @@ export class SkeletonExpenseComponent implements OnInit {
 
   filterByListParams(paramList : ExpenseModel[], paramFilter : FilterExpensesModel): ExpenseModel[] {
       let listReturn : ExpenseModel[] = [];
-      console.log("paramList");
-      console.log(paramList);
-      console.log("paramFilter");
-      console.log(paramFilter);
       listReturn =  paramList.filter( (row)=> {
           if(paramFilter.component == CONSTANTES.CONST_COMPONENT_CATEGORIAS)  {
             return row.category.name == paramFilter.name

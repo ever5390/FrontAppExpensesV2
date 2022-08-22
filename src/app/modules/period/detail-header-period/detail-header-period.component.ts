@@ -39,7 +39,6 @@ export class DetailHeaderPeriodComponent implements OnInit {
     intervalCompareFinalDate.subscribe(
       (n) => {
         this.dateFinalAutomaticCatch = new Date(this.periodShow.finalDate);
-        //console.log( this.dateFinalAutomaticCatch + " == " + new Date());
         if (this.dateFinalAutomaticCatch == new Date()) {
          this.closePeriodAtomatic('automatic');
         }
@@ -48,8 +47,6 @@ export class DetailHeaderPeriodComponent implements OnInit {
   }
 
   closePeriodAtomatic(originAction: string) {
-    //this.periodShow.startDate = this._utilitariesService.convertDateGMTToString(new Date(this.periodShow.startDate));
-    //this.periodShow.startDate = this._utilitariesService.convertDateGMTToString(new Date(this.periodShow.startDate));
     this.periodDetailHeaderReceived.period.startDate = this._utilitariesService.convertDateGMTToString(new Date(this.periodDetailHeaderReceived.period.startDate), "initial");
     this.periodDetailHeaderReceived.period.finalDate = this._utilitariesService.convertDateGMTToString(this.dateFinalAutomaticCatch, "final");
     if(originAction == 'manual') {

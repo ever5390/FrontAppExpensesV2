@@ -62,12 +62,9 @@ export class UtilService {
     }
 
     setAndGetTwoDigits(valueTime: number, isHourParam: string) : string {
-        
         let isHour = (isHourParam != "")?23:59;
         let valueTimeResponse = (valueTime<10)?"0"+valueTime:valueTime;
-        console.log(isHourParam + " -- " + isHour + " - " + valueTime + " -- " + (valueTime == 0));
         let response = (valueTime == 0)?isHour.toString():valueTimeResponse.toString();
-        console.log(response);
         return response;
     }
 
