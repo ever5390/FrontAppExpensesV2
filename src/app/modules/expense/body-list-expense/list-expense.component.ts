@@ -13,12 +13,8 @@ export class ListExpenseComponent implements OnInit {
   
   constructor() { }
 
-  ngOnInit(): void {
-    //console.log("BODY LIST");
-    
-    
+  ngOnInit(): void {  
     this.expenseList = this.receivedListExpensesToBodyList;
-    console.log(this.expenseList);
   }
 
 }

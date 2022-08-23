@@ -28,6 +28,8 @@ export class SkeletonExpenseComponent implements OnInit {
   wrkspc: Workspace = new Workspace();
   period : PeriodModel = new PeriodModel();
 
+  originComponent : string = "initial";
+
   constructor(
     private _expenseService: ExpensesService,
     private _periodService: PeriodService,
@@ -41,6 +43,7 @@ export class SkeletonExpenseComponent implements OnInit {
   }
 
   receivingDataCalendar() {
+    this.originComponent = "calendar";
     this._utilitariesService.receivingdDatesFromCalendarSelected().subscribe(
       response => {
         this.period.startDate = this._utilitariesService.convertDateGMTToString(new Date(response.startDate), "initial");
@@ -66,6 +69,7 @@ export class SkeletonExpenseComponent implements OnInit {
 
   ngOnInit(): void {
       if(this.period != null){
+        this.originComponent = "initial";
         this.getAllExpensesByWorkspaceAndDateRangePeriod(
           this.wrkspc.id,
           this._utilitariesService.convertDateGMTToString(new Date(this.period.startDate), "initial"),
@@ -86,13 +90,15 @@ export class SkeletonExpenseComponent implements OnInit {
         this.showBody = true;
         this.sendListExpensesToBody = response;
         this.listExpensesToBody = response;
-
+        this.totalGastadoSend = 0;
         this.sendListExpensesToBody.forEach(element => {
           element.createAt = this._utilitariesService.getDateAddHoursOffset(element.createAt.toString(), "plus");
           this.totalGastadoSend = this.totalGastadoSend + parseFloat(element.amount);
         });
 
         this.createNewColumnWithDataBySearching();
+
+        this._utilitariesService.sendTotalSpentToHeaderFromExpenseListMessage({"total":this.totalGastadoSend, "from":this.originComponent});
       },
       error => {
         console.log(error);
@@ -133,7 +139,6 @@ export class SkeletonExpenseComponent implements OnInit {
   }
 
   receivedSearchingEmitFromHeader(strSearch: string) {
-    console.log("received 1");
     this.showBody = false;
     this.sendListExpensesToBody = this.listExpensesToBody;
     this.sendListExpensesToBody = this.sendListExpensesToBody.filter(item => {
@@ -254,12 +259,12 @@ export class SkeletonExpenseComponent implements OnInit {
   }
 
   getTotalSpentBySearching() {
-    let totalSend = 0;
+    this.originComponent = "byFilterExpenses";
+    let totalGastadoSend = 0;
     this.sendListExpensesToBody.forEach(element => {                           
-      totalSend = totalSend + parseFloat(element.amount);
+      totalGastadoSend = totalGastadoSend + parseFloat(element.amount);
     });
-    console.log(totalSend);
-    this._utilitariesService.sendTotalSpentToHeaderFromExpenseListMessage(totalSend);
+    this._utilitariesService.sendTotalSpentToHeaderFromExpenseListMessage({"total":totalGastadoSend, "from":this.originComponent});
   }
 
 }

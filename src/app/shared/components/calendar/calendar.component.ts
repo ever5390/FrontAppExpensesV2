@@ -63,7 +63,6 @@ export class CalendarComponent implements OnInit {
 
   showFilters: boolean = false;
   
-  //@Output() sendDateRange = new EventEmitter<any>();
   @ViewChild("hashCOntentCalendar")
   hashCOntentCalendar!: ElementRef<any>;
 
@@ -148,7 +147,6 @@ export class CalendarComponent implements OnInit {
   }
 
   getDateByDaySelected(daySelected: any) {
-    console.log("CLICK ITEM DATE");
     var lista =  document.querySelectorAll(".today_select");
     
     //Reset if exceeds the value
@@ -184,8 +182,6 @@ export class CalendarComponent implements OnInit {
         this.date.getFullYear(),
         this.date.getMonth(),
         daySelected);
-
-        console.log("CLICK ITEM DATE");
 
     if(this.receivedComponentParent != CONSTANTES.CONST_COMPONENT_HEADER) {
       //Emite dates to Parent
@@ -249,9 +245,6 @@ export class CalendarComponent implements OnInit {
 
     } else {
       //Delete style WHEN change MONTH
-      // this._renderer.removeStyle(this.initial ,"background-color");
-      // this._renderer.removeStyle(this.initial ,"border-radius");
-
       this.limpiarItems(lista);
 
       if(this.dateSelectedFinal.itemHTML == undefined) 
@@ -514,7 +507,6 @@ export class CalendarComponent implements OnInit {
       )
     }
 
-    //console.log(this.dateSend.startDate);
     this.sendResponseFromCalendarToParent.emit({
       "component": CONSTANTES.CONST_COMPONENT_CALENDAR,
       "action": type,
@@ -522,60 +514,30 @@ export class CalendarComponent implements OnInit {
     });
   }
 
-  // catchDate(orden:number, mes:number, dia:number){
-  //   this.date = new Date();
-  //   let discountDay = 0;
-  //   if(orden == 1) {
-  //     discountDay = new Date().getDate();
-  //   }
-
-  //   //INIT
-  //   this.inputValueDateInit = new Date(
-  //     this.date.getFullYear(),
-  //     this.date.getMonth() + mes,
-  //     new Date().getDate() + dia - discountDay
-  //   );
-
-  //   //END - YESTERDAY
-  //   if(mes == 0 && dia == -1) {
-  //     this.inputValueDateEnd = this.inputValueDateInit;
-  //   } else if(mes == -1 && dia == 1) {
-  //     //END - MONTH AGO
-  //     this.inputValueDateEnd = new Date(
-  //       this.date.getFullYear(),
-  //       this.date.getMonth() + 0,
-  //       new Date().getDate() + 0 - discountDay
-  //     );
-  //   } else {
-  //     this.inputValueDateEnd = new Date();
-  //   }
-  //   this.sendDateRangeToFather("only");
-  // }
-
   catchDate(orden:number, monthDiscount:number, dayDiscount:number){
-    if(orden == 0) { //Resta en ambos : hoy y ayer
-      this.inputValueDateInit = this.getDateWithMinusDay(monthDiscount, dayDiscount);
-      this.inputValueDateEnd = this.getDateWithMinusDay(monthDiscount, dayDiscount);
+
+    switch (orden) {
+      case 0://Resta en ambos : hoy y ayer
+        this.inputValueDateInit = this.getDateWithMinusDay(monthDiscount, dayDiscount);
+        this.inputValueDateEnd = this.getDateWithMinusDay(monthDiscount, dayDiscount);
+        break;
+      case 1:// resta días, Hasta fecha de hoy
+        this.inputValueDateInit = this.getDateWithMinusDay(monthDiscount, dayDiscount);
+        this.inputValueDateEnd = this.getDateWithMinusDay(monthDiscount, 0);
+        break;
+      case 2:// mes pasado
+        this.inputValueDateInit = this.getDateWithMinusDay(monthDiscount, -(new Date().getDate()-1));
+        this.inputValueDateEnd = this.getDateWithMinusDay(0, 0);
+        break;
+      case 3:// resta meses
+        this.inputValueDateInit = this.getDateWithMinusDay(monthDiscount, -(new Date().getDate()-1));
+        this.inputValueDateEnd = this.getDateWithMinusDay(0, - [new Date().getDate()]);
+        break;
+      default:
+        this.inputValueDateInit = new Date(this.period.startDate);
+        this.inputValueDateEnd = new Date(this.period.finalDate);
+        break;
     }
-
-    if(orden == 1) { // resta días, Hasta fecha de hoy
-      this.inputValueDateInit = this.getDateWithMinusDay(monthDiscount, dayDiscount);
-      this.inputValueDateEnd = this.getDateWithMinusDay(monthDiscount, 0);
-    }
-
-    if(orden == 2) { // mes pasado
-      this.inputValueDateInit = this.getDateWithMinusDay(monthDiscount, -(new Date().getDate()-1));
-      this.inputValueDateEnd = this.getDateWithMinusDay(0, 0);
-    }
-
-    if(orden == 3) { // resta meses
-      this.inputValueDateInit = this.getDateWithMinusDay(monthDiscount, -(new Date().getDate()-1));
-      this.inputValueDateEnd = this.getDateWithMinusDay(0, - [new Date().getDate()]);
-    }
-
-
-    console.log("this.inputValueDateInit" + this.inputValueDateInit);
-    console.log("this.inputValueDateEnd" + this.inputValueDateEnd);
 
     this.dateSend.startDate = this.inputValueDateInit;
     this.dateSend.finalDate = this.inputValueDateEnd;
@@ -594,15 +556,6 @@ export class CalendarComponent implements OnInit {
       new Date().getDate() + dayDiscount
     );
   }
-
-  // GET FINAL DAY DEL MES ACTUAL
-  // getFinalDayByPastMonth(monthDiscount: number, dayDiscount: number ): Date {
-  //   return new Date(
-  //     new Date().getFullYear(),
-  //     new Date().getMonth() + 1,
-  //     0
-  //   );
-  // }
 
   goToPrev() {
     this.date.setMonth(this.date.getMonth() - 1);

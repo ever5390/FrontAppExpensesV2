@@ -23,7 +23,7 @@ export class HeaderExpenseComponent implements OnInit {
 
   //Catching & send height header component
   heightHeader: number = 0;
-  availableAmount: number = 0;
+  availableAmount: number = 0.00;
   
   @ViewChild("container_header") container_header : ElementRef | any;
   @Output() emitterHeight= new EventEmitter();
@@ -42,18 +42,14 @@ export class HeaderExpenseComponent implements OnInit {
   receivingDataCalendar() {
     this._utilitariesService.receivingdDatesFromCalendarSelected().subscribe(
       response => {
-        console.log("RECEIVED date begin: " + response.startDate );
-        console.log("RECEIVED date end: " + response.finalDate );
         this.period.startDate = this._utilitariesService.convertDateGMTToString(new Date(response.startDate), "initial");
         this.period.finalDate = this._utilitariesService.convertDateGMTToString(new Date(response.finalDate), "final");
-        this.getAllExpensesByWorkspaceAndDateRangePeriod(this.wrkspc.id, this.period.startDate, this.period.finalDate);
   
       }, 
       error => {
         console.log(error.error);
         this.period.startDate = this._utilitariesService.convertDateGMTToString(new Date(), "initial");
         this.period.finalDate = this._utilitariesService.convertDateGMTToString(new Date(), "final");
-        this.getAllExpensesByWorkspaceAndDateRangePeriod(this.wrkspc.id, this.period.startDate, this.period.finalDate);
       }
     );
   }
@@ -66,22 +62,17 @@ export class HeaderExpenseComponent implements OnInit {
       this.period = new PeriodModel();
       this.validateHourIfExistPeriod();
       return;
-    }
-    this.showAvailableAmountFromAccountMain();
-    
+    }    
   }
   
-  showAvailableAmountFromAccountMain() {
+  showAvailableAmountFromAccountMain(originReceived: string) {
     this._accountService.findAccountByTypeAccountAndStatusAccountAndPeriodId(1, TypeSatusAccountOPC.PROCESS, this.period.id)
       .subscribe(
         response => {
           this.accountMain = response;
-          this.getAllExpensesByWorkspaceAndDateRangePeriod(
-            this.wrkspc.id,
-            this._utilitariesService.convertDateGMTToString(new Date(this.period.startDate), "initial"),
-            this._utilitariesService.convertDateGMTToString(new Date( this.period.finalDate), "final")
-            );
-            this.validateHourIfExistPeriod();
+          if(this.accountMain != null && originReceived == "initial"){
+            this.availableAmount =  parseFloat(this.accountMain.balance) - this.totalGastadoReceived;
+          }
         },
         error => {
           console.error(error.error);
@@ -100,34 +91,12 @@ export class HeaderExpenseComponent implements OnInit {
     this.period.finalDate =new Date().toString();
   }
 
-  getAllExpensesByWorkspaceAndDateRangePeriod(idWrkspc: number, dateBegin: string, dateEnd: string) {  
-    
-    this._expenseService.getAllExpensesByWorkspaceAndDateRangePeriod(idWrkspc, dateBegin, dateEnd).subscribe(
-      response => {
-        this.totalGastadoReceived = 0;
-        response.forEach(element => {                           
-          this.totalGastadoReceived = this.totalGastadoReceived + parseFloat(element.amount);
-        });
-        if(this.accountMain != null){
-          this.availableAmount =  parseFloat(this.accountMain.balance) - this.totalGastadoReceived;
-        }
-      },
-      error => {
-        console.log(error);
-   
-      }
-    );
-  }
-
   receivingTotalSpentBySearchingExpense() {
-    console.log("RECEIVE HEADER EXP");
     this.totalGastadoReceived = 0;
     this._utilitariesService.receivingTotalSpentToHeaderFromExpenseListMessage().subscribe(
       response => {
-        
-        this.totalGastadoReceived = response;
-        //console.log(this.accountMain.balance);
-        //this.availableAmount = parseFloat(this.accountMain.balance) - this.totalGastadoReceived;
+        this.totalGastadoReceived = response.total;
+        this.showAvailableAmountFromAccountMain(response.from);
       }, 
       error =>{
         console.log(error.error);
