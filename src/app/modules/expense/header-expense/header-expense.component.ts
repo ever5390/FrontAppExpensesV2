@@ -19,6 +19,7 @@ export class HeaderExpenseComponent implements OnInit {
   accountMain: AccountModel =  new AccountModel();
 
   @Input() totalGastadoReceived: number = 0.00;
+  // totalGastadoReceived: number = 0.00;
 
   //Catching & send height header component
   heightHeader: number = 0;
@@ -51,7 +52,7 @@ export class HeaderExpenseComponent implements OnInit {
       error => {
         console.log(error.error);
         this.period.startDate = this._utilitariesService.convertDateGMTToString(new Date(), "initial");
-        this.period.finalDate = this._utilitariesService.convertDateGMTToString(new Date(), "initial");
+        this.period.finalDate = this._utilitariesService.convertDateGMTToString(new Date(), "final");
         this.getAllExpensesByWorkspaceAndDateRangePeriod(this.wrkspc.id, this.period.startDate, this.period.finalDate);
       }
     );
@@ -119,9 +120,11 @@ export class HeaderExpenseComponent implements OnInit {
   }
 
   receivingTotalSpentBySearchingExpense() {
+    console.log("RECEIVE HEADER EXP");
     this.totalGastadoReceived = 0;
     this._utilitariesService.receivingTotalSpentToHeaderFromExpenseListMessage().subscribe(
       response => {
+        
         this.totalGastadoReceived = response;
         //console.log(this.accountMain.balance);
         //this.availableAmount = parseFloat(this.accountMain.balance) - this.totalGastadoReceived;

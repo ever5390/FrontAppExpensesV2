@@ -41,14 +41,14 @@
                 <div (click)="catchDate(0,0,0)">Hoy</div>
                 <div (click)="catchDate(0,0,-1)">Ayer</div>
     
-                <div (click)="catchDate(1,-1,1)">Últimos 7 días</div>
-                <div (click)="catchDate(0,0,-7)">Últimos 14 días</div>
-                <div (click)="catchDate(0,-3,0)">Últimos 30 días</div>
+                <div (click)="catchDate(1,0,-7)">Últimos 7 días</div>
+                <div (click)="catchDate(1,0,-14)">Últimos 14 días</div>
+                <div (click)="catchDate(1,0,-30)">Últimos 30 días</div>
     
-                <div (click)="catchDate(1,0,1)">Este mes</div>
-                <div (click)="catchDate(1,-1,1)">El mes pasado</div>
-                <div (click)="catchDate(0,0,-7)">Esta semana</div>
-                <div (click)="catchDate(0,-3,0)">Hace 3 meses</div>
+                <div (click)="catchDate(2,0,1)">Este mes</div>
+
+                <div (click)="catchDate(3,-1,1)">El mes pasado</div>
+                <div (click)="catchDate(3,-3,0)">Hace 3 meses</div>
             </div>
             <div *ngIf="flagPeriodOptions" class="fw-bold mt-0 p-3 border-top ft_hover" (click)="showSpecificsFilters()">
                 <i class="fas fa-angle-up"></i>

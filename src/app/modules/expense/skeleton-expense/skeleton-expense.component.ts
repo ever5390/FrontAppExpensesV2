@@ -24,7 +24,6 @@ export class SkeletonExpenseComponent implements OnInit {
   sendListExpensesToBody: ExpenseModel[] = [];
   totalGastadoSend: number = 0;
 
-
   owner : OwnerModel = new OwnerModel();
   wrkspc: Workspace = new Workspace();
   period : PeriodModel = new PeriodModel();
@@ -134,6 +133,7 @@ export class SkeletonExpenseComponent implements OnInit {
   }
 
   receivedSearchingEmitFromHeader(strSearch: string) {
+    console.log("received 1");
     this.showBody = false;
     this.sendListExpensesToBody = this.listExpensesToBody;
     this.sendListExpensesToBody = this.sendListExpensesToBody.filter(item => {
@@ -258,6 +258,7 @@ export class SkeletonExpenseComponent implements OnInit {
     this.sendListExpensesToBody.forEach(element => {                           
       totalSend = totalSend + parseFloat(element.amount);
     });
+    console.log(totalSend);
     this._utilitariesService.sendTotalSpentToHeaderFromExpenseListMessage(totalSend);
   }
 
