@@ -43,12 +43,6 @@ export class ListPeriodComponent implements OnInit {
     this._periodService.getAllPeriodDetailHeaderByWorkspaceId(this.periodReceivedFromLocalStorage.workSpace.id).subscribe(
       response => {
         this.listPeriodDetailHeader = response;
-        this.listPeriodDetailHeader = response.filter( item => {
-          item.period.finalDate = this._utilitariesService.getDateAddHoursOffset(item.period.finalDate.toString(), "plus").toString();
-          item.period.startDate = this._utilitariesService.getDateAddHoursOffset(item.period.startDate.toString(), "plus").toString();
-          return item;
-        });
-
         this.getSizeBloclListPeriod();
       },
       error => {

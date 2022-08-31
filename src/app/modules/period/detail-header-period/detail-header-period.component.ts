@@ -29,8 +29,6 @@ export class DetailHeaderPeriodComponent implements OnInit {
 
   ngOnInit(): void {
     this.periodShow = this.periodDetailHeaderReceived.period;
-    this.periodShow.startDate = this._utilitariesService.getDateAddHoursOffset(this.periodShow.startDate.toString(), "plus").toString();
-    this.periodShow.finalDate = this._utilitariesService.getDateAddHoursOffset(this.periodShow.finalDate.toString(), "plus").toString();
     this.compareFinalDatePeriodAutomaticBySecond();
   }
 
@@ -139,7 +137,6 @@ export class DetailHeaderPeriodComponent implements OnInit {
     //Seteo de fecha final y activación
     this.periodShow = this.periodDetailHeaderReceived.period;
     this.periodShow.activate = true;
-    this.periodShow.startDate = this._utilitariesService.convertDateGMTToString(new Date(this.periodShow.startDate)    , "initial");
     this.periodShow.finalDate = this._utilitariesService.convertDateGMTToString(newFinalDate, "final");
 
     this._periodService.updatePeriod(this.periodShow, 
@@ -149,7 +146,6 @@ export class DetailHeaderPeriodComponent implements OnInit {
         if(response.object == null) return;
 
         this.periodShow = response.object;
-        this.periodShow.finalDate = this._utilitariesService.getDateAddHoursOffset(this.periodShow.finalDate, "plus").toString();
         this._periodService.saveToLocalStorage(response.object);
       }, 
       error => {
