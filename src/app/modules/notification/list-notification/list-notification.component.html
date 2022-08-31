@@ -7,17 +7,51 @@
             Registros compartidos
         </h6>
         <div #idTagContentNotification>
-            <div *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]" class="st_item_notification p-3 d-flex justify-content-between align-items-center">
+            <div *ngFor="let notification of receivedNotificationExpenseList" class="st_item_notification p-3 d-flex justify-content-between align-items-center">
                 <img width="50px" height="50px" src="https://www.blackwiredesigns.com/wp-content/uploads/Push-Notification-Icon.png" alt="" srcset="">
                 <div class="st_item_notification_data">
-                    <p>Cinthia realizó un gasto de s/ 15.00 soles en gustitos 
-                        de tipo CON REPOSICION, que se encuentra pendiente de pago.
-                    </p>
-                    <p style="font-weight: bold;">12 JUN 2019 10:52</p>
+                <ng-container 
+                    [ngTemplateOutlet]="notification.isEmisorUser? templateEmisor : templateReceptor"
+                    [ngTemplateOutletContext]="{notification:notification}"
+                    >
+                </ng-container>
+                    
                 </div>
-                <!-- <i class="fas fa-caret-right"></i> -->
             </div>
         </div>
         
     </div>
 </div>
+
+<ng-template #templateReceptor let-notification='notification'>
+    <span class="subtitle_txt" *ngIf="notification.subtitleText" >{{notification.subtitleText}}.</span>
+    <p>{{notification.expenseShared.workspace.owner.name}} realizó un gasto de s/ {{notification.expenseShared.amountShow | number : '1.2-2'}} soles en 
+        {{notification.expenseShared.category.name}} de tipo {{notification.expenseShared.accordingType.name}}, que se encuentra
+        {{notification.statusNotification}} el {{notification.expenseShared.createAt | date: 'EEE dd MMM  HH:mm:ss' | uppercase}}.
+        <label class="st_footer_vouchers">
+            <img *ngFor="let voucher of notification.vouchers" src="{{voucher.name}}" alt="" srcset="">
+        </label>
+        <label style="font-weight: bold; display: block;">{{notification.createAt | date: 'EEE dd MMM  HH:mm:ss' | uppercase}}.</label>
+        <label style="font-weight: bold;" 
+        *ngIf="notification.statusNotification == 'PENDIENTE_PAGO'">
+            <a class="green_btn" (click)="updateItem(notification, 2)">PAGAR</a>
+            <a class="red_btn" (click)="updateItem(notification, 5)">RECLAMAR</a>
+        </label>
+    </p>
+</ng-template>
+
+<ng-template #templateEmisor let-notification='notification'>
+    <span class="subtitle_txt" *ngIf="notification.subtitleText" >{{notification.subtitleText}}</span>
+    <p>El usuario {{notification.payer.name}} realizó el pago del gasto enviado Nro 1356 concerniente a {{notification.expenseShared.category.name}}, 
+        que asciende a s/ {{notification.expenseShared.amountShow | number : '1.2-2'}} soles realizado el {{notification.createAt | date: 'EEE dd MMM  HH:mm:ss' | uppercase}}
+        <label class="st_footer_vouchers">
+            <img *ngFor="let voucher of notification.vouchers" src="{{voucher.name}}" alt="" srcset="">
+        </label>
+        <label style="font-weight: bold; display: block;">
+            <a class="red_btn" (click)="updateItem(notification, 4)">RECHAZAR</a>
+            <a class="green_btn" (click)="updateItem(notification, 3)" *ngIf="notification.statusNotification != 'RECLAMADO'">CONFIRMAR</a>
+            <a class="green_btn" (click)="updateItem(notification, 1)" *ngIf="notification.statusNotification == 'RECLAMADO'">APROBAR</a>
+        </label>
+    </p>
+
+</ng-template>

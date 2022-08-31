@@ -4,12 +4,9 @@
     </div>
     <div class="st_btns_header">
         <span class="st_icon_notification" (click)="showNotificationpPopUp()">
-            15
+            <!-- {{countNotification}} -->
+            {{notificationExpenseList.length}}
         </span>
-        <!-- <span class="st_btn_register_expense" 
-            (click)="show__popup.showPopUp()" >
-            <i class="far fa-plus" ></i>
-        </span> -->
         <span class="st_btn_register_expense" 
             (click)="showFormRegisterExpense()" >
             <i class="far fa-plus" ></i>
@@ -19,6 +16,7 @@
 </div>
 
 <app-list-notification *ngIf="flagNotificationpPopUp"
+    [receivedNotificationExpenseList]="notificationExpenseList"
     [receivedShowNotificationFromHeader]="flagNotificationpPopUp"
     (sendHiddenNotificationtoHeader)="receivedHiddenNotificationtoHeader($event)"
     >
@@ -28,4 +26,3 @@
     [receivedComponentParent]="sendComponentParentToCalendar"
     (sendResponseFromCalendarToParent)="receiveResponseFromCalendarToParent($event)"
 ></app-calendar>
-

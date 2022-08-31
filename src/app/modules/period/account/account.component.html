@@ -65,21 +65,13 @@
                 </ng-container>     
             </div>
             <button (click)="saveOrUpdate()">{{dataStructureReceived.action}}</button>
-            <!-- <button style="background-color: rgb(212, 33, 33);" 
-                    *ngIf="dataStructureReceived.action==='Actualizar'"
-                    (click)="delete()">
-                Eliminar
-            </button> -->
-            
-            <!-- Lista de cuentas: caso Transferencia interna -->
-            <app-list-accounts-shared *ngIf="flagShowListAccountOrigenSelect"
-                    [receiveComponentToBlockListAccount]="sendComponentToBlockListAccount"        
+
+            <app-list-accounts-shared *ngIf="flagShowListOptionsSelect"        
                     [heightContainerChild]="heightForm"
-                    [flagShowComponentReceived]="flagShowListAccountOrigenSelect"
-                    [listaAccountReceived]="dataStructureReceived.listAccoutOrigen"
-                    (sendEmittAccountSelected)="receivedObjectAccountSelected($event)"
-                >
-            </app-list-accounts-shared>
+                    [flagShowComponentReceived]="flagShowListOptionsSelect"
+                    [dataOptionsSelectExpenseListReceived]="dataOptionsSelectExpenseList"
+                    (sendEmittAccountSelected)="receivedItemSelectedaFromPopUp($event)"
+            ></app-list-accounts-shared>
 
             <!-- Lista de categorias: caso Cuentas asociadas -->
             <div class="st_list_account_origen" [ngStyle]="{'display':(flagShowListCategories) ? 'block' : 'none' }">

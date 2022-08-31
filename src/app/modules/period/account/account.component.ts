@@ -1,5 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { CategoryModel } from '@data/models/business/category.model';
+import { DataOptionsSelectExpense } from '@data/models/Structures/data-expense-options';
 import { CategoryService } from '@data/services/category/category.service';
 import { SLoaderService } from '@shared/components/loaders/s-loader/service/s-loader.service';
 import { CONSTANTES } from 'app/data/constantes';
@@ -24,7 +25,7 @@ export class AccountComponent implements OnInit {
   item: ElementRef | any;
   heightListContent: number = 0;
   listaCategories: CategoryModel[] = [];
-  flagShowListAccountOrigenSelect: boolean = false;
+  flagShowListOptionsSelect: boolean = false;
 
   activeOnChange: boolean = false;
   // *** indicate show tags
@@ -53,6 +54,9 @@ export class AccountComponent implements OnInit {
   categoriesSelected: CategoryModel[] = [];
   categoriesChecked: CategoryModel[] = [];
 
+  dataOptionsSelectExpense: DataOptionsSelectExpense = new DataOptionsSelectExpense();
+  dataOptionsSelectExpenseList: DataOptionsSelectExpense[] = [];
+
   constructor(
     private _categoryService: CategoryService,
     private _renderer: Renderer2,
@@ -67,6 +71,21 @@ export class AccountComponent implements OnInit {
     this.seteoByComponentParent();
 
     this.categoriesChecked = this.dataStructureReceived.object.categories;
+
+    this.setterDataStructureSendToAccouuntList();
+  }
+
+  private setterDataStructureSendToAccouuntList() {
+    this.dataOptionsSelectExpenseList = [];
+    this.dataStructureReceived.listAccoutOrigen.forEach((element: { id: number; accountName: string; balanceFlow: string; }) => {
+      this.dataOptionsSelectExpense = new DataOptionsSelectExpense();
+      this.dataOptionsSelectExpense.id = element.id;
+      this.dataOptionsSelectExpense.name = element.accountName;
+      this.dataOptionsSelectExpense.disponible = element.balanceFlow;
+      this.dataOptionsSelectExpense.component = CONSTANTES.CONST_COMPONENT_CUENTAS;
+      this.dataOptionsSelectExpense.icon = CONSTANTES.CONST_COMPONENT_CUENTAS_ICON;
+      this.dataOptionsSelectExpenseList.push(this.dataOptionsSelectExpense);
+    });
   }
 
   seteoByComponentParent() {
@@ -209,13 +228,17 @@ export class AccountComponent implements OnInit {
       this.item = this.lisCategoriesForSelect.nativeElement;
       this.resizingWindowList();
     } else {
-      this.flagShowListAccountOrigenSelect = true;
+      this.flagShowListOptionsSelect = true;
     }
   }
 
-  receivedObjectAccountSelected(itemReceived: any) {
-    this.objectToFormShared.origen = itemReceived.itemSelected;
-    this.flagShowListAccountOrigenSelect = false;
+  receivedItemSelectedaFromPopUp(itemReceived: any) {
+    console.log(itemReceived);
+    this.objectToFormShared.origen.id = itemReceived.itemSelected.id;
+    this.objectToFormShared.origen.accountName = itemReceived.itemSelected.name;
+    this.objectToFormShared.origen.balanceFlow = itemReceived.itemSelected.disponible;
+    console.log(this.objectToFormShared.origen);
+    this.flagShowListOptionsSelect = false;
   }
 
   getAllCategories() {

@@ -1,4 +1,3 @@
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { AccountModel, TypeSatusAccountOPC } from '@data/models/business/account.model';
 import { Workspace } from '@data/models/business/workspace.model';
@@ -39,12 +38,33 @@ export class HeaderExpenseComponent implements OnInit {
     this.receivingDataCalendar();
   }
 
+  ngOnInit(): void {
+    this.wrkspc = JSON.parse(localStorage.getItem("lcstrg_worskpace")!);
+    this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
+    this.validateHourIfExistPeriod();
+  }
+
   receivingDataCalendar() {
     this._utilitariesService.receivingdDatesFromCalendarSelected().subscribe(
       response => {
+
+        if(response.origin != null){
+          //From notification
+          this.validateHourIfExistPeriod();
+          return;
+        }
+        console.log("response.action");
+        console.log(response);
+        if(response.action != null){
+          console.log("action");
+           //From Calendar reset
+          this.period.startDate = response.startDate;
+          this.period.finalDate = response.finalDate;
+          return;
+        }
+        console.log("No action");
         this.period.startDate = this._utilitariesService.convertDateGMTToString(new Date(response.startDate), "initial");
-        this.period.finalDate = this._utilitariesService.convertDateGMTToString(new Date(response.finalDate), "final");
-  
+        this.period.finalDate = this._utilitariesService.convertDateGMTToString(new Date(response.finalDate), "final");  
       }, 
       error => {
         console.log(error.error);
@@ -54,17 +74,6 @@ export class HeaderExpenseComponent implements OnInit {
     );
   }
 
-  ngOnInit(): void {
-    this.wrkspc = JSON.parse(localStorage.getItem("lcstrg_worskpace")!);
-    this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
-    
-    if(this.period == null) {
-      this.period = new PeriodModel();
-      this.validateHourIfExistPeriod();
-      return;
-    }    
-  }
-  
   showAvailableAmountFromAccountMain(originReceived: string) {
     this._accountService.findAccountByTypeAccountAndStatusAccountAndPeriodId(1, TypeSatusAccountOPC.PROCESS, this.period.id)
       .subscribe(
@@ -81,12 +90,12 @@ export class HeaderExpenseComponent implements OnInit {
   }
 
   validateHourIfExistPeriod() {
-    if(this.period.id != 0) {
+    if(this.period !=null) {
       this.period.startDate = this._utilitariesService.getDateAddHoursOffset(this.period.startDate.toString(), "plus").toString();
       this.period.finalDate = this._utilitariesService.getDateAddHoursOffset(this.period.finalDate.toString(), "plus").toString();
       return;
     }
-
+    this.period = new PeriodModel();
     this.period.startDate =new Date().toString();
     this.period.finalDate =new Date().toString();
   }

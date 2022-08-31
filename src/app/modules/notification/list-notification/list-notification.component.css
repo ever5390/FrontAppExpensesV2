@@ -47,6 +47,53 @@
     display: inline-block;
 }
 
+a {
+    display: inline-block;
+    margin-right: 10px;
+    text-align: left;
+    font-weight: normal;
+}
+
+a:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.gray_btn {
+    color: rgb(126, 126, 126);
+}
+
+.green_btn {
+    color: rgb(39, 129, 39);
+}
+
+.red_btn {
+    color: rgb(180, 72, 64);
+}
+
+.subtitle_txt {
+    font-weight: 700;
+    color: rgb(47, 80, 82);
+}
+
+
+.st_footer_vouchers {
+    padding: 5px 0 ;
+    display: flex;
+    justify-content: flex-start;
+}
+    .st_footer_vouchers img {
+        margin-left: 5px;
+    }
+
+    img {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: 1px solid rgb(110, 103, 103);
+    }
+
+
 @media (max-width: 480px) {
     .st_container_notification {
        

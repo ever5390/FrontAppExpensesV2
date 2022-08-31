@@ -8,6 +8,8 @@ export class CONSTANTES {
     public static CONST_COMPONENT_MEDIOSDEPAGO = 'paymentmethod';
     public static CONST_COMPONENT_CALENDAR = 'calendar';
     public static CONST_COMPONENT_CUENTAS = 'Cuentas';
+    public static CONST_COMPONENT_TAG = 'Tag';
+    public static CONST_COMPONENT_USER = 'User';
 
     public static CONST_TRANSFERENCIA_INTERNA = 'Transferencia interna';
     public static CONST_TRANSFERENCIA_EXTERNA = 'Transferencia externa';
@@ -35,7 +37,21 @@ export class CONSTANTES {
     public static CONST_TEXT_BTN_REGISTRAR = 'Registrar';
     public static CONST_TEXT_BTN_ACTUALIZAR = 'Actualizar';
     public static CONST_TEXT_VACIO = '';
+    public static CONST_TEXT_DEFAULT = 'default';
 
     public static CONST_ORDER_TO_CALENDAR = 'SINGLE_SELECT_DATE';
+    public static CONST_COMPONENT_CUENTAS_ICON = 'fas fa-file-invoice-dollar';
+    public static CONST_COMPONENT_PAYER_ICON = 'fas fa-user-circle';
+    public static CONST_COMPONENT_TAG_ICON = 'fas fa-hashtag';
+    public static TYPE_USER_NOTIFICATION_EMISOR = 'emisor';
+    public static TYPE_USER_NOTIFICATION_RECEPTOR = 'receptor';
+
+    public static CONST_TEXT_SUBTITLE_RECEPTOR_NOTIF_RECLAMADO = 'Tienes un reclamo enviado pendiente de confirmación';
+    public static CONST_TEXT_SUBTITLE_RECEPTOR_NOTIF_RECHAZADO = 'Tu pago fue rechazado (Comunícate con la contraparte)';
+    public static CONST_TEXT_SUBTITLE_RECEPTOR_NOTIF_PDTE_CONFIRMACION = 'Su pago realizado se encuentra a espera de confirmación';
+    public static CONST_TEXT_SUBTITLE_EMISOR_NOTIF_RECHAZADO = 'Rechazaste el pago realizado por la contraparte';
+    public static CONST_TEXT_SUBTITLE_EMISOR_NOTIF_PDTE_CONFIRMACION = 'Tienes un pago recibido pendiente de confirmación';
+    public static CONST_TEXT_SUBTITLE_EMISOR_NOTIF_RECLAMADO = 'Tienes un reclamo recibido pendiente de confirmación';
+
 
 }

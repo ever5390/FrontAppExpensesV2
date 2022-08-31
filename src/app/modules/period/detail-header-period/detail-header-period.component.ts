@@ -53,7 +53,6 @@ export class DetailHeaderPeriodComponent implements OnInit {
       this.periodDetailHeaderReceived.period.finalDate = this._utilitariesService.convertDateGMTToString(new Date(), "final");
     }
 
-    console.log(this.periodDetailHeaderReceived.period);
     this._periodService.closePeriod(this.periodDetailHeaderReceived.period).subscribe(
       response => {
         Swal.fire(response.title, response.message,response.status);
@@ -89,8 +88,6 @@ export class DetailHeaderPeriodComponent implements OnInit {
   }
 
   receiveResponseFromCalendarToParent(data: any) {
-    console.log("data");
-    console.log(data);
     this.flagCalendarpPopUp = false;
     if(data.dateRange == undefined) return;
 
@@ -139,7 +136,6 @@ export class DetailHeaderPeriodComponent implements OnInit {
   }
 
   updateFinalDatePeriod(newFinalDate: Date) {
-    console.log(this._utilitariesService.convertDateGMTToString(newFinalDate, "final"));
     //Seteo de fecha final y activación
     this.periodShow = this.periodDetailHeaderReceived.period;
     this.periodShow.activate = true;

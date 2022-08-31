@@ -58,10 +58,7 @@ export class DetailBodyPeriodComponent implements OnInit {
 
   validateShowBlockAccounts() {
     this.blockAccount = true;
-    console.log(this.accountParentShow);
-    console.log(this.accountClosedStructureList);
     if(!this.accountParentShow.period.statusPeriod && this.accountClosedStructureList.length == 0) {
-      console.log("ddd");
       this.blockAccount = false;
     }
   }
@@ -104,8 +101,6 @@ export class DetailBodyPeriodComponent implements OnInit {
       }
     }
 
-    console.log(this.accountParentShow);
-
   }
 
   catchAccountParent() {
@@ -139,37 +134,17 @@ export class DetailBodyPeriodComponent implements OnInit {
     //Caso existe ParentInitial
     if(this.accountParentInit.id != 0) {
       this.accountParentShow = this.accountParentInit;
-      //return;
     }
 
     //Caso existe ParentProcess
     if(this.accountParentProcess.id != 0) {
       this.accountParentShow = this.accountParentProcess;
-      //return;
     }
 
     //Caso existe accountParentClosed
     if(this.accountParentClosed.id != 0) {
       this.accountParentShow = this.accountParentClosed;
-      //return;
     }
-
-    //*** CODE ANTERIOR *** */
-
-    // //Caso existe ParentInitial
-    // if(this.accountParentProcess.id == 0) {
-    //   this.accountParentShow = this.accountParentInit;
-    //   //return;
-    // }
-
-    // //Caso existe ParentProcess
-    // if(this.accountParentClosed.id == 0) {
-    //   this.accountParentShow = this.accountParentProcess;
-    //   return;
-    // }
-
-    // //Caso exista parentCLOSED => Mostrar el parentFinal
-    // this.accountParentShow = this.accountParentClosed;
 
   }
 
@@ -276,16 +251,14 @@ export class DetailBodyPeriodComponent implements OnInit {
     this.dataStructure.imagen = CONSTANTES.CONST_IMAGEN_CUENTAS;
     this.dataStructure.object = new AccountModel();
     this.dataStructure.object.accountName = "Principal";
-    console.log(object);
+
     if(object == 'child') {
-      console.log(object);
       this.dataStructure.object.accountType.id = 2;
     }
 
     if(order == 'Actualizar') {
       this.dataStructure.action = CONSTANTES.CONST_TEXT_BTN_ACTUALIZAR;
       this.dataStructure.object = object;
-      console.log(this.dataStructure.object);
     }
   }
 
@@ -327,7 +300,6 @@ export class DetailBodyPeriodComponent implements OnInit {
       this.registerTransference(dataStructureReceived.object);
       return;
     }
-    console.log(dataStructureReceived.object);
     //Cuentas
     if(dataStructureReceived.object.id == 0){
       this.registerAccount(dataStructureReceived.object);

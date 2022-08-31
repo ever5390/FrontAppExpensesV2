@@ -9,6 +9,7 @@ export class UtilService {
     
     private subject$ = new Subject<any>();
     private subjectDates$ = new Subject<any>();
+    private subjectCountNotify$ = new Subject<any>();
     private subjectItemFilterSelected$ = new Subject<any>();
 
     constructor() { }
@@ -90,6 +91,14 @@ export class UtilService {
 
     receivingdDatesFromCalendarSelected():Observable<any> {
         return this.subjectDates$.asObservable();
+    }
+
+    sendCountNotifications(objectSend:any) {
+        this.subjectCountNotify$.next(objectSend);
+    }
+
+    receivingCountNotifications():Observable<any> {
+        return this.subjectCountNotify$.asObservable();
     }
     
 }

@@ -470,23 +470,13 @@ export class CalendarComponent implements OnInit {
   sendDateRangeToFather(order: string) {
     this.dateSend.startDate = this.dateSelectedInitial.dateSelected;
     this.dateSend.finalDate = (order == "only")?this.dateSelectedInitial.dateSelected:this.dateSelectedFinal.dateSelected;
-
-    this.sendResponseFromCalendarToParent.emit({
-      "component": CONSTANTES.CONST_COMPONENT_CALENDAR,
-      "action": null,
-      "dateRange": this.dateSend
-    });
+    this.sendResponse(this.dateSend, null);
   }
 
   sendDateQuickFilters(order: string) {
     this.dateSend.startDate = this.dateSelectedInitial.dateSelected;
     this.dateSend.finalDate = (order == "only")?this.dateSelectedInitial.dateSelected:this.dateSelectedFinal.dateSelected;
-
-    this.sendResponseFromCalendarToParent.emit({
-      "component": CONSTANTES.CONST_COMPONENT_CALENDAR,
-      "action": null,
-      "dateRange": this.dateSend
-    });
+    this.sendResponse(this.dateSend, null);
   }
 
   catchDateSingleSelectPeriod(type: string) {
@@ -507,15 +497,12 @@ export class CalendarComponent implements OnInit {
       )
     }
 
-    this.sendResponseFromCalendarToParent.emit({
-      "component": CONSTANTES.CONST_COMPONENT_CALENDAR,
-      "action": type,
-      "dateRange": this.dateSend
-    });
+    this.sendResponse(this.dateSend, null);
   }
 
   catchDate(orden:number, monthDiscount:number, dayDiscount:number){
-
+    let dataSend:any = [];
+    var action = null;
     switch (orden) {
       case 0://Resta en ambos : hoy y ayer
         this.inputValueDateInit = this.getDateWithMinusDay(monthDiscount, dayDiscount);
@@ -534,18 +521,30 @@ export class CalendarComponent implements OnInit {
         this.inputValueDateEnd = this.getDateWithMinusDay(0, - [new Date().getDate()]);
         break;
       default:
-        this.inputValueDateInit = new Date(this.period.startDate);
-        this.inputValueDateEnd = new Date(this.period.finalDate);
+        action = "reset";
+        if(this.period == null) {
+          dataSend.startDate = new Date();
+          dataSend.finalDate = new Date();
+        } else {
+          dataSend.startDate = this.period.startDate;
+          dataSend.finalDate = this.period.finalDate;
+        }
         break;
     }
 
-    this.dateSend.startDate = this.inputValueDateInit;
-    this.dateSend.finalDate = this.inputValueDateEnd;
+    if(orden != -1) {
+      dataSend.startDate = this.inputValueDateInit;
+      dataSend.finalDate = this.inputValueDateEnd;
+    }
+    console.log("action" + action);
+    this.sendResponse(dataSend, action);
+  }
 
+  private sendResponse(dataSend: any, action: any) {
     this.sendResponseFromCalendarToParent.emit({
       "component": CONSTANTES.CONST_COMPONENT_CALENDAR,
-      "action": null,
-      "dateRange": this.dateSend
+      "action": action,
+      "dateRange": dataSend
     });
   }
 

@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 // import { skipApiKey } from '@core/usuarios/context/skip.token.context';
-import { OwnerModel } from '@data/models/business/owner.model';
+import { OwnerDaoModel, OwnerModel } from '@data/models/business/owner.model';
 import { URL_BASE_API_V1, URL_BASE_HOST } from 'app/config/global.url';
 import { Observable } from 'rxjs';
 
@@ -126,5 +126,9 @@ import { Observable } from 'rxjs';
 
      // return this._http.post<OwnerModel>(`${this.URLCOMPL}/owner`,owner, { context: skipApiKey() });
 
+    }
+
+    getAllPayersDistictToSelect(idWorkspace: number) : Observable<String[]> {
+      return this._http.get<String[]>(`${URL_BASE_API_V1}/workspace/${idWorkspace}/expense/payers`);
     }
 }

@@ -12,7 +12,7 @@ export class ExpenseModel {
         public amount:          string = '',
         public amountShow:      string = '',
         public description:     string = '',
-        public image:           string = '',
+        public vouchers:        Voucher[] = [],
         public payer:           string = '',
         public createAt:        Date     = new Date(),
         public paymentMethod:   PaymentMethodModel = new PaymentMethodModel(),
@@ -30,6 +30,14 @@ export class ExpenseModel {
 }
 
 export class Tag {
+    constructor(
+        public id:     number = 0,
+        public tagName:   string = '',
+        public owner: OwnerModel = new OwnerModel()
+   ){}
+}
+
+export class Voucher {
     constructor(
         public id:     number = 0,
         public name:   string = ''

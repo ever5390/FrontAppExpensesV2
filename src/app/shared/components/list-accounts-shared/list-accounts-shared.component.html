@@ -1,13 +1,35 @@
-<!-- Lista de cuentas: caso Transferencia interna -->
 <div class="st_list_account_origen" [ngStyle]="{'display':(flagShowComponentReceived) ? 'block' : 'none' }">
-    <h6><i (click)="backToEmitAccount()" class="fas fa-angle-double-left"></i> Seleccione una cuenta origen</h6>
-    <div #lisCategoriesForSelect>
-        <ng-container *ngFor="let account of listaAccountReceived">
-            <div  (click)="catchAccountSelected(account)" class="st_account_select d-flex justify-content-between align-items-center">
-                <label>{{account.accountName}}</label>
-                <label><span style="font-size: .8rem; color:rgb(83, 40, 40)">disponible</span>
-                    <br>S/ {{account.balanceFlow | number: '1.2-2'}}
-                </label>
+    <h6><i (click)="backToEmitAccount()" class="fas fa-angle-double-left"></i> Seleccione</h6>
+    <div >
+        <ng-container >
+            <div *ngIf="!isAccountList" class="form_control st_frm_search" >
+                <label> Filtrar</label>
+                <div class="st_block_search d-flex align-items-center justify-content-start">
+                    <i class="far fa-search" ></i>
+                    <input (keyup)="searchMethod($event)" type="text"
+                    spellcheck="false" autocomplete="none" placeholder="">
+                    <i  (click)="selectNewOptionToSendExpense()" *ngIf="showBtnAddItem" class="fas fa-check-circle"></i>
+                </div>
+            </div>
+            <div #lisCategoriesForSelect class="container-list-options">
+                <ng-container *ngFor="let item of dataOptionsSelectExpenseList">
+                    <div *ngIf="item.name != ''"  (click)="catchOptionSelected(item)"
+                        class="st_account_select d-flex justify-content-between align-items-center"
+                        >
+                        <ng-container *ngIf="item.name != ''">
+                            <label>
+                                <i class="{{item.icon}}"></i> 
+                                {{item.name}}
+                            </label>
+                            <label *ngIf="isAccountList">
+                                <span style="font-size: .8rem; color:rgb(83, 40, 40)">
+                                    disponible
+                                </span>
+                                <br>S/ {{item.disponible | number: '1.2-2'}}
+                            </label>
+                        </ng-container>
+                    </div>
+                </ng-container>
             </div>
         </ng-container>
     </div>

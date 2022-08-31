@@ -50,24 +50,6 @@ const routes: Routes = [
         loadChildren: ()=> import('@modules/payment-method/payment-method.module')
               .then( m => m.PaymentMethodModule)
       }
-      // ,
-      // {
-      //   path:'',
-      //   loadChildren: ()=> import('@modules/user/user.module')
-      //         .then( m => m.UserModule)
-      // }
-
-    //   {
-    //     path:'',
-    //     component: UserComponent,
-    //     children: [
-    //       {
-    //         path:'',
-    //         loadChildren: ()=> import('@modules/user/user.module')
-    //                 .then( m => m.UserModule)
-    //       }
-    //     ]
-    // },
     ]
   },
   {

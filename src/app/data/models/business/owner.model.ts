@@ -12,4 +12,13 @@ export class OwnerModel {
     ){
 
     }   
+}
+
+export class OwnerDaoModel {
+    constructor(
+        public id:       number = 0,
+        public name:     string = ''
+    ){
+
+    }   
 } 

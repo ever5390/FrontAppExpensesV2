@@ -14,6 +14,10 @@ const routes: Routes = [
     component: ManageExpenseComponent
   },
   {
+    path:'expense-detail/notification/:idNotification',
+    component: ManageExpenseComponent
+  },
+  {
     path:'expense-filter',
     component: FilterExpenseComponent
   }

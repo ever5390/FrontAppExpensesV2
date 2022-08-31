@@ -8,12 +8,20 @@
                     <div>(Ingrese monto)</div>
                     <div class="st_block_amount d-flex align-items-center">
                         <span>S/</span>
-                        <input type="text" placeholder="0.00" [(ngModel)]="expense.amountShow">
+                        <input type="text" placeholder="0.00" [(ngModel)]="expense.amountShow" [readOnly]="flagReceiveNotificationParamRoute">
                     </div>
                 </div>
                 <div class="form_control pt-1">
                     <label>Descripción(optional)</label>
-                    <textarea rows="2" type="text" [(ngModel)]="expense.description"></textarea>
+                    <div class="form_contain_textarea">
+                        <textarea rows="2" type="text" [(ngModel)]="expense.description"></textarea>
+                        <div class="container-tags">
+                            <div *ngFor="let tag of tagListSelected;">
+                               <span>#{{tag.tagName}}</span> 
+                                <i class="fas fa-times" (click)="deleteItemFromListaTag(tag)"></i>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="form_control">
                     <div class="st_content_aditionals_items d-flex justify-content-between">
@@ -39,31 +47,31 @@
                 </div>
                 <div class="form_control pt-1">
                     <div class="st_content_attach">
-                        <!-- <button>Subir voucher (opcional)</button> -->
-                        <label (click)="showCalendar()" class="st_button_upload_voucher">
+                        <!-- <label (click)="showCalendar()" class="st_button_upload_voucher">
                                 <span>Fecha: </span>
                                 <span>02/12/2022  05:10:13</span>
                                 <i class="fas fa-calendar"></i>
-                        </label>
+                        </label> -->
                         <ng-container>
-                            <label class="st_button_upload_voucher st_bgcolor_whopay">
+                            <label (click)="showListOptionsSelect('tags')" class="st_button_upload_voucher st_bgcolor_whopay">
                                 <span>Agregar Tags</span>
                                 <span>(Optional)</span>
                                 <i class="fas fa-hashtag"></i>
                             </label>
                         </ng-container>
                         <ng-container *ngIf="itemAccording.id == 2 || itemAccording.id == 4">
-                            <label class="st_button_upload_voucher st_bgcolor_whopay">
+                            <label *ngIf="payerSelected == ''; else ownerSelected;"
+                                (click)="showListOptionsSelect('payer')" class="st_button_upload_voucher st_bgcolor_whopay">
                                 <span>Quien paga</span>
-                                <span>(Seleccione)</span>
+                                <span>(Optional)</span>
                                 <i class="fas fa-envelope-open-dollar"></i>
                             </label>
                         </ng-container>
                         <ng-container *ngIf="accountListSelected.length>0">
                             <label *ngIf="itemAccount.id==0; else accountSelected;"
-                                (click)="showListAccountSelect()" class="st_button_upload_voucher st_bgcolor_whopay">
+                                (click)="showListOptionsSelect('accounts')" class="st_button_upload_voucher st_bgcolor_whopay">
                                 <span>Account:</span>
-                                <span>(Seleccione)</span>
+                                <span>(Optional)</span>
                                 <i class="fas fa-money-check-edit-alt"></i>
                             </label>
                         </ng-container>
@@ -74,20 +82,20 @@
                                 type="file" id="myFileC"
                                 class="st_img_upload"
                                 >
-                                <span>Subir voucher (opcional)</span>
+                                <span>Subir voucher (2 máx)</span>
                                 <i class="fas fa-arrow-alt-square-up"></i>
                         </label>
                         <div class="container-vouchers" >
-                            <span class="st_voucher" *ngFor="let index of imagenesUpload; let i = index" >
-                                <img src="{{index}}" alt="" srcset="">
-                                <i class="fas fa-times st_delete_voucher" (click)="removeVoucherFromList(i)"></i>
+                            <span class="st_voucher" *ngFor="let voucher of vouchersListToShow; let i = index" >
+                                <img src="{{voucher}}"  accept="image/png, image/jpeg, image/jpg"  alt="" srcset="">
+                                <i class="close-voucher fas fa-times st_delete_voucher" (click)="removeVoucherFromList(i)"></i>
                             </span>
                         </div>
                     </div>
                 </div>
                
             </div>
-            <button (click)="registerOrUpdateExpense()">Registrar</button>
+            <button (click)="registerOrUpdateExpense()">{{textActionButton}}</button>
 
 
 
@@ -113,12 +121,11 @@
                         [receivedComponentParent]="sendComponentParentToCalendar"
                         (sendResponseFromCalendarToParent)="receivedItemSelectedaFromPopUp($event)"
                     ></app-calendar>
-                    <app-list-accounts-shared *ngIf="flagShowListAccountSelect"
-                         [receiveComponentToBlockListAccount]="sendComponentToBlockListAccount"
-                         [heightContainerChild]="heightFormRegisterExpense"
-                         [flagShowComponentReceived]="flagShowListAccountSelect"
-                         [listaAccountReceived]="accountListSelected"
-                         (sendEmittAccountSelected)="receivedItemSelectedaFromPopUp($event)"
+                    <app-list-accounts-shared *ngIf="flagShowListOptionsSelect"
+                            [heightContainerChild]="heightFormRegisterExpense"
+                            [flagShowComponentReceived]="flagShowListOptionsSelect"
+                            [dataOptionsSelectExpenseListReceived]="dataOptionsSelectExpenseList"
+                            (sendEmittAccountSelected)="receivedItemSelectedaFromPopUp($event)"
                     ></app-list-accounts-shared>
             </div>
         </div>
@@ -128,12 +135,22 @@
 
 
 <ng-template #accountSelected>
-    <div (click)="showListAccountSelect()" 
+    <div (click)="showListOptionsSelect('accounts')" 
         class="st_form_destiny d-flex justify-content-between align-items-center"
         [ngStyle]="{'color':(itemAccount.balanceFlow == '0') ? 'red' : '#366351',
                     'border-color':(itemAccount.balanceFlow == '0') ? 'red' : '#366351'}">
         <span>ACC: {{itemAccount.accountName}}</span>
         <span>S/ {{itemAccount.balanceFlow | number: '1.2-2'}}</span>
+    </div>
+</ng-template>
+
+<ng-template #ownerSelected>
+    <div (click)="showListOptionsSelect('payer')" 
+        class="st_form_destiny d-flex justify-content-between align-items-center"
+        [ngStyle]="{'color':(itemAccount.balanceFlow == '0') ? 'red' : '#366351',
+                    'border-color':(itemAccount.balanceFlow == '0') ? 'red' : '#366351'}">
+        <span>Payer: {{payerSelected}}</span>
+        <span><i class="fas fa-user-circle"></i></span>
     </div>
 </ng-template>
 

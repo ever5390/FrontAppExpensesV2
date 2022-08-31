@@ -1,7 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { NotificationExpense } from '@data/models/business/notificationExpense.model';
 import { URL_BASE_API_V1 } from 'app/config/global.url';
-import { ExpenseModel } from 'app/data/models/business/expense.model';
+import { ExpenseModel, Tag } from 'app/data/models/business/expense.model';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/internal/operators/map';
 
@@ -28,5 +29,8 @@ export class ExpensesService {
     return this._http.post<ExpenseModel>(`${this.URLCOMPL}/expense`,expenseObject,{ headers: this.httpHeaders})
   }
 
+  getAllTagsByOwnerId(idOwner: number) : Observable<Tag[]> {
+    return this._http.get<Tag[]>(`${this.URLCOMPL}/owner/${idOwner}/tag-list`);
+  }
 
 }

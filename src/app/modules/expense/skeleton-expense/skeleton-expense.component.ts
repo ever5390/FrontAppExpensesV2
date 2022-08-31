@@ -42,10 +42,18 @@ export class SkeletonExpenseComponent implements OnInit {
     this.receivingDataCalendar();
   }
 
+  ngOnInit(): void {
+    this.catchPeriodAndGetAllListExpenses();
+  }
+
   receivingDataCalendar() {
-    this.originComponent = "calendar";
+    
     this._utilitariesService.receivingdDatesFromCalendarSelected().subscribe(
       response => {
+        this.originComponent = "calendar";
+
+        console.log(this._utilitariesService.convertDateGMTToString(new Date(this.period.startDate), "initial"));
+        console.log(this._utilitariesService.convertDateGMTToString(new Date(this.period.finalDate), "final"));
         this.period.startDate = this._utilitariesService.convertDateGMTToString(new Date(response.startDate), "initial");
         this.period.finalDate = this._utilitariesService.convertDateGMTToString(new Date(response.finalDate), "final");
         this.getAllExpensesByWorkspaceAndDateRangePeriod(
@@ -65,22 +73,6 @@ export class SkeletonExpenseComponent implements OnInit {
         );
       }
     );
-  }
-
-  ngOnInit(): void {
-      if(this.period != null){
-        this.originComponent = "initial";
-        this.getAllExpensesByWorkspaceAndDateRangePeriod(
-          this.wrkspc.id,
-          this._utilitariesService.convertDateGMTToString(new Date(this.period.startDate), "initial"),
-          this._utilitariesService.convertDateGMTToString(new Date(this.period.finalDate), "final")
-        );
-      } else {
-        console.log("Periodo null");
-        this.getAllExpensesByWorkspaceAndDateRangePeriod(this.wrkspc.id,
-          this._utilitariesService.convertDateToString(new Date()),
-          this._utilitariesService.convertDateToString(new Date()));
-      }
   }
 
   getAllExpensesByWorkspaceAndDateRangePeriod(idWrkspc: number, dateBegin: string, dateEnd: string) {
@@ -127,7 +119,7 @@ export class SkeletonExpenseComponent implements OnInit {
   concatTags(tagLis: Tag[]): string {
     let strTagsAllJoin = "";
     tagLis.forEach( tag => {
-      strTagsAllJoin.concat(" ",tag.name);
+      strTagsAllJoin.concat(" ",tag.tagName);
     });
     return strTagsAllJoin;
   }
@@ -150,16 +142,18 @@ export class SkeletonExpenseComponent implements OnInit {
   }
 
   catchPeriodAndGetAllListExpenses() {
-    this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
-    //Workspace Id : caprturarlo desde WORKSPACE inicial
-    if(this.period == null) {
-      this.getPeriodIfNotExist();
-    } else {
+    if(this.period != null){
+      this.originComponent = "initial";
       this.getAllExpensesByWorkspaceAndDateRangePeriod(
         this.wrkspc.id,
-        this.period.startDate,
-        this.period.finalDate
+        this._utilitariesService.convertDateGMTToString(new Date(this.period.startDate), "initial"),
+        this._utilitariesService.convertDateGMTToString(new Date(this.period.finalDate), "final")
       );
+    } else {
+      console.log("Periodo null");
+      this.getAllExpensesByWorkspaceAndDateRangePeriod(this.wrkspc.id,
+        this._utilitariesService.convertDateToString(new Date()),
+        this._utilitariesService.convertDateToString(new Date()));
     }
   }
 

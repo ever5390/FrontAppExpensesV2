@@ -51,7 +51,7 @@ export class ListaSharedComponent implements OnInit {
     console.log(this.dataStructureListReceived.lista);
     this.listaShared = this.dataStructureList.lista;
     console.log(this.listaShared);
-    //this.searchActivateFunction();
+    this.searchActivateFunction();
     
   }
 
