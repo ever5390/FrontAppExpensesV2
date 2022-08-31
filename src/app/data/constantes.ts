@@ -10,6 +10,7 @@ export class CONSTANTES {
     public static CONST_COMPONENT_CUENTAS = 'Cuentas';
     public static CONST_COMPONENT_TAG = 'Tag';
     public static CONST_COMPONENT_USER = 'User';
+    public static CONST_COMPONENT_NOTIFICATION: 'Calendar';
 
     public static CONST_TRANSFERENCIA_INTERNA = 'Transferencia interna';
     public static CONST_TRANSFERENCIA_EXTERNA = 'Transferencia externa';
@@ -52,6 +53,4 @@ export class CONSTANTES {
     public static CONST_TEXT_SUBTITLE_EMISOR_NOTIF_RECHAZADO = 'Rechazaste el pago realizado por la contraparte';
     public static CONST_TEXT_SUBTITLE_EMISOR_NOTIF_PDTE_CONFIRMACION = 'Tienes un pago recibido pendiente de confirmación';
     public static CONST_TEXT_SUBTITLE_EMISOR_NOTIF_RECLAMADO = 'Tienes un reclamo recibido pendiente de confirmación';
-
-
 }

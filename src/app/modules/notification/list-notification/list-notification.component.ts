@@ -1,5 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { CONSTANTES } from '@data/constantes';
 import { NotificationExpense, TypeStatusNotificationExpense } from '@data/models/business/notificationExpense.model';
 import { OwnerModel } from '@data/models/business/owner.model';
 import { PeriodModel } from '@data/models/business/period.model';
@@ -104,7 +105,12 @@ export class ListNotificationComponent implements OnInit {
           dataSend.startDate = this.period.startDate;
           dataSend.finalDate = this.period.finalDate;
           dataSend.origin = "notification"
-          this._utilitariesService.sendDatesFromCalendarSelected(dataSend);
+
+          this._utilitariesService.sendDatesFromCalendarSelected({
+            "component": CONSTANTES.CONST_COMPONENT_NOTIFICATION,
+            "action": "reset",
+            "dateRange": dataSend
+          });
         }
       },
       error => {

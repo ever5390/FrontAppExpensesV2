@@ -403,6 +403,8 @@ export class ManageExpenseComponent implements OnInit {
         response = response.filter(item => {
           return item!= this.owner.name;
         });
+        console.log("ALL USERS");
+        console.log(response);
 
         if(response.length == 0) {
           this.dataOptionsSelectExpense = new DataOptionsSelectExpense();

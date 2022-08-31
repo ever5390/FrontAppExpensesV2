@@ -37,7 +37,7 @@ export class DetailHeaderPeriodComponent implements OnInit {
     intervalCompareFinalDate.subscribe(
       (n) => {
         this.dateFinalAutomaticCatch = new Date(this.periodShow.finalDate);
-        if (this.dateFinalAutomaticCatch == new Date()) {
+        if (this.dateFinalAutomaticCatch == new Date(this.periodShow.finalDate) && this.periodShow.activate == true) {
          this.closePeriodAtomatic('automatic');
         }
       }
