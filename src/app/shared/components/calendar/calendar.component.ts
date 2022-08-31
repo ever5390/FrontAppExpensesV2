@@ -467,19 +467,19 @@ export class CalendarComponent implements OnInit {
 
   };
 
-  sendDateRangeToFather(order: string) {
+  sendDateRangeToFather(order: string) { //CLICK EN DÍAS
     this.dateSend.startDate = this.dateSelectedInitial.dateSelected;
     this.dateSend.finalDate = (order == "only")?this.dateSelectedInitial.dateSelected:this.dateSelectedFinal.dateSelected;
-    this.sendResponse(this.dateSend, null);
+    this.sendResponse(this.dateSend);
   }
 
-  sendDateQuickFilters(order: string) {
+  sendDateQuickFilters(order: string) {//CLICK EN PERIODOS DE TIEMPO
     this.dateSend.startDate = this.dateSelectedInitial.dateSelected;
     this.dateSend.finalDate = (order == "only")?this.dateSelectedInitial.dateSelected:this.dateSelectedFinal.dateSelected;
-    this.sendResponse(this.dateSend, null);
+    this.sendResponse(this.dateSend);
   }
 
-  catchDateSingleSelectPeriod(type: string) {
+  catchDateSingleSelectPeriod(type: string) {//MODIFICAR FINAL DATE DE PERIODO
 
     if(type == "quincenal") {
       this.dateSend.startDate = new Date(
@@ -497,7 +497,7 @@ export class CalendarComponent implements OnInit {
       )
     }
 
-    this.sendResponse(this.dateSend, null);
+    this.sendResponse(this.dateSend);
   }
 
   catchDate(orden:number, monthDiscount:number, dayDiscount:number){
@@ -521,29 +521,20 @@ export class CalendarComponent implements OnInit {
         this.inputValueDateEnd = this.getDateWithMinusDay(0, - [new Date().getDate()]);
         break;
       default:
-        action = "reset";
-        if(this.period == null) {
-          dataSend.startDate = new Date();
-          dataSend.finalDate = new Date();
-        } else {
-          dataSend.startDate = this.period.startDate;
-          dataSend.finalDate = this.period.finalDate;
-        }
         break;
     }
+    dataSend.startDate = this.inputValueDateInit;
+    dataSend.finalDate = this.inputValueDateEnd;
 
-    if(orden != -1) {
-      dataSend.startDate = this.inputValueDateInit;
-      dataSend.finalDate = this.inputValueDateEnd;
-    }
-    console.log("action" + action);
-    this.sendResponse(dataSend, action);
+    this.sendResponse(dataSend);
   }
 
-  private sendResponse(dataSend: any, action: any) {
+  private sendResponse(dataSend: any) {
+    console.log("dataSendCalendar");
+    console.log(dataSend);
+    
     this.sendResponseFromCalendarToParent.emit({
       "component": CONSTANTES.CONST_COMPONENT_CALENDAR,
-      "action": action,
       "dateRange": dataSend
     });
   }

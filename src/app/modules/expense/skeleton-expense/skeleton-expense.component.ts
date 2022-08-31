@@ -47,29 +47,24 @@ export class SkeletonExpenseComponent implements OnInit {
   }
 
   receivingDataCalendar() {
-    
+
     this._utilitariesService.receivingdDatesFromCalendarSelected().subscribe(
       response => {
         this.originComponent = "calendar";
-
-        console.log(this._utilitariesService.convertDateGMTToString(new Date(this.period.startDate), "initial"));
-        console.log(this._utilitariesService.convertDateGMTToString(new Date(this.period.finalDate), "final"));
-        this.period.startDate = this._utilitariesService.convertDateGMTToString(new Date(response.startDate), "initial");
-        this.period.finalDate = this._utilitariesService.convertDateGMTToString(new Date(response.finalDate), "final");
+        console.log("response recive cal");
+        console.log(response);
         this.getAllExpensesByWorkspaceAndDateRangePeriod(
           this.wrkspc.id,
-          this.period.startDate,
-          this.period.finalDate
+          this._utilitariesService.convertDateGMTToString(response.dateRange.startDate, "start"),
+          this._utilitariesService.convertDateGMTToString(response.dateRange.finalDate, "final")
         );
       }, 
       error => {
         console.log(error.error);
-        this.period.startDate = this._utilitariesService.convertDateGMTToString(new Date(), "initial");
-        this.period.finalDate = this._utilitariesService.convertDateGMTToString(new Date(), "final");
         this.getAllExpensesByWorkspaceAndDateRangePeriod(
           this.wrkspc.id,
-          this.period.startDate,
-          this.period.finalDate
+          this._utilitariesService.convertDateGMTToString(new Date(), "initial"),
+          this._utilitariesService.convertDateGMTToString(new Date(), "final")
         );
       }
     );
@@ -84,7 +79,6 @@ export class SkeletonExpenseComponent implements OnInit {
         this.listExpensesToBody = response;
         this.totalGastadoSend = 0;
         this.sendListExpensesToBody.forEach(element => {
-          element.createAt = this._utilitariesService.getDateAddHoursOffset(element.createAt.toString(), "plus");
           this.totalGastadoSend = this.totalGastadoSend + parseFloat(element.amount);
         });
 
@@ -146,11 +140,10 @@ export class SkeletonExpenseComponent implements OnInit {
       this.originComponent = "initial";
       this.getAllExpensesByWorkspaceAndDateRangePeriod(
         this.wrkspc.id,
-        this._utilitariesService.convertDateGMTToString(new Date(this.period.startDate), "initial"),
-        this._utilitariesService.convertDateGMTToString(new Date(this.period.finalDate), "final")
+        this.period.startDate,
+        this.period.finalDate
       );
     } else {
-      console.log("Periodo null");
       this.getAllExpensesByWorkspaceAndDateRangePeriod(this.wrkspc.id,
         this._utilitariesService.convertDateToString(new Date()),
         this._utilitariesService.convertDateToString(new Date()));

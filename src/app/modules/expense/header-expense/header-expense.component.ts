@@ -1,4 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
+import { CONSTANTES } from '@data/constantes';
 import { AccountModel, TypeSatusAccountOPC } from '@data/models/business/account.model';
 import { Workspace } from '@data/models/business/workspace.model';
 import { AccountService } from '@data/services/account/account.service';
@@ -23,6 +24,8 @@ export class HeaderExpenseComponent implements OnInit {
   //Catching & send height header component
   heightHeader: number = 0;
   availableAmount: number = 0.00;
+
+  originComponentToHtml : string = "initial";
   
   @ViewChild("container_header") container_header : ElementRef | any;
   @Output() emitterHeight= new EventEmitter();
@@ -30,9 +33,7 @@ export class HeaderExpenseComponent implements OnInit {
   
   constructor(
     private _accountService: AccountService,
-    private _utilitariesService: UtilService,
-    private _expenseService: ExpensesService
-  ) { 
+    private _utilitariesService: UtilService) { 
     
     this.receivingTotalSpentBySearchingExpense();
     this.receivingDataCalendar();
@@ -41,30 +42,16 @@ export class HeaderExpenseComponent implements OnInit {
   ngOnInit(): void {
     this.wrkspc = JSON.parse(localStorage.getItem("lcstrg_worskpace")!);
     this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
-    this.validateHourIfExistPeriod();
+    
+    this.validateHourIfExistPeriod("");
   }
 
   receivingDataCalendar() {
     this._utilitariesService.receivingdDatesFromCalendarSelected().subscribe(
       response => {
-
-        if(response.origin != null){
-          //From notification
-          this.validateHourIfExistPeriod();
-          return;
-        }
-        console.log("response.action");
-        console.log(response);
-        if(response.action != null){
-          console.log("action");
-           //From Calendar reset
-          this.period.startDate = response.startDate;
-          this.period.finalDate = response.finalDate;
-          return;
-        }
-        console.log("No action");
-        this.period.startDate = this._utilitariesService.convertDateGMTToString(new Date(response.startDate), "initial");
-        this.period.finalDate = this._utilitariesService.convertDateGMTToString(new Date(response.finalDate), "final");  
+        this.originComponentToHtml = "calendar";
+        this.period.startDate = (response.action =='reset')?response.dateRange.startDate:this._utilitariesService.convertDateGMTToString(new Date(response.dateRange.startDate), "initial");
+        this.period.finalDate = (response.action =='reset')?response.dateRange.finalDate:this._utilitariesService.convertDateGMTToString(new Date(response.dateRange.finalDate), "final");  
       }, 
       error => {
         console.log(error.error);
@@ -89,15 +76,15 @@ export class HeaderExpenseComponent implements OnInit {
       );
   }
 
-  validateHourIfExistPeriod() {
-    if(this.period !=null) {
-      this.period.startDate = this._utilitariesService.getDateAddHoursOffset(this.period.startDate.toString(), "plus").toString();
-      this.period.finalDate = this._utilitariesService.getDateAddHoursOffset(this.period.finalDate.toString(), "plus").toString();
-      return;
-    }
-    this.period = new PeriodModel();
-    this.period.startDate =new Date().toString();
-    this.period.finalDate =new Date().toString();
+  validateHourIfExistPeriod(orden: string) {
+    if(this.period ==null || this.period.id == 0) {
+      this.period = new PeriodModel();
+      this.period.startDate = new Date().toString(),
+      this.period.finalDate = new Date().toString()
+    } else {
+      this.period =JSON.parse(localStorage.getItem("lcstrg_periodo")!);
+      this.sendResponse(this.period.startDate, this.period.finalDate, orden);
+    }    
   }
 
   receivingTotalSpentBySearchingExpense() {
@@ -110,6 +97,22 @@ export class HeaderExpenseComponent implements OnInit {
       error =>{
         console.log(error.error);
       });
+  }
+
+  private sendResponse(startDate: string, finalDate: string, orden: string) {
+
+    if(orden != "reset") return;
+    let dataSend:any = [];
+    dataSend.startDate = startDate;
+    dataSend.finalDate = finalDate;
+
+    console.log("RESET dataSend");
+    console.log(dataSend);
+    this._utilitariesService.sendDatesFromCalendarSelected({
+      "component": CONSTANTES.CONST_COMPONENT_HEADER,
+      "action": "reset",
+      "dateRange": dataSend
+    });
   }
 
   ngAfterViewInit() {

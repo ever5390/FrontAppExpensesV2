@@ -169,7 +169,6 @@ export class ManageExpenseComponent implements OnInit {
   }
 
   private validateIfExistVoucherUploaded() {
-    console.log(this.voucherSelectedFileToStorageSave.length);
     if(this.voucherSelectedFileToStorageSave.length == 0) {
       this.saveExpense();
       return;
@@ -205,7 +204,6 @@ export class ManageExpenseComponent implements OnInit {
   }
 
   getAllAccountByPeriodSelected(idPeriodReceived: number) {
-    console.log("accountList");
     this._accountService.getListAccountByIdPeriod(idPeriodReceived).subscribe(
       response => {
         this.accountListSelected = response.filter( account => {
@@ -275,7 +273,6 @@ export class ManageExpenseComponent implements OnInit {
   }
 
   showListOptionsSelect(sender: string) {
-    console.log(this.show__list__items + "-" + this.flagShowListOptionsSelect);
     this.show__list__items = true;
     this.flagShowListOptionsSelect = true;
     this.dataOptionsSelectExpenseList = [];
@@ -305,9 +302,7 @@ export class ManageExpenseComponent implements OnInit {
 
   removeVoucherFromList(index: number) {
     this.vouchersListToShow.splice(index, 1);
-    console.log(this.vouchersListToShow);
     this.voucherSelectedFileToStorageSave.splice(index, 1);
-    console.log(this.voucherSelectedFileToStorageSave);
     this.validateResizeHeightForm();
   }
 

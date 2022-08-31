@@ -133,7 +133,7 @@ export class HeaderComponent implements OnInit {
     this.flagCalendarpPopUp = false;
     if(data.dateRange == undefined) return;
 
-    this._utilService.sendDatesFromCalendarSelected(data.dateRange);
+    this._utilService.sendDatesFromCalendarSelected(data);
 
   }
  
