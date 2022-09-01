@@ -36,8 +36,9 @@ export class DetailHeaderPeriodComponent implements OnInit {
     const intervalCompareFinalDate = interval(1000);
     intervalCompareFinalDate.subscribe(
       (n) => {
-        this.dateFinalAutomaticCatch = new Date(this.periodShow.finalDate);
-        if (this.dateFinalAutomaticCatch == new Date(this.periodShow.finalDate) && this.periodShow.activate == true) {
+        //this.dateFinalAutomaticCatch = new Date(this.periodShow.finalDate);
+        this.dateFinalAutomaticCatch = new Date();
+        if (this.dateFinalAutomaticCatch == this.periodShow.finalDate && this.periodShow.activate == true) {
          this.closePeriodAtomatic('automatic');
         }
       }
@@ -48,8 +49,8 @@ export class DetailHeaderPeriodComponent implements OnInit {
     //this.periodDetailHeaderReceived.period.startDate = this._utilitariesService.convertDateGMTToString(new Date(this.periodDetailHeaderReceived.period.startDate), "initial");
     //this.periodDetailHeaderReceived.period.finalDate = this._utilitariesService.convertDateGMTToString(this.dateFinalAutomaticCatch, "final");
     if(originAction == 'manual') {
-      this.periodDetailHeaderReceived.period.finalDate = this._utilitariesService.convertDateGMTToString(new Date(), "final");
-      //this.periodDetailHeaderReceived.period.finalDate = new Date().toString();
+      //this.periodDetailHeaderReceived.period.finalDate = new Date(this._utilitariesService.convertDateGMTToString(new Date(), "final");
+      this.periodDetailHeaderReceived.period.finalDate = new Date();
     }
 
     this._periodService.closePeriod(this.periodDetailHeaderReceived.period).subscribe(
@@ -138,7 +139,7 @@ export class DetailHeaderPeriodComponent implements OnInit {
     //Seteo de fecha final y activación
     this.periodShow = this.periodDetailHeaderReceived.period;
     this.periodShow.activate = true;
-    this.periodShow.finalDate = this._utilitariesService.convertDateGMTToString(newFinalDate, "final");
+    //this.periodShow.finalDate = this._utilitariesService.convertDateGMTToString(newFinalDate, "final");
 
     this._periodService.updatePeriod(this.periodShow, 
         this.periodDetailHeaderReceived.period.id).subscribe(

@@ -56,7 +56,7 @@ export class SkeletonExpenseComponent implements OnInit {
         console.log(response);
         this.getAllExpensesByWorkspaceAndDateRangePeriod(
           this.wrkspc.id,
-          this._utilitariesService.convertDateGMTToString(response.dateRange.startDate, "start"),
+          (response.action=='reset')?this._utilitariesService.convertDateGMTToString(response.dateRange.startDate, "final"):this._utilitariesService.convertDateGMTToString(response.dateRange.startDate, "start"),
           this._utilitariesService.convertDateGMTToString(response.dateRange.finalDate, "final")
         );
       }, 
@@ -141,8 +141,8 @@ export class SkeletonExpenseComponent implements OnInit {
       this.originComponent = "initial";
       this.getAllExpensesByWorkspaceAndDateRangePeriod(
         this.wrkspc.id,
-        this.period.startDate,
-        this.period.finalDate
+        this.period.startDate.toString(),
+        this.period.finalDate.toString()
       );
     } else {
       this.getAllExpensesByWorkspaceAndDateRangePeriod(this.wrkspc.id,
@@ -159,8 +159,8 @@ export class SkeletonExpenseComponent implements OnInit {
             this._periodService.saveToLocalStorage(response);
             this.getAllExpensesByWorkspaceAndDateRangePeriod(
               this.wrkspc.id,
-              this.period.startDate,
-              this.period.finalDate
+              this.period.startDate.toString(),
+              this.period.finalDate.toString()
             );
           }
         }, error => {

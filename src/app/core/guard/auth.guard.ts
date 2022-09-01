@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { UserService } from '@data/services/user/user.service';
 import { Observable } from 'rxjs';
+import Swal from 'sweetalert2';
 
 @Injectable({
   providedIn: 'root'
@@ -18,12 +19,14 @@ export class AuthGuard implements CanActivate {
       if(this._authService.isAuthenticated()) {
         if(this.isTokenExpirado()) {
           this._authService.logoutSession();
+          // Swal.fire("","Sessión expirada","info");
           this._router.navigate(["/login"]);
           return false;
         }
-        //this._router.navigate(["/dashboard"]);
         return true;
       }
+      // this._authService.logoutSession();
+      // Swal.fire("","Sessión expirada","info");
       this._router.navigate(["/login"]);
       return false;
   }

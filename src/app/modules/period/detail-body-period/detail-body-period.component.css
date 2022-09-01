@@ -198,6 +198,34 @@
     right: 5px;
 }
 
+/* Caso lista categories selected show */
+.st_list_categ_selected {
+    font-size: .7rem;
+    text-transform: lowercase;
+    width: 100%;
+    padding: 10px 0;
+    display: inline-grid;
+    grid-template-columns: repeat(5, calc(100%/5));
+}
+
+.st_list_categ_selected div{
+    margin-right: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+}
+
+.st_list_categ_selected div label{
+    text-align: center;
+}
+
+.st_list_categ_selected img {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+}
+
 @media (max-width: 860px) {
 
     .container-fluid {

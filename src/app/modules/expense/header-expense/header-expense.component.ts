@@ -55,8 +55,10 @@ export class HeaderExpenseComponent implements OnInit {
       }, 
       error => {
         console.log(error.error);
-        this.period.startDate = this._utilitariesService.convertDateGMTToString(new Date(), "initial");
-        this.period.finalDate = this._utilitariesService.convertDateGMTToString(new Date(), "final");
+        this.period.startDate = new Date();
+        this.period.finalDate = new Date();
+        // this.period.startDate = this._utilitariesService.convertDateGMTToString(new Date(), "initial");
+        // this.period.finalDate = this._utilitariesService.convertDateGMTToString(new Date(), "final");
       }
     );
   }
@@ -79,11 +81,13 @@ export class HeaderExpenseComponent implements OnInit {
   validateHourIfExistPeriod(orden: string) {
     if(this.period ==null || this.period.id == 0) {
       this.period = new PeriodModel();
-      this.period.startDate = new Date().toString(),
-      this.period.finalDate = new Date().toString()
+      // this.period.startDate = new Date().toString(),
+      // this.period.finalDate = new Date().toString()
+      this.period.startDate = new Date(),
+      this.period.finalDate = new Date()
     } else {
       this.period =JSON.parse(localStorage.getItem("lcstrg_periodo")!);
-      this.sendResponse(this.period.startDate, this.period.finalDate, orden);
+      this.sendResponse(this.period.startDate.toString(), this.period.finalDate.toString(), orden);
     }    
   }
 
