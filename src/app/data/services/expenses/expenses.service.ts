@@ -1,6 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { NotificationExpense } from '@data/models/business/notificationExpense.model';
 import { URL_BASE_API_V1 } from 'app/config/global.url';
 import { ExpenseModel, Tag } from 'app/data/models/business/expense.model';
 import { Observable } from 'rxjs';
@@ -31,6 +30,10 @@ export class ExpensesService {
 
   getAllTagsByOwnerId(idOwner: number) : Observable<Tag[]> {
     return this._http.get<Tag[]>(`${this.URLCOMPL}/owner/${idOwner}/tag-list`);
+  }
+
+  updateStatusPayedExpense(idExpense: number): Observable<any> {
+    return this._http.get<any>(`${this.URLCOMPL}/expense/check-pay/${idExpense}`);
   }
 
 }

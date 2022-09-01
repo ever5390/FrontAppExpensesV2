@@ -45,10 +45,11 @@ export class DetailHeaderPeriodComponent implements OnInit {
   }
 
   closePeriodAtomatic(originAction: string) {
-    this.periodDetailHeaderReceived.period.startDate = this._utilitariesService.convertDateGMTToString(new Date(this.periodDetailHeaderReceived.period.startDate), "initial");
-    this.periodDetailHeaderReceived.period.finalDate = this._utilitariesService.convertDateGMTToString(this.dateFinalAutomaticCatch, "final");
+    //this.periodDetailHeaderReceived.period.startDate = this._utilitariesService.convertDateGMTToString(new Date(this.periodDetailHeaderReceived.period.startDate), "initial");
+    //this.periodDetailHeaderReceived.period.finalDate = this._utilitariesService.convertDateGMTToString(this.dateFinalAutomaticCatch, "final");
     if(originAction == 'manual') {
       this.periodDetailHeaderReceived.period.finalDate = this._utilitariesService.convertDateGMTToString(new Date(), "final");
+      //this.periodDetailHeaderReceived.period.finalDate = new Date().toString();
     }
 
     this._periodService.closePeriod(this.periodDetailHeaderReceived.period).subscribe(

@@ -1,4 +1,5 @@
-import { Component, ElementRef, Input, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-body-expense',
@@ -10,6 +11,7 @@ export class BodyExpenseComponent implements OnInit {
   sendListExpensesToBodyList: any[] = [];
   @Input("receivedHeightHeaderToBody") receivedHeightHeaderToBody:string = '';
   @Input("receivedListExpensesFromSkeleton") receivedListExpensesFromSkeleton:any = [];
+  @Output() sendExpenseToUpdateStatausPay = new EventEmitter();
   @ViewChild('contentList') contentList: ElementRef  | any;
 
   constructor(
@@ -21,6 +23,22 @@ export class BodyExpenseComponent implements OnInit {
     //console.log("HELLO BODY");
     //console.log(this.receivedListExpensesFromSkeleton);
     this.sendListExpensesToBodyList = this.receivedListExpensesFromSkeleton;
+  }
+
+  updatePayedExpense(idExpenseUpdate: number) {
+    Swal.fire({
+      title: '¿Estas seguro?',
+      text: "Este procedimiento marcará el gasto seleccionado como pagado!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, continuar!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.sendExpenseToUpdateStatausPay.emit(idExpenseUpdate);
+      }
+    })
   }
 
   ngAfterViewInit() {

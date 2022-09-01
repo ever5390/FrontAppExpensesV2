@@ -8,6 +8,7 @@ import { ExpenseModel, Tag } from 'app/data/models/business/expense.model';
 import { PeriodModel } from 'app/data/models/business/period.model';
 import { ExpensesService } from 'app/data/services/expenses/expenses.service';
 import { PeriodService } from 'app/data/services/period/period.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-skeleton-expense',
@@ -236,6 +237,22 @@ export class SkeletonExpenseComponent implements OnInit {
       });
 
       return listReturn;
+  }
+
+  receivedExpenseToUpdateStatausPay(idExpenseToUpdateStatusPayed: any){
+    this.showBody = false;
+    this._expenseService.updateStatusPayedExpense(idExpenseToUpdateStatusPayed).subscribe(
+        response => {
+          Swal.fire(response.title, response.message, response.status);
+          this.showBody = true;
+          if(response.status == "success"){
+            this.catchPeriodAndGetAllListExpenses();
+          }
+        },
+        error => {
+          console.log(error.error);
+        }
+    );
   }
 
   private getTotalSpentByFilterAndReloadListExpenses() {

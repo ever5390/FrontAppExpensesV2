@@ -13,5 +13,6 @@
 <app-body-expense *ngIf="showBody" 
     [receivedHeightHeaderToBody]="sendHeightHeaderToBody"
     [receivedListExpensesFromSkeleton]="sendListExpensesToBody"
+    (sendExpenseToUpdateStatausPay)="receivedExpenseToUpdateStatausPay($event)"
     >
 </app-body-expense>
