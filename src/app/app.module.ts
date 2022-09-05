@@ -12,7 +12,6 @@ import { SharedModule } from './shared/shared.module';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TokenInterceptor } from '@core/interceptor/token-interceptor';
 
-
 @NgModule({
   declarations: [
     AppComponent,

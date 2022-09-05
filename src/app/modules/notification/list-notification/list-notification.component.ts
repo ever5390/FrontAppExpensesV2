@@ -27,6 +27,9 @@ export class ListNotificationComponent implements OnInit {
   textSubtitleByTypeUser: string = '';
   orderTypeUpdate: number = 0;
   
+  //Voucher
+  voucherSelectedToShow: string = '';
+  flagShowVoucherPopUp : boolean = false;
 
   constructor(
     private _renderer: Renderer2,
@@ -118,6 +121,18 @@ export class ListNotificationComponent implements OnInit {
       }
     );
   }
+
+
+  receivedResponseFromVoucherShowToParent(event: any) {
+    this.flagShowVoucherPopUp = false;
+  }
+
+  showVoucherSelected(voucherSelected: string) {
+    this.flagShowVoucherPopUp = true;
+    this.voucherSelectedToShow = voucherSelected;
+  }
+
+  
 
   ngAfterViewInit() {
     let windowHeight = window.innerHeight;

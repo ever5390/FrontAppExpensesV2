@@ -36,4 +36,9 @@ export class ExpensesService {
     return this._http.get<any>(`${this.URLCOMPL}/expense/check-pay/${idExpense}`);
   }
 
+  deleteExpenseById(idExpense: number): Observable<any> {
+    return this._http.delete<any>(`${this.URLCOMPL}/expense/${idExpense}`);
+  }
+
+
 }

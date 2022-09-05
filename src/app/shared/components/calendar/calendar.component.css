@@ -203,6 +203,24 @@
   margin-right: 5px;
 }
 
+/* hora */
+.st_hour_minute {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+}
+
+input[type="number"] {
+  text-align: center;
+  border-color: #88beb2;
+  outline: none;
+  border: none;
+  width: 70px;
+}
+/* 
+::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+} */
 
 @media (max-width:300px) {
 

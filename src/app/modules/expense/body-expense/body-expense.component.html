@@ -11,7 +11,9 @@
             <div class="st_block_expense">
                 <div class="st_expense_header" [ngStyle]="{'color':(expense.accordingType.id == 3) ? '#95A5A6' : '#000'}">
                     <label>COD: G{{expense.id}} S/ {{expense.amountShow | number : '1.2-2'}}</label>
-                    <label>{{expense.createAt | date: 'EEE dd MMM  HH:mm:ss' | uppercase}}</label>
+                    <label>{{expense.createAt | date: 'EEE dd MMM  HH:mm:ss' | uppercase}}
+                        <label (click)="deletExpense(expense)"> <i class="fal fa-trash-alt"></i></label>
+                    </label>
                 </div>
                 <div class="st_expense_body">
                     <div class="st_body_header">
@@ -23,7 +25,7 @@
                                 por {{expense.payer}}
                             </span>
                         </span>
-                        <span (click)="updatePayedExpense(expense.id)" [ngStyle]="{'background-color':(expense.pendingPayment) ? '#c9291e' : '#47B152'}" *ngIf="expense.pendingPayment">
+                        <span (click)="sendUpdatePayedExpense(expense.id)" [ngStyle]="{'background-color':(expense.pendingPayment) ? '#c9291e' : '#47B152'}" *ngIf="expense.pendingPayment">
                             Pendiente de pago<br>
                             Payer: {{expense.payer}}
                         </span>
@@ -48,7 +50,7 @@
                         <div *ngFor="let tag of expense.tag">#{{tag.tagName}} </div>
                     </div>
                     <div class="st_footer_vouchers">
-                        <img *ngFor="let voucher of expense.vouchers" src="{{voucher.name}}" alt="" srcset="">
+                        <img (click)="showVoucherSelected(voucher.name)" *ngFor="let voucher of expense.vouchers" src="{{voucher.name}}" alt="" srcset="">
                     </div>
                 </div>
             </div>
@@ -60,3 +62,8 @@
     
 
 </div>
+
+<app-visualizador-voucher *ngIf="flagShowVoucherPopUp" 
+    [receivedVoucher]="voucherSelectedToShow" 
+    (sendResponseFromVoucherShowToParent)="receivedResponseFromVoucherShowToParent($event)">
+</app-visualizador-voucher>

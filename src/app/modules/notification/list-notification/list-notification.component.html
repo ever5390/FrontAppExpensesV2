@@ -45,7 +45,7 @@
     <p>El usuario {{notification.payer.name}} realizó el pago del gasto enviado Nro 1356 concerniente a {{notification.expenseShared.category.name}}, 
         que asciende a s/ {{notification.expenseShared.amountShow | number : '1.2-2'}} soles realizado el {{notification.createAt | date: 'EEE dd MMM  HH:mm:ss' | uppercase}}
         <label class="st_footer_vouchers">
-            <img *ngFor="let voucher of notification.vouchers" src="{{voucher.name}}" alt="" srcset="">
+            <img (click)="showVoucherSelected(voucher.name)" *ngFor="let voucher of notification.vouchers" src="{{voucher.name}}" alt="" srcset="">
         </label>
         <label style="font-weight: bold; display: block;">
             <a class="red_btn" (click)="updateItem(notification, 4)">RECHAZAR</a>
@@ -55,3 +55,8 @@
     </p>
 
 </ng-template>
+
+<app-visualizador-voucher *ngIf="flagShowVoucherPopUp" 
+    [receivedVoucher]="voucherSelectedToShow" 
+    (sendResponseFromVoucherShowToParent)="receivedResponseFromVoucherShowToParent($event)">
+</app-visualizador-voucher>

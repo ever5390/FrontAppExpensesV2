@@ -250,7 +250,10 @@ export class DetailBodyPeriodComponent implements OnInit {
     this.dataStructure.action = CONSTANTES.CONST_TEXT_BTN_REGISTRAR;
     this.dataStructure.imagen = CONSTANTES.CONST_IMAGEN_CUENTAS;
     this.dataStructure.object = new AccountModel();
-    this.dataStructure.object.accountName = "Principal";
+
+    if(object == 'parent') {
+      this.dataStructure.object.accountName = "Principal";
+    }
 
     if(object == 'child') {
       this.dataStructure.object.accountType.id = 2;
@@ -323,5 +326,6 @@ export class DetailBodyPeriodComponent implements OnInit {
       }
     );
   }
+
 
 }

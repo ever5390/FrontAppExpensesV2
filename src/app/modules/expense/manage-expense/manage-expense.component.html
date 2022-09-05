@@ -47,11 +47,11 @@
                 </div>
                 <div class="form_control pt-1">
                     <div class="st_content_attach">
-                        <!-- <label (click)="showCalendar()" class="st_button_upload_voucher">
+                        <label *ngIf="flagShowBtnSelectCalendar" (click)="showCalendar()" class="st_button_upload_voucher">
                                 <span>Fecha: </span>
-                                <span>02/12/2022  05:10:13</span>
+                                <span>{{dateRangeCalendarSelected | date: 'EEE dd MMM  HH:mm:ss' | uppercase}}</span>
                                 <i class="fas fa-calendar"></i>
-                        </label> -->
+                        </label>
                         <ng-container>
                             <label (click)="showListOptionsSelect('tags')" class="st_button_upload_voucher st_bgcolor_whopay">
                                 <span>Agregar Tags</span>

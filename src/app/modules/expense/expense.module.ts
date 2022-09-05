@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { SkeletonExpenseComponent } from './skeleton-expense/skeleton-expense.component';
 import { BodyExpenseComponent } from './body-expense/body-expense.component';
-import { ListExpenseComponent } from './body-list-expense/list-expense.component';
 import { FilterExpenseComponent } from './filter-expense/filter-expense.component';
 import { ManageExpenseComponent } from './manage-expense/manage-expense.component';
 import { HeaderExpenseComponent } from './header-expense/header-expense.component';
@@ -16,7 +15,6 @@ import { SearchingComponent } from './searching/searching.component';
   declarations: [
     SkeletonExpenseComponent,
     BodyExpenseComponent,
-    ListExpenseComponent,
     FilterExpenseComponent,
     ManageExpenseComponent,
     HeaderExpenseComponent,

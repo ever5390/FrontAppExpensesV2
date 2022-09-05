@@ -239,19 +239,46 @@ export class SkeletonExpenseComponent implements OnInit {
       return listReturn;
   }
 
-  receivedExpenseToUpdateStatausPay(idExpenseToUpdateStatusPayed: any){
+  receivedExpenseToUpdateStatausPay(objectReceived: any){
     this.showBody = false;
-    this._expenseService.updateStatusPayedExpense(idExpenseToUpdateStatusPayed).subscribe(
-        response => {
-          Swal.fire(response.title, response.message, response.status);
-          this.showBody = true;
-          if(response.status == "success"){
-            this.catchPeriodAndGetAllListExpenses();
-          }
-        },
-        error => {
-          console.log(error.error);
+    if(objectReceived.action =="updateStatusPay"){
+      this.updateStatusPayExpense(objectReceived.idExpense);
+    } else {
+      this.deletExpenseById(objectReceived.idExpense);
+    }
+  }
+
+  private updateStatusPayExpense(idExpense: number) {
+    this._expenseService.updateStatusPayedExpense(idExpense).subscribe(
+      response => {
+        Swal.fire(response.title, response.message, response.status);
+        this.showBody = true;
+        if(response.status == "success"){
+          this.catchPeriodAndGetAllListExpenses();
         }
+      },
+      error => {
+        console.log(error.error);
+        Swal.fire(error.error.title, error.error.message, error.error.status);
+        this.catchPeriodAndGetAllListExpenses();
+      }
+    );
+  }
+
+  private deletExpenseById(idExpense: number) {
+    this._expenseService.deleteExpenseById(idExpense).subscribe(
+      response => {
+        Swal.fire(response.title, response.message, response.status);
+        this.showBody = true;
+        if(response.status == "success"){
+          this.catchPeriodAndGetAllListExpenses();
+        }
+      },
+      error => {
+        console.log(error.error);
+        Swal.fire(error.error.title, error.error.message, error.error.status);
+        this.catchPeriodAndGetAllListExpenses();
+      }
     );
   }
 

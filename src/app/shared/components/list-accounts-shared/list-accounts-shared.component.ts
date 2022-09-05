@@ -45,12 +45,13 @@ export class ListAccountsSharedComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    console.log("1.1");
     this.searchActivateFunction();
     this.catchWithSetTime();
   }
 
   catchWithSetTime() {
-    
+    console.log("1.2");
     //this.dataOptionsSelectExpenseList = [];
     this.dataOptionsSelectExpenseList = this.dataOptionsSelectExpenseListReceived;
     console.log(this.dataOptionsSelectExpenseList);
@@ -85,7 +86,7 @@ export class ListAccountsSharedComponent implements OnInit {
           return
         };
       });      
-    }, 60);
+    }, 150);
   }
 
   searchActivateFunction() {

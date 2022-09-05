@@ -5,7 +5,6 @@ import { PeriodModel } from '@data/models/business/period.model';
 import { PeriodService } from '@data/services/period/period.service';
 import { UtilService } from '@shared/services/util.service';
 import { PeriodDetailHeader } from 'app/data/models/business/periodDetailHeader.model';
-import { interval } from 'rxjs';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -29,27 +28,10 @@ export class DetailHeaderPeriodComponent implements OnInit {
 
   ngOnInit(): void {
     this.periodShow = this.periodDetailHeaderReceived.period;
-    this.compareFinalDatePeriodAutomaticBySecond();
-  }
-
-  private compareFinalDatePeriodAutomaticBySecond() {
-    const intervalCompareFinalDate = interval(1000);
-    intervalCompareFinalDate.subscribe(
-      (n) => {
-        //this.dateFinalAutomaticCatch = new Date(this.periodShow.finalDate);
-        this.dateFinalAutomaticCatch = new Date();
-        if (this.dateFinalAutomaticCatch == this.periodShow.finalDate && this.periodShow.activate == true) {
-         this.closePeriodAtomatic('automatic');
-        }
-      }
-    );
   }
 
   closePeriodAtomatic(originAction: string) {
-    //this.periodDetailHeaderReceived.period.startDate = this._utilitariesService.convertDateGMTToString(new Date(this.periodDetailHeaderReceived.period.startDate), "initial");
-    //this.periodDetailHeaderReceived.period.finalDate = this._utilitariesService.convertDateGMTToString(this.dateFinalAutomaticCatch, "final");
     if(originAction == 'manual') {
-      //this.periodDetailHeaderReceived.period.finalDate = new Date(this._utilitariesService.convertDateGMTToString(new Date(), "final");
       this.periodDetailHeaderReceived.period.finalDate = new Date();
     }
 
@@ -123,14 +105,16 @@ export class DetailHeaderPeriodComponent implements OnInit {
           confirmButtonText: 'OK!'
         }).then((result) => {
           if (result.isConfirmed) {
-            let dateFinalSend = timeMilisDateSelected + 3600000*23 + 60000*59 + 59*1000;        
+            // let dateFinalSend = timeMilisDateSelected + 3600000*23 + 60000*59 + 59*1000; 
+            let dateFinalSend = timeMilisDateSelected;        
             this.updateFinalDatePeriod(new Date(dateFinalSend));
           }
         })
       return;
     }
 
-    let dateFinalSend = timeMilisDateSelected + 3600000*23 + 60000*59 + 59*1000;
+    // let dateFinalSend = timeMilisDateSelected + 3600000*23 + 60000*59 + 59*1000;
+    let dateFinalSend = timeMilisDateSelected;
 
     this.updateFinalDatePeriod(new Date(dateFinalSend));
   }
@@ -140,7 +124,7 @@ export class DetailHeaderPeriodComponent implements OnInit {
     this.periodShow = this.periodDetailHeaderReceived.period;
     this.periodShow.activate = true;
     //this.periodShow.finalDate = this._utilitariesService.convertDateGMTToString(newFinalDate, "final");
-
+    this.periodShow.finalDate = newFinalDate;
     this._periodService.updatePeriod(this.periodShow, 
         this.periodDetailHeaderReceived.period.id).subscribe(
       response => {

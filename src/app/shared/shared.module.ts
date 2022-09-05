@@ -10,6 +10,7 @@ import { SLoaderComponent } from './components/loaders/s-loader/s-loader.compone
 import { CalendarComponent } from './components/calendar/calendar.component';
 import { ListCategoryComponent } from '@modules/category/list-category/list-category.component';
 import { ListAccountsSharedComponent } from './components/list-accounts-shared/list-accounts-shared.component';
+import { VisualizadorVoucherComponent } from './components/visualizador-voucher/visualizador-voucher.component';
 
 @NgModule({
   imports: [
@@ -25,8 +26,10 @@ import { ListAccountsSharedComponent } from './components/list-accounts-shared/l
     SLoaderComponent,
     CalendarComponent,
     ListCategoryComponent,
-    ListAccountsSharedComponent
-   // ...fromComponents.components, FormularioSharedComponent
+    ListAccountsSharedComponent,
+    VisualizadorVoucherComponent
+    
+       // ...fromComponents.components, FormularioSharedComponent
   ],
   exports: [
     FormsModule,
@@ -40,7 +43,8 @@ import { ListAccountsSharedComponent } from './components/list-accounts-shared/l
     SLoaderComponent,
     CalendarComponent,
     ListCategoryComponent,
-    ListAccountsSharedComponent
+    ListAccountsSharedComponent,
+    VisualizadorVoucherComponent
 
     //...fromComponents.components
   ]

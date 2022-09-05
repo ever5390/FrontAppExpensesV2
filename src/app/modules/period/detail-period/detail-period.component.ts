@@ -1,3 +1,4 @@
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { AccountModel } from 'app/data/models/business/account.model';
@@ -20,13 +21,16 @@ export class DetailPeriodComponent implements OnInit {
   periodDetailHeaderSend: PeriodDetailHeader = new PeriodDetailHeader();
   accountListSend: AccountModel[] = [];
 
+  idPeriodReceivedFromListPeriod: string = "0";
+
   @ViewChild('idPeriod') idPeriod: ElementRef | any;
   
   constructor(
     private _accountService: AccountService,
     private _rutaActiva: ActivatedRoute,
     private _renderer: Renderer2,
-    private _periodService: PeriodService
+    private _periodService: PeriodService,
+    private _router: Router
   ) {
   }
 
@@ -34,13 +38,21 @@ export class DetailPeriodComponent implements OnInit {
     //this.getSizeBloclListPeriod();
   }
 
+  ngOnDestroy() {
+    if(new Date().getTime() > new Date(this.periodDetailHeaderSend.period.finalDate).getTime() &&
+    this.periodDetailHeaderSend.period.activate == true) {
+      Swal.fire("","El periodo finalizo, modifique su fecha de cierre o hágalo manualmente para continuar","info");
+      this._router.navigate(["/dashboard/period-detail/"+ this.idPeriodReceivedFromListPeriod]);
+    }
+  }
+
   ngOnInit(): void {
 
     this._rutaActiva.params.subscribe(
       (params: Params) => {
         if(params.idPeriod != undefined) {
-          let idPeriodReceivedFromListPeriod = params.idPeriod;
-          this.getAllDataCardPeriod(idPeriodReceivedFromListPeriod);
+          this.idPeriodReceivedFromListPeriod = params.idPeriod;
+          this.getAllDataCardPeriod(Number(this.idPeriodReceivedFromListPeriod));
         }
       }
     );

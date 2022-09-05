@@ -42,12 +42,13 @@ export class ManageExpenseComponent implements OnInit {
   flagShowListPaymentMethod: boolean = false;
   flagShowListOptionsSelect: boolean = false;
   flagShowCalendar: boolean = false;
+  flagShowBtnSelectCalendar: boolean = false;
 
   itemPaymentMethod: PaymentMethodModel =  new PaymentMethodModel();
   itemCategory: CategoryModel =  new CategoryModel();
   itemAccording: AccordingModel =  new AccordingModel();
   itemAccount: AccountModel = new AccountModel();
-  dateRangeCalendarSelected: any;
+  dateRangeCalendarSelected: Date = new Date();
 
   // expense: Expense
   expense: ExpenseModel = new ExpenseModel();
@@ -104,7 +105,10 @@ export class ManageExpenseComponent implements OnInit {
   ngOnInit(): void {
     this.identifyEventClickOutWindow();
     this.getAllAccording();
-    if(this.period != null) this.getAllAccountByPeriodSelected(this.period.id);
+    if(this.period != null) {
+      this.flagShowBtnSelectCalendar = true;
+      this.getAllAccountByPeriodSelected(this.period.id);
+    }
 
     //validate if param route
     this._rutaActiva.params.subscribe(
@@ -150,7 +154,7 @@ export class ManageExpenseComponent implements OnInit {
   registerOrUpdateExpense() {
 
     if(this.validAmount() == false) return;
-    this.expense.payer = (this.payerSelected != "")?this.payerSelected:this.owner.name;
+    this.expense.payer = this.payerSelected;
     this.expense.amount = this.expense.amountShow;
     this.expense.registerPerson = this.owner;
     this.expense.account = this.itemAccount;
@@ -158,6 +162,7 @@ export class ManageExpenseComponent implements OnInit {
     this.expense.accordingType = this.itemAccording;
     this.expense.paymentMethod = this.itemPaymentMethod;
     this.expense.tag = this.tagListSelected;
+    this.expense.createAt = this.dateRangeCalendarSelected;
     // this.expense.vouchers = this.vouchersListToShow;
 
     if(this.period == null) this.period = new PeriodModel();
@@ -274,10 +279,10 @@ export class ManageExpenseComponent implements OnInit {
 
   showListOptionsSelect(sender: string) {
     this.show__list__items = true;
-    this.flagShowListOptionsSelect = true;
     this.dataOptionsSelectExpenseList = [];
     switch (sender) {
       case "accounts":
+        this.flagShowListOptionsSelect = true;
         this.accountListSelected.forEach(element => {
           this.dataOptionsSelectExpense = new DataOptionsSelectExpense();
           this.dataOptionsSelectExpense.id = element.id;
@@ -335,7 +340,8 @@ export class ManageExpenseComponent implements OnInit {
         this.validateResizeHeightForm();
         break;
       case CONSTANTES.CONST_COMPONENT_CALENDAR:
-        this.dateRangeCalendarSelected = element.dateRange;
+        this.dateRangeCalendarSelected = element.dateRange.finalDate;
+        console.log(this.dateRangeCalendarSelected);
         break;
       case CONSTANTES.CONST_COMPONENT_CUENTAS:
         this.itemAccount.id = element.itemSelected.id;
@@ -400,6 +406,7 @@ export class ManageExpenseComponent implements OnInit {
   getAllNameUsersToSend() {
     this._userService.getAllPayersDistictToSelect(this.workspace.id).subscribe(
       response => {
+        this.flagShowListOptionsSelect = true;
         response = response.filter(item => {
           return item!= this.owner.name;
         });
@@ -434,7 +441,7 @@ export class ManageExpenseComponent implements OnInit {
   getAllTagsTosend() {
     this._expenseService.getAllTagsByOwnerId(this.owner.id).subscribe(
       response => {
-
+        this.flagShowListOptionsSelect = true;
         if(response.length == 0) {
           this.dataOptionsSelectExpense = new DataOptionsSelectExpense();
           //this.dataOptionsSelectExpense.name = CONSTANTES.CONST_TEXT_DEFAULT;

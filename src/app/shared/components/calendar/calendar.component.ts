@@ -1,8 +1,8 @@
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, OnInit, Output, EventEmitter, Renderer2, ViewChild, ElementRef, Input } from '@angular/core';
 import { PeriodModel } from '@data/models/business/period.model';
 import { CONSTANTES } from 'app/data/constantes';
 import { Calendar } from 'app/data/models/calendar.model';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-calendar',
@@ -18,6 +18,11 @@ export class CalendarComponent implements OnInit {
   
   flagFilterOptions: boolean = false;
   flagPeriodOptions: boolean = false;
+
+  hour: number = new Date().getHours();
+  minute: number = new Date().getMinutes();
+  showBlockHourMinute: boolean = true;
+
 
   date : Date =  new Date();
   dateSend: DateSend = new DateSend();
@@ -95,6 +100,7 @@ export class CalendarComponent implements OnInit {
 
     if(this.receivedComponentParent == CONSTANTES.CONST_COMPONENT_HEADER){
       this.flagFilterOptions = true;
+      this.showBlockHourMinute = false;
     }
 
     this.renderCalendar();
@@ -469,13 +475,22 @@ export class CalendarComponent implements OnInit {
 
   sendDateRangeToFather(order: string) { //CLICK EN DÍAS
     this.dateSend.startDate = this.dateSelectedInitial.dateSelected;
-    this.dateSend.finalDate = (order == "only")?this.dateSelectedInitial.dateSelected:this.dateSelectedFinal.dateSelected;
-    this.sendResponse(this.dateSend);
-  }
-
-  sendDateQuickFilters(order: string) {//CLICK EN PERIODOS DE TIEMPO
-    this.dateSend.startDate = this.dateSelectedInitial.dateSelected;
-    this.dateSend.finalDate = (order == "only")?this.dateSelectedInitial.dateSelected:this.dateSelectedFinal.dateSelected;
+    this.dateSend.finalDate = this.dateSelectedFinal.dateSelected;
+    // this.dateSend.finalDate = (order == "only")?this.dateSelectedInitial.dateSelected:this.dateSelectedFinal.dateSelected;
+    if(order == "only") {
+      this.dateSend.finalDate = this.dateSelectedInitial.dateSelected;
+      this.dateSend.finalDate = new Date( this.dateSend.finalDate.getFullYear(), this.dateSend.finalDate.getMonth(),  this.dateSend.finalDate.getDate(),this.hour,this.minute,0);
+    
+      if(this.receivedComponentParent == CONSTANTES.CONST_COMPONENT_EXPENSEREGISTER){
+        //Validar que la fecha se encuentre en el rango del inicio y fin del periodo actual seleccionado
+        if(new Date(this.dateSend.finalDate).getTime() < new Date(this.period.startDate).getTime() 
+          || new Date(this.dateSend.finalDate).getTime() > new Date().getTime()) {
+          Swal.fire("","La fecha seleccionada debe encontrarse dentro del rango del periodo y no puede ser posterior a hoy.","info");
+        }
+      }
+    }
+    console.log(this.receivedComponentParent);
+    console.log(this.dateSend);    
     this.sendResponse(this.dateSend);
   }
 
@@ -529,14 +544,15 @@ export class CalendarComponent implements OnInit {
     this.sendResponse(dataSend);
   }
 
-  private sendResponse(dataSend: any) {
-    console.log("dataSendCalendar");
-    console.log(dataSend);
-    
+  private sendResponse(dataSend: any) {       
     this.sendResponseFromCalendarToParent.emit({
       "component": CONSTANTES.CONST_COMPONENT_CALENDAR,
       "dateRange": dataSend
     });
+  }
+
+  addHourAndMinutes(order: string) {
+    console.log(order + "--" + this.hour);
   }
 
   getDateWithMinusDay(monthDiscount: number, dayDiscount: number ): Date {
