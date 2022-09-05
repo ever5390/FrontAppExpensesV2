@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { NotificationExpense, TypeStatusNotificationExpense } from '@data/models/business/notificationExpense.model';
 import { OwnerModel } from '@data/models/business/owner.model';
 import { NotificationExpenseService } from '@data/services/notification/notification-expense.service';
+import { UserService } from '@data/services/user/user.service';
 import { UtilService } from '@shared/services/util.service';
 import { CONSTANTES } from 'app/data/constantes';
 import { interval } from 'rxjs';
@@ -29,6 +30,7 @@ export class HeaderComponent implements OnInit {
   constructor(
     private _router: Router,
     private _utilService: UtilService,
+    private _userService: UserService,
     private _notificationExpenseService: NotificationExpenseService
   ) {
     this.owner = JSON.parse(localStorage.getItem("lcstrg_owner")!);
@@ -44,7 +46,9 @@ export class HeaderComponent implements OnInit {
    }
 
   ngOnInit(): void {
-    this.intervalNotify();
+    if(this._userService.isAuthenticated()) {
+      this.intervalNotify();
+    }
   }
 
   intervalNotify() {
