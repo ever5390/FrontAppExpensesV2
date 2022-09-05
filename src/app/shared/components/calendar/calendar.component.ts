@@ -497,7 +497,7 @@ export class CalendarComponent implements OnInit {
   catchDateSingleSelectPeriod(type: string) {//MODIFICAR FINAL DATE DE PERIODO
 
     if(type == "quincenal") {
-      this.dateSend.startDate = new Date(
+      this.dateSend.finalDate = new Date(
         this.date.getFullYear(),
         this.date.getMonth(),
         15
@@ -505,13 +505,13 @@ export class CalendarComponent implements OnInit {
     }
 
     if(type == "mensual") {
-      this.dateSend.startDate = new Date(
+      this.dateSend.finalDate = new Date(
         this.date.getFullYear(),
         this.date.getMonth()+1,
         0
       )
     }
-
+    this.dateSend.finalDate = new Date( this.dateSend.finalDate.getFullYear(), this.dateSend.finalDate.getMonth(),  this.dateSend.finalDate.getDate(),this.hour,this.minute,0);
     this.sendResponse(this.dateSend);
   }
 

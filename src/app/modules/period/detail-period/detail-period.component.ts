@@ -40,7 +40,7 @@ export class DetailPeriodComponent implements OnInit {
 
   ngOnDestroy() {
     if(new Date().getTime() > new Date(this.periodDetailHeaderSend.period.finalDate).getTime() &&
-    this.periodDetailHeaderSend.period.activate == true) {
+    this.periodDetailHeaderSend.period.activate == true  && this.periodDetailHeaderSend.period.statusPeriod == true) {
       Swal.fire("","El periodo finalizo, modifique su fecha de cierre o hágalo manualmente para continuar","info");
       this._router.navigate(["/dashboard/period-detail/"+ this.idPeriodReceivedFromListPeriod]);
     }

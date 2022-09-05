@@ -84,7 +84,7 @@ getAllWorkspaceByOwnerId() {
 }
 
 compareFinalDatePeriodAutomaticBySecond() {
-  if(this.period != null && this.period.activate == true && (this.dateFinalAutomaticCatch.getTime() > new Date(this.period.finalDate).getTime())){
+  if(this.period != null && this.period.activate == true && this.period.statusPeriod == true && (this.dateFinalAutomaticCatch.getTime() > new Date(this.period.finalDate).getTime())){
     Swal.fire("","Su periodo ha finalizado, modifique su fecha de cierre o cierre de forma manual para continuar con el registro de gastos.","info");
     this._router.navigate(["/dashboard/period-detail/"+this.period.id]);
   }
