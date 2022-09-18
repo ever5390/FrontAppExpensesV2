@@ -4,7 +4,6 @@ import { CONSTANTES } from '@data/constantes';
 import { NotificationExpense, TypeStatusNotificationExpense } from '@data/models/business/notificationExpense.model';
 import { OwnerModel } from '@data/models/business/owner.model';
 import { PeriodModel } from '@data/models/business/period.model';
-import { ExpensesService } from '@data/services/expenses/expenses.service';
 import { NotificationExpenseService } from '@data/services/notification/notification-expense.service';
 import { UtilService } from '@shared/services/util.service';
 
@@ -75,7 +74,7 @@ export class ListNotificationComponent implements OnInit {
         //SAVE EXPENSE RECEPTOR AND SEND RELOAD EXPENSE
         this.hiddenNotification();
         this._notificationExpenseService.guardarNotificationExpense(notificationSelected);
-        this._router.navigate(['/dashboard/expense-detail/notification/'+notificationSelected.id]);
+        this._router.navigate(['/expense/notification/'+notificationSelected.id]);
         break;
       case 3://CONFIRMAR PAGO
         notificationSelected.statusNotification = TypeStatusNotificationExpense.PAGADO;

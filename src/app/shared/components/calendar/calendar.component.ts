@@ -544,7 +544,10 @@ export class CalendarComponent implements OnInit {
     this.sendResponse(dataSend);
   }
 
-  private sendResponse(dataSend: any) {       
+  private sendResponse(dataSend: any) {    
+    console.log("CALENDAR SEND"); 
+    // dataSend.startDate =   dataSend.startDate.toString();
+    // dataSend.finalDate =   dataSend.finalDate.toString();
     this.sendResponseFromCalendarToParent.emit({
       "component": CONSTANTES.CONST_COMPONENT_CALENDAR,
       "dateRange": dataSend

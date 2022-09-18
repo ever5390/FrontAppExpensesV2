@@ -5,7 +5,7 @@ import { ListPeriodComponent } from "./list-period/list-period.component";
 
 const routes: Routes = [
     {
-        path:'period-list',
+        path:'',
         component: ListPeriodComponent
     },
     {

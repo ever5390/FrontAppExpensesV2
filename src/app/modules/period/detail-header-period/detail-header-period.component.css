@@ -123,6 +123,23 @@ label {
     align-items: center;
 }
 
+/* Btn view expense by period finalize :: 05 - set - 2022*/
+.st_btn_confirm_account {
+    text-align: center;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: rgb(117, 37, 37);
+    border-radius: 8px;
+    color: #fff;
+    font-weight: bold;
+    font-size: .9rem;
+    width: 95%;
+}
+
+.st_btn_confirm_account:hover {
+    cursor: pointer;
+}
+
 @media (max-width: 580px) {
 
     .container-fluid {

@@ -23,6 +23,7 @@ export class AsideComponent implements OnInit {
   @ViewChild('aside') aside: ElementRef | any;
   @Output() hiddenMenuNow: EventEmitter<boolean> = new EventEmitter();
   @Input("active_menu") active_menu: boolean = false;
+  @Output() redirectToParent: EventEmitter<boolean> = new EventEmitter();
   
   constructor(
     private _renderer: Renderer2,
@@ -61,23 +62,20 @@ export class AsideComponent implements OnInit {
   redirectRoutes(destiny: string){
 
     switch (destiny) {
-      case 'expense':
-        this._routes.navigate(['/dashboard']);
-        break;
-      case 'expense-register':
-        this._routes.navigate(['/dashboard/expense-detail']);
+      case 'workspace':
+        this.redirectToParent.emit();
         break;
       case 'according':
-        this._routes.navigate(['/dashboard/according-list']);
+        this._routes.navigate(['/according']);
         break;
       case 'category':
-        this._routes.navigate(['/dashboard/category-list']);
+        this._routes.navigate(['/category']);
         break;
       case 'paymentmethod':
-        this._routes.navigate(['/dashboard/payment-method-list']);
+        this._routes.navigate(['/payment-method']);
         break;
       case 'period':
-        this._routes.navigate(['/dashboard/period-list']);
+        this._routes.navigate(['/period']);
         break;
       default:
         break;

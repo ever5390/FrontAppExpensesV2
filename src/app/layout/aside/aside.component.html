@@ -9,14 +9,10 @@
         </div>
         <div class="st_aside_body">
             <div class="st_body_header">
-                <div class="st_aside_dropdown_wrkspc d-flex justify-content-between align-items-center" (click)="redirectRoutes('expense')">
+                <div class="st_aside_dropdown_wrkspc d-flex justify-content-between align-items-center" (click)="redirectRoutes('workspace')">
                     <span>{{wrkspc.name}}</span>
                     <i class="fas fa-sort"></i>
                 </div>
-                <!-- <div class="st_aside_option_menu d-flex justify-content-start align-items-center" (click)="show__popup.showPopUp()">
-                    <i class="far fa-plus"></i>
-                    <span class="px-2">IR registrar gastos</span>
-                </div> -->
                 <div *ngIf="flagShowOptionPeriod" class="st_aside_option_menu d-flex justify-content-start align-items-center" (click)="redirectRoutes('period')">
                     <i class="far fa-calendar-day"></i>
                     <span class="px-2">Periodos</span>

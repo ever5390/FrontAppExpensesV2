@@ -5,12 +5,8 @@ import { ListPaymentMethodComponent } from './list-payment-method/list-payment-m
 
 const routes: Routes = [
   {
-    path:'payment-method-list',
+    path:'',
     component: ListPaymentMethodComponent
-  },
-  {
-    path:'payment-method-detail',
-    component: DetailPaymentMethodComponent
   }
 ];
 

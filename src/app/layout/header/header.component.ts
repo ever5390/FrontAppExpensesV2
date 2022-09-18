@@ -2,11 +2,13 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { NotificationExpense, TypeStatusNotificationExpense } from '@data/models/business/notificationExpense.model';
 import { OwnerModel } from '@data/models/business/owner.model';
+import { PeriodModel } from '@data/models/business/period.model';
 import { NotificationExpenseService } from '@data/services/notification/notification-expense.service';
 import { UserService } from '@data/services/user/user.service';
 import { UtilService } from '@shared/services/util.service';
 import { CONSTANTES } from 'app/data/constantes';
-import { interval } from 'rxjs';
+import { interval, Subject } from 'rxjs';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-header',
@@ -27,6 +29,7 @@ export class HeaderComponent implements OnInit {
   showInfoByTypeUser: boolean = false; //FALSE: EMISOR, TRUE = RECEPTOR
   
   @Output() showMenuNow: EventEmitter<boolean> = new EventEmitter();
+  period: PeriodModel = new PeriodModel();
   constructor(
     private _router: Router,
     private _utilService: UtilService,
@@ -46,21 +49,25 @@ export class HeaderComponent implements OnInit {
    }
 
   ngOnInit(): void {
-    if(this._userService.isAuthenticated()) {
-      this.intervalNotify();
-    }
+    this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
+    this.intervalNotify();
+    
   }
 
   intervalNotify() {
     const numberNotification  = interval(1000);
-    numberNotification.subscribe(
+    const subscribe = numberNotification.subscribe(
       (n) => {
-        this.getNotificationRequest();
+          this.getNotificationRequest(numberNotification);
+          if(this._userService.isTokenExpirado()) {
+            subscribe.unsubscribe()
+          }
       }
     );
+  
   }
 
-  getNotificationRequest() {
+  getNotificationRequest(numberNotification: any) {
     this._notificationExpenseService.getAllNotificationByTypeUserAndUserId(this.owner.id).subscribe(
       response => {
         if(response != null) {
@@ -108,7 +115,12 @@ export class HeaderComponent implements OnInit {
         }
       },
       error => {
-        console.log(error.error);
+        if(error.error.error_description != null && error.error.error_description.includes("token expired")) {
+          Swal.fire("","Su sessión ha expirado, ingrese nuevamente","info");
+          this._userService.logoutSession();
+          this._router.navigate(["/login"]);
+        }
+        
       }
     );
 
@@ -120,7 +132,13 @@ export class HeaderComponent implements OnInit {
 
   showFormRegisterExpense() {
     this.showFormRgister = true;
-    this._router.navigate(['/dashboard/expense-detail']);
+    if(this.period != null && (new Date().getTime() > new Date(this.period.finalDate).getTime()) &&
+    this.period.activate == true  && this.period.statusPeriod == true) {
+      console.log("period WERWERWER ADIOS");
+      Swal.fire("","El periodo finalizo, modifique su fecha de cierre o hágalo manualmente para continuar","info");
+      this._router.navigate(["/period/period-detail/"+ this.period.id]);
+    }
+    this._router.navigate(['/expense']);
   }
 
   showNotificationpPopUp() {

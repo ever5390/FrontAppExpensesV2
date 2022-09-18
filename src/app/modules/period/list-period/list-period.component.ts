@@ -23,8 +23,7 @@ export class ListPeriodComponent implements OnInit {
   constructor(
     private _periodService: PeriodService,
     private _route: Router,
-    private _renderer: Renderer2,
-    private _utilitariesService: UtilService
+    private _renderer: Renderer2
   ) {
   }
 
@@ -48,13 +47,14 @@ export class ListPeriodComponent implements OnInit {
       error => {
           console.log(error);
           Swal.fire("","Error al obtener la lista de periodos","error");
+          this._route.navigate(["/"]);
       }
     );
   }
 
   redirectToDetailPeriod( idPeriod: number) {
     console.log(idPeriod);
-    this._route.navigate(['dashboard/period-detail/' + idPeriod]);
+    this._route.navigate(['period/period-detail/' + idPeriod]);
   }
 
   getSizeBloclListPeriod() {

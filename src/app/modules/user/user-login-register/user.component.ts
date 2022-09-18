@@ -42,7 +42,8 @@ export class UserComponent implements OnInit {
         response => {
           Swal.fire(response.title, response.message, response.status);
           console.log(response);
-          this._router.navigate(['/dashboard']);
+          this.flagIsLoginAction = true;
+          this._router.navigate(['/']);
         }, err => {
           console.log(err);
           Swal.fire(err.error.title,err.error.message, err.error.status);
@@ -64,7 +65,7 @@ export class UserComponent implements OnInit {
 
                 let usuario = this._usuarioService.usuario;
                 Swal.fire("Login",`Hola ${usuario.username}, has iniciado sessión con éxito`,"success")
-                this._router.navigate(['/dashboard']);                
+                this._router.navigate(['/']);                
             }, err => {
                 Swal.fire("Error Login",err.message,"error")
                 console.log(err);

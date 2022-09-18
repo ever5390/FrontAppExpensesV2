@@ -59,7 +59,7 @@
                                 <i class="fas fa-hashtag"></i>
                             </label>
                         </ng-container>
-                        <ng-container *ngIf="itemAccording.id == 2 || itemAccording.id == 4">
+                        <ng-container *ngIf="itemAccording.id == 2 || itemAccording.id == 3 || itemAccording.id == 4 || itemAccording.id == 7">
                             <label *ngIf="payerSelected == ''; else ownerSelected;"
                                 (click)="showListOptionsSelect('payer')" class="st_button_upload_voucher st_bgcolor_whopay">
                                 <span>Quien paga</span>
@@ -76,10 +76,10 @@
                             </label>
                         </ng-container>
                         
-                        <label class="st_button_upload_voucher" for='myFileC'>
+                        <label class="st_button_upload_voucher" for='myFileM'>
                             <input style="display: none;" accept=".png, .jpg, .jpeg" multiple 
                                 (change)="uploadFoto($event)" 
-                                type="file" id="myFileC"
+                                type="file" id="myFileM"
                                 class="st_img_upload"
                                 >
                                 <span>Subir voucher (2 máx)</span>

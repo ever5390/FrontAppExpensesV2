@@ -89,7 +89,7 @@ import { Observable } from 'rxjs';
 
         return null;
     }
-  
+
     isAuthenticated() : boolean {
 
         let payload = this.obtenerDatosToken(this.token); //Hace uso del método get token líneas arriba
@@ -98,6 +98,17 @@ import { Observable } from 'rxjs';
         }
        
       return false;
+    }
+
+    isTokenExpirado(): boolean {
+      let tokenp = this._token!;
+      let payload = this.obtenerDatosToken(tokenp);
+      if(payload == null) return true;
+      let now = new Date().getTime() / 1000;
+      if(payload.exp < now) {
+        return true;
+      }
+       return false;
     }
 
 

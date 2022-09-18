@@ -35,7 +35,7 @@ export class CategoryService {
   }
   
   getAllGroups(): Observable<GroupModel[]>  {
-    return this._http.get(`${this.URLCOMPL}/groupcategory/owner/1`)
+    return this._http.get(`${this.URLCOMPL}/groupcategory`)
     .pipe(
       map(response => response as GroupModel[])
     );

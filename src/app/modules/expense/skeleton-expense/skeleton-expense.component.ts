@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Params } from '@angular/router';
 import { CONSTANTES } from '@data/constantes';
 import { OwnerModel } from '@data/models/business/owner.model';
 import { Workspace } from '@data/models/business/workspace.model';
@@ -33,18 +34,35 @@ export class SkeletonExpenseComponent implements OnInit {
 
   constructor(
     private _expenseService: ExpensesService,
-    private _periodService: PeriodService,
+    private _rutaActiva: ActivatedRoute,
     private _utilitariesService: UtilService
   ) {
     this.owner = JSON.parse(localStorage.getItem('lcstrg_owner')!);
     this.wrkspc = JSON.parse(localStorage.getItem("lcstrg_worskpace")!);
     this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
-
     this.receivingDataCalendar();
   }
 
   ngOnInit(): void {
-    this.catchPeriodAndGetAllListExpenses();
+    console.log("Hello skeleton expense");
+    this.validateParamsByPeriod();
+  }
+
+  validateParamsByPeriod() {
+      //validate if param route
+    this._rutaActiva.params.subscribe(
+      (params: Params) => {
+        if(params.idPeriod != undefined) {
+          this.getAllExpensesByWorkspaceAndDateRangePeriod(
+            this.wrkspc.id,
+            this.period.startDate.toString(),
+            this.period.finalDate.toString()
+          );
+        } else {
+          this.catchPeriodAndGetAllListExpenses();
+        }
+      }
+    );
   }
 
   receivingDataCalendar() {
@@ -52,12 +70,10 @@ export class SkeletonExpenseComponent implements OnInit {
     this._utilitariesService.receivingdDatesFromCalendarSelected().subscribe(
       response => {
         this.originComponent = "calendar";
-        console.log("response recive cal");
-        console.log(response);
         this.getAllExpensesByWorkspaceAndDateRangePeriod(
           this.wrkspc.id,
-          (response.action=='reset')?this._utilitariesService.convertDateGMTToString(response.dateRange.startDate, "final"):this._utilitariesService.convertDateGMTToString(response.dateRange.startDate, "start"),
-          this._utilitariesService.convertDateGMTToString(response.dateRange.finalDate, "final")
+          (response.action=='reset')?response.dateRange.startDate:this._utilitariesService.convertDateGMTToString(response.dateRange.startDate, "start"),
+          (response.action=='reset')?response.dateRange.finalDate:this._utilitariesService.convertDateGMTToString(response.dateRange.finalDate, "final")
         );
       }, 
       error => {
@@ -80,6 +96,9 @@ export class SkeletonExpenseComponent implements OnInit {
         this.listExpensesToBody = response;
         this.totalGastadoSend = 0;
         this.sendListExpensesToBody.forEach(element => {
+          if(element.payer == "") {
+            element.payer = element.registerPerson.name
+          };
           this.totalGastadoSend = this.totalGastadoSend + parseFloat(element.amount);
         });
 
@@ -99,8 +118,9 @@ export class SkeletonExpenseComponent implements OnInit {
       element.strSearchAllJoin = this.getPayedOrPendingPay(element.pendingPayment) + " " + element.amountShow
         + " " + element.description + " " + element.category.name
         + " " + element.paymentMethod.name + " " + element.accordingType.name
-        + " " + (element.account!=null?element.account.accountName:'') + " " + element.payer
-        + " " + element.registerPerson.name + " " + this.concatTags(element.tag);
+        + " " + (element.account!=null?element.account.accountName:'') + " pagado por " + element.payer
+        // + " " + element.registerPerson.name 
+        + " " + this.concatTags(element.tag);
       
       element.strFilterParamsJoin = element.paymentMethod.name + " " + element.accordingType.name
         + " " + element.category.name;
@@ -150,28 +170,6 @@ export class SkeletonExpenseComponent implements OnInit {
         this._utilitariesService.convertDateToString(new Date()));
     }
   }
-
-  getPeriodIfNotExist() {
-    this._periodService.getPeriodByWorkspaceIdAndSatusTrue(1).subscribe(
-        response => {
-          this.period = response;
-          if(this.period != null && this.period.id != 0) {
-            this._periodService.saveToLocalStorage(response);
-            this.getAllExpensesByWorkspaceAndDateRangePeriod(
-              this.wrkspc.id,
-              this.period.startDate.toString(),
-              this.period.finalDate.toString()
-            );
-          }
-        }, error => {
-          console.log(error);
-        }
-      );
-  }
-
-
-
-
 
   listaSelcetedFilter: any[] = [];
   beforeItem: FilterExpensesModel = new FilterExpensesModel();

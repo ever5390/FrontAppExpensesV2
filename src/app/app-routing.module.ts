@@ -17,7 +17,7 @@ const routes: Routes = [
       ]
   },
   {
-    path:'dashboard',
+    path:'',
     component: SkeletonComponent,
     children: [
       {
@@ -27,35 +27,31 @@ const routes: Routes = [
               .then( m => m.ExpenseModule)
       },
       {
-        path:'',
+        path:'period',
         canActivate: [AuthGuard],
         loadChildren: ()=> import('@modules/period/period.module')
               .then( m => m.PeriodModule)
       },
       {
-        path:'',
+        path:'category',
         canActivate: [AuthGuard],
         loadChildren: ()=> import('@modules/category/category.module')
               .then( m => m.CategoryModule)
       },
       {
-        path:'',
+        path:'according',
         canActivate: [AuthGuard],
         loadChildren: ()=> import('@modules/according/according.module')
               .then( m => m.AccordingModule)
       },
       {
-        path:'',
+        path:'payment-method',
         canActivate: [AuthGuard],
         loadChildren: ()=> import('@modules/payment-method/payment-method.module')
               .then( m => m.PaymentMethodModule)
       }
     ]
-  },
-  {
-    path:'**',
-    component: SkeletonComponent
-},
+  }
 ];
 
 @NgModule({

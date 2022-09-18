@@ -5,13 +5,14 @@ import { ListAccordingComponent } from './list-according/list-according.componen
 
 const routes: Routes = [
   {
-    path:'according-list',
+    path:'',
     component: ListAccordingComponent
-  },
-  {
-    path:'according-detail',
-    component: DetailAccordingComponent
   }
+  // ,
+  // {
+  //   path:'according-detail',
+  //   component: DetailAccordingComponent
+  //}
 ];
 
 @NgModule({

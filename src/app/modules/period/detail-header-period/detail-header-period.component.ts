@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { CONSTANTES } from '@data/constantes';
 import { PeriodModel } from '@data/models/business/period.model';
 import { PeriodService } from '@data/services/period/period.service';
-import { UtilService } from '@shared/services/util.service';
 import { PeriodDetailHeader } from 'app/data/models/business/periodDetailHeader.model';
 import Swal from 'sweetalert2';
 
@@ -23,11 +22,16 @@ export class DetailHeaderPeriodComponent implements OnInit {
 
   constructor(
     private _periodService: PeriodService, 
-    private _router: Router,
-    private _utilitariesService: UtilService) { }
+    private _router: Router
+    ) { }
 
   ngOnInit(): void {
     this.periodShow = this.periodDetailHeaderReceived.period;
+  }
+
+  viewExpenseByPeriod() {
+    this._periodService.saveToLocalStorage(this.periodShow);
+    this._router.navigate(['/period/'+this.periodShow.id+"/expense"]);
   }
 
   closePeriodAtomatic(originAction: string) {
@@ -39,7 +43,7 @@ export class DetailHeaderPeriodComponent implements OnInit {
       response => {
         Swal.fire(response.title, response.message,response.status);
         this._periodService.saveToLocalStorage(response.object);
-        this._router.navigate(["/dashboard/period-list"]);
+        this._router.navigate(["/period"]);
       }, 
       error => {
         console.log(error);

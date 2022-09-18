@@ -18,12 +18,14 @@
                 <div class="st_expense_body">
                     <div class="st_body_header">
                         <span [ngStyle]="{'background-color':(!expense.pendingPayment) ? '#47B152' : '#c9291e'}" *ngIf="!expense.pendingPayment">
-                            Pagado 
-                            <span *ngIf="(expense.accordingType.name == 'CON REPOSICION' 
-                                        || expense.accordingType.name == 'COMPARTIDO')
+                            Pagado por {{expense.payer}}
+                            <!-- <span *ngIf="(expense.accordingType.name == 'CON REPOSICION' 
+                                        || expense.accordingType.name == 'COMPARTIDO'
+                                        || expense.accordingType.name == 'POR REGISTRAR'
+                                        || expense.accordingType.id == 7)
                                         && expense.workspace.owner.name != expense.payer">
                                 por {{expense.payer}}
-                            </span>
+                            </span> -->
                         </span>
                         <span (click)="sendUpdatePayedExpense(expense.id)" [ngStyle]="{'background-color':(expense.pendingPayment) ? '#c9291e' : '#47B152'}" *ngIf="expense.pendingPayment">
                             Pendiente de pago<br>

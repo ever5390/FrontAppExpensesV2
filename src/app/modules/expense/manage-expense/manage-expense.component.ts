@@ -100,32 +100,38 @@ export class ManageExpenseComponent implements OnInit {
     this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
     this.workspace = JSON.parse(localStorage.getItem("lcstrg_worskpace")!);
     this.owner = this.workspace.owner;
+    this.identifyEventClickOutWindow();
    }
 
   ngOnInit(): void {
-    this.identifyEventClickOutWindow();
     this.getAllAccording();
-    if(this.period != null) {
-      this.flagShowBtnSelectCalendar = true;
-      this.getAllAccountByPeriodSelected(this.period.id);
-    }
+    this.getAccountIfExitPeriod();
+    this.validateIfNotifitionPayByParam();
+  }
 
-    //validate if param route
+  private validateIfNotifitionPayByParam() {
     this._rutaActiva.params.subscribe(
       (params: Params) => {
-        if(params.idNotification != undefined) {
+        if (params.idNotification != undefined) {
           this.notificationExpense = this._notificationExpenseService.notificationExpense;
-          if(this.notificationExpense.id == 0) {
-            this._router.navigate(["/dashboard"]);
+          if (this.notificationExpense.id == 0) {
+            this._router.navigate(["/"]);
             return;
           }
           this.flagReceiveNotificationParamRoute = true;
           this.textActionButton = "Realizar Pago";
           this.expense.description = `Se realiza el pago generado por ${this.notificationExpense.expenseShared.workspace.owner.name} para ${this.notificationExpense.expenseShared.category.name} de tipo ${this.notificationExpense.expenseShared.accordingType.name} que asciendió a ${this.notificationExpense.expenseShared.amountShow} soles.`;
-          this.expense.amountShow = this.notificationExpense.expenseShared.accordingType.name!="COMPARTIDO"?this.notificationExpense.expenseShared.amountShow:(parseFloat(this.notificationExpense.expenseShared.amountShow)/2).toString();
+          this.expense.amountShow = this.notificationExpense.expenseShared.accordingType.name != "COMPARTIDO" ? this.notificationExpense.expenseShared.amountShow : (parseFloat(this.notificationExpense.expenseShared.amountShow) / 2).toString();
         }
       }
     );
+  }
+
+  private getAccountIfExitPeriod() {
+    if (this.period != null) {
+      this.flagShowBtnSelectCalendar = true;
+      this.getAllAccountByPeriodSelected(this.period.id);
+    }
   }
 
   saveExpense() {
@@ -133,15 +139,15 @@ export class ManageExpenseComponent implements OnInit {
       response => {
         this._loadSpinnerService.hideSlow();
         this.period = response.object.period;
-        this._periodService.saveToLocalStorage(response.object.period);
-        Swal.fire("","Registro exitoso","success");
+        this._periodService.saveToLocalStorage(this.period);
 
         if(this.flagReceiveNotificationParamRoute){
           this.notificationExpense.vouchers = response.object.vouchers;
-          this.updateStatusFromService(this.notificationExpense);
+          this.updateNotificationStatus(this.notificationExpense);
         }
 
-        this._router.navigate(["/dashboard"]);
+        Swal.fire("","Registro exitoso","success");
+        this._router.navigate(["/"]);
       },
       error => {
         this._loadSpinnerService.hideSlow();
@@ -154,7 +160,7 @@ export class ManageExpenseComponent implements OnInit {
   registerOrUpdateExpense() {
 
     if(this.validAmount() == false) return;
-    this.expense.payer = this.payerSelected;
+    this.expense.payer = this.payerSelected==''?this.owner.name:this.payerSelected;
     this.expense.amount = this.expense.amountShow;
     this.expense.registerPerson = this.owner;
     this.expense.account = this.itemAccount;
@@ -163,8 +169,6 @@ export class ManageExpenseComponent implements OnInit {
     this.expense.paymentMethod = this.itemPaymentMethod;
     this.expense.tag = this.tagListSelected;
     this.expense.createAt = this.dateRangeCalendarSelected;
-    // this.expense.vouchers = this.vouchersListToShow;
-
     if(this.period == null) this.period = new PeriodModel();
 
     this.expense.period = this.period;
@@ -174,15 +178,12 @@ export class ManageExpenseComponent implements OnInit {
   }
 
   private validateIfExistVoucherUploaded() {
+    this._loadSpinnerService.showSpinner();
     if(this.voucherSelectedFileToStorageSave.length == 0) {
       this.saveExpense();
       return;
     }
-
-    this._loadSpinnerService.showSpinner();
-    if (this.voucherSelectedFileToStorageSave.length > 0) {
-      this.uploadImageToFirestore();
-    }
+    this.uploadImageToFirestore();
   }
 
   getAllAccording() {
@@ -212,19 +213,16 @@ export class ManageExpenseComponent implements OnInit {
     this._accountService.getListAccountByIdPeriod(idPeriodReceived).subscribe(
       response => {
         this.accountListSelected = response.filter( account => {
-          //return account.accountType.id == 2 && account.statusAccount.toString() == 'PROCESS';
           return account.statusAccount.toString() == 'PROCESS';
         });
 
         if(response.length > 0 && this.accountListSelected.length == 0) {
-          console.log("MAYOA ACERO");
           Swal.fire("","Tiene cuentas pendientes por confirmar, previo a registrar algún gasto","info");
-          this._router.navigate(["/dashboard/period-detail/" + this.period.id]);
+          this._router.navigate(["/period/period-detail/" + this.period.id]);
         }
       },
       error => {
         console.log(error);
-        //Swal.fire("","No se obtuvo datos del periodo buscado","error");
       }
     );
   }
@@ -237,8 +235,6 @@ export class ManageExpenseComponent implements OnInit {
       this.heightFormRegisterExpense = this.formRegisterContainerToAccountListBlock.nativeElement.clientHeight;
       let windowHeight = window.innerHeight;
       let heightFormRegister = this.formRegister.nativeElement.clientHeight;
-      //IF onlyListItems is FALSE :: Viene desde una cuenta para anadir categorias
-      //Definiendo valores de acuerdo a de donde es llamado este componente
       if (heightFormRegister > windowHeight - 150) {
         this._renderer.setStyle(this.formRegister.nativeElement, "height", (windowHeight * 0.8) + "px");
         this._renderer.setStyle(this.formRegister.nativeElement, "overflow-y", "scroll");
@@ -252,7 +248,6 @@ export class ManageExpenseComponent implements OnInit {
     this.dataStructure.title=CONSTANTES.CONST_TITLE_SELECCIONE_ITEM_CATEGORIAS;
     this.dataStructure.imagen = CONSTANTES.CONST_IMAGEN_CATEGORIAS
   }
-
 
   showListAccording() {
     if(!this.flagReceiveNotificationParamRoute) {
@@ -302,7 +297,6 @@ export class ManageExpenseComponent implements OnInit {
       default:
         break;
     }
-
   }
 
   removeVoucherFromList(index: number) {
@@ -352,8 +346,7 @@ export class ManageExpenseComponent implements OnInit {
         //Validate if name not exist :: Back btn
         let beSelect = (element.itemSelected.name == "")?false:true;
 
-        if(!beSelect) {
-          console.log("MANAGE: vacio");
+        if(!beSelect) {//Nombre no seleccionado
           break;
         }
 
@@ -366,13 +359,11 @@ export class ManageExpenseComponent implements OnInit {
           }
         });
 
-        if(!beSelect) {
-          console.log("MANAGE: repeat");
+        if(!beSelect) {//Repeat
           break;
         }
 
-        //Dont Empty and not repeat => add to list
-
+        //If Dont Empty and not repeat => add to list
         let tagSelected = new Tag();
         tagSelected.id = element.itemSelected.id;
         tagSelected.tagName = element.itemSelected.name;
@@ -407,15 +398,12 @@ export class ManageExpenseComponent implements OnInit {
     this._userService.getAllPayersDistictToSelect(this.workspace.id).subscribe(
       response => {
         this.flagShowListOptionsSelect = true;
-        response = response.filter(item => {
-          return item!= this.owner.name;
-        });
-        console.log("ALL USERS");
-        console.log(response);
+        // response = response.filter(item => {
+        //   return item!= this.owner.name;
+        // });
 
         if(response.length == 0) {
           this.dataOptionsSelectExpense = new DataOptionsSelectExpense();
-          //this.dataOptionsSelectExpense.name = CONSTANTES.CONST_TEXT_DEFAULT;
           this.dataOptionsSelectExpense.component = CONSTANTES.CONST_COMPONENT_USER;
           this.dataOptionsSelectExpense.icon = CONSTANTES.CONST_COMPONENT_PAYER_ICON;
           this.dataOptionsSelectExpenseList.push(this.dataOptionsSelectExpense);
@@ -444,7 +432,6 @@ export class ManageExpenseComponent implements OnInit {
         this.flagShowListOptionsSelect = true;
         if(response.length == 0) {
           this.dataOptionsSelectExpense = new DataOptionsSelectExpense();
-          //this.dataOptionsSelectExpense.name = CONSTANTES.CONST_TEXT_DEFAULT;
           this.dataOptionsSelectExpense.component = CONSTANTES.CONST_COMPONENT_TAG;
           this.dataOptionsSelectExpense.icon = CONSTANTES.CONST_COMPONENT_TAG_ICON;
           this.dataOptionsSelectExpenseList.push(this.dataOptionsSelectExpense);
@@ -470,7 +457,6 @@ export class ManageExpenseComponent implements OnInit {
   uploadImageToFirestore() {
     this.expense.vouchers = [];
     var totalElementArray = this.voucherSelectedFileToStorageSave.length;
-    console.log("totalElementArray: " + totalElementArray);
     var countIteration = 0;
     this.voucherSelectedFileToStorageSave.forEach(voucher => {
 
@@ -487,7 +473,6 @@ export class ManageExpenseComponent implements OnInit {
             voucherToSave.name = urlImagen!;
             this.expense.vouchers.push(voucherToSave);
             //Save expense
-            console.log("countIteration: " + countIteration + " // totalElementArray: " + totalElementArray);
             if(countIteration == totalElementArray){
               this.saveExpense();
             }
@@ -524,7 +509,7 @@ export class ManageExpenseComponent implements OnInit {
     }
   }
 
-  private updateStatusFromService(notificationRequest: NotificationExpense) {
+  private updateNotificationStatus(notificationRequest: NotificationExpense) {
     this._notificationExpenseService.updateStatusNotificationExpense(notificationRequest).subscribe(
       response => {
         console.log(response);
@@ -538,7 +523,7 @@ export class ManageExpenseComponent implements OnInit {
   identifyEventClickOutWindow() {
     this._renderer.listen('window','click', (e: Event)=> {
       if( this.popup__formulario && e.target === this.popup__formulario.nativeElement){
-        this._router.navigate(['/dashboard']);
+        this._router.navigate(['/']);
       }
     });
   }

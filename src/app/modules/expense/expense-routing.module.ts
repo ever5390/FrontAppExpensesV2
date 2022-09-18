@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { FilterExpenseComponent } from './filter-expense/filter-expense.component';
 import { ManageExpenseComponent } from './manage-expense/manage-expense.component';
 import { SkeletonExpenseComponent } from './skeleton-expense/skeleton-expense.component';
 
@@ -10,17 +9,22 @@ const routes: Routes = [
     component: SkeletonExpenseComponent
   },
   {
-    path:'expense-detail',
+    path:'period/:idPeriod/expense',
+    component: SkeletonExpenseComponent
+  },
+  {
+    path:'workspace/:idWorskpace/expense',
+    component: SkeletonExpenseComponent
+  },
+  {
+    path:'expense',
     component: ManageExpenseComponent
   },
   {
-    path:'expense-detail/notification/:idNotification',
+    path:'expense/notification/:idNotification',
     component: ManageExpenseComponent
-  },
-  {
-    path:'expense-filter',
-    component: FilterExpenseComponent
   }
+  
 ];
 
 @NgModule({

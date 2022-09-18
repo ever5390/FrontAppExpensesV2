@@ -104,7 +104,6 @@ export class HeaderExpenseComponent implements OnInit {
   }
 
   private sendResponse(startDate: string, finalDate: string, orden: string) {
-
     if(orden != "reset") return;
     let dataSend:any = [];
     dataSend.startDate = startDate;

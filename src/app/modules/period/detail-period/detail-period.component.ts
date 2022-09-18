@@ -39,15 +39,19 @@ export class DetailPeriodComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    if(new Date().getTime() > new Date(this.periodDetailHeaderSend.period.finalDate).getTime() &&
-    this.periodDetailHeaderSend.period.activate == true  && this.periodDetailHeaderSend.period.statusPeriod == true) {
-      Swal.fire("","El periodo finalizo, modifique su fecha de cierre o hágalo manualmente para continuar","info");
-      this._router.navigate(["/dashboard/period-detail/"+ this.idPeriodReceivedFromListPeriod]);
-    }
+    // console.log("period ADIOS");
+    // console.log(this.periodDetailHeaderSend.period);
+    // if((new Date().getTime() > new Date(this.periodDetailHeaderSend.period.finalDate).getTime()) &&
+    // this.periodDetailHeaderSend.period.activate == true  && this.periodDetailHeaderSend.period.statusPeriod == true) {
+    //   console.log("period WERWERWER ADIOS");
+    //   Swal.fire("","El periodo finalizo, modifique su fecha de cierre o hágalo manualmente para continuar","info");
+    //   this._router.navigate(["/period/period-detail/"+ this.idPeriodReceivedFromListPeriod]);
+    // }
   }
 
   ngOnInit(): void {
-
+    console.log("period INIT");
+    console.log(this.periodDetailHeaderSend.period);
     this._rutaActiva.params.subscribe(
       (params: Params) => {
         if(params.idPeriod != undefined) {
