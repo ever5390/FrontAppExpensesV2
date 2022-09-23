@@ -62,15 +62,7 @@ export class FilterByItemSharedComponent implements OnInit {
        return itemRes;
     });
     this.listendFather.emit(this.listResumens);
-    //let listActive = this.listResumens.filter( itemActive => itemActive.active === true);
-    //console.log(listActive);
-    //this._utilService.sendItemResumeSelected(listActive);
     this._utilService.sendItemResumeSelected(this.listResumens);
-    // this._utilService.sendItemResumeSelected({
-    //   id:idItemResumenSELECETED,
-    //   component:this.receivedListSendFilterBytemResume[0].component
-    // });
-
   }
 
   itemResumeSelected(itemResume: any) {

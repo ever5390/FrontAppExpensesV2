@@ -1,3 +1,4 @@
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { CONSTANTES } from '@data/constantes';
@@ -20,6 +21,7 @@ import { PeriodModel } from 'app/data/models/business/period.model';
 import { Workspace } from 'app/data/models/business/workspace.model';
 import { DataStructureListShared } from 'app/data/models/data.model';
 import { ExpensesService } from 'app/data/services/expenses/expenses.service';
+import { of } from 'rxjs';
 import Swal from 'sweetalert2';
 
 
@@ -107,6 +109,45 @@ export class ManageExpenseComponent implements OnInit {
     this.getAllAccording();
     this.getAccountIfExitPeriod();
     this.validateIfNotifitionPayByParam();
+    this.validateIfExistExpensePendingRegister();
+  }
+
+  validateIfExistExpensePendingRegister() {
+    let expensePendingRegister : ExpenseModel = new ExpenseModel();
+    expensePendingRegister = JSON.parse(localStorage.getItem("expenseToRegisterPending")!);
+    if(expensePendingRegister != null && expensePendingRegister.amount != '') {
+      Swal.fire({
+        title: '',
+        text: "Tienes un gasto almacenado en memoria, ¿Deseas registrarlo?",
+        icon: "info",
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        cancelButtonText:'No, descartar',
+        confirmButtonText: 'Si, continuar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.expense = expensePendingRegister;
+          this.itemAccording = expensePendingRegister.accordingType;
+          this.itemCategory = expensePendingRegister.category;
+          this.itemPaymentMethod = expensePendingRegister.paymentMethod;
+          this.payerSelected = expensePendingRegister.payer;
+          this.tagListSelected = expensePendingRegister.tag;
+          this.accountListSelected.forEach( account => {
+            if(account.id == expensePendingRegister.account.id) {
+              this.itemAccount = account;
+            }
+          });
+          expensePendingRegister.vouchers.forEach( item => {
+            this.vouchersListToShow.push(item.name);
+          });
+
+        } else {
+          //Clear
+          this._expenseService.clearExpennseRegisterFromLocalStorage();
+        }
+      })
+    }
   }
 
   private validateIfNotifitionPayByParam() {
@@ -139,6 +180,7 @@ export class ManageExpenseComponent implements OnInit {
       response => {
         this._loadSpinnerService.hideSlow();
         this.period = response.object.period;
+        this._expenseService.clearExpennseRegisterFromLocalStorage();
         this._periodService.saveToLocalStorage(this.period);
 
         if(this.flagReceiveNotificationParamRoute){
@@ -151,11 +193,31 @@ export class ManageExpenseComponent implements OnInit {
       },
       error => {
         this._loadSpinnerService.hideSlow();
-        console.log(error.error);
-        Swal.fire(error.error.title,error.error.message,error.error.status);
+        let textBtnConfirm = "OK";
+        let showBtnCancelFlag = false;
+        if(error.error.status != 'error' && error.error.message.includes("saldo")){
+          showBtnCancelFlag = true;
+          textBtnConfirm = "Agregar saldo a cuenta!";
+        }
+        Swal.fire({
+          title: '',
+          text: error.error.message,
+          icon: error.error.status,
+          showCancelButton: showBtnCancelFlag,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: textBtnConfirm
+        }).then((result) => {
+          if (result.isConfirmed) {
+            localStorage.setItem("expenseToRegisterPending",JSON.stringify(this.expense));
+            this._router.navigate(["/period/period-detail/"+this.period.id]);
+          }
+        })
       }
     );
   }
+
+
 
   registerOrUpdateExpense() {
 
@@ -222,7 +284,9 @@ export class ManageExpenseComponent implements OnInit {
         }
       },
       error => {
-        console.log(error);
+        if(error.status == null) {
+          Swal.fire("Error","Se generó un error desconocido, revise su conexión e inténtelo más tarde.","error");
+        }
       }
     );
   }

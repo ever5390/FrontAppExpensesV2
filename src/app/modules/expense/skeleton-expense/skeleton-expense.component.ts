@@ -108,6 +108,9 @@ export class SkeletonExpenseComponent implements OnInit {
       },
       error => {
         console.log(error);
+        if(error.status == null) {
+          Swal.fire("Error","Se generó un error desconocido, revise su conexión e inténtelo más tarde.","error");
+        }
       }
     );
   }
@@ -256,6 +259,10 @@ export class SkeletonExpenseComponent implements OnInit {
         }
       },
       error => {
+        if(error.status == null) {
+          Swal.fire("Error","Se generó un error desconocido, revise su conexión e inténtelo más tarde.","error");
+          return;
+        }
         console.log(error.error);
         Swal.fire(error.error.title, error.error.message, error.error.status);
         this.catchPeriodAndGetAllListExpenses();

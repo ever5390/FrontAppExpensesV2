@@ -10,35 +10,39 @@ import { map } from 'rxjs/internal/operators/map';
 })
 export class ExpensesService {
 
+  
   private URLCOMPL: string = URL_BASE_API_V1;
   private httpHeaders =  new HttpHeaders({'Content-type':'application/json'});
   
   constructor(
     private _http: HttpClient
-  ) { }
-
-  getAllExpensesByWorkspaceAndDateRangePeriod(idWorkspace: number, dateBegin: string, dateEnd: string): Observable<ExpenseModel[]>  {
-    return this._http.get(`${this.URLCOMPL}/expense-workspace?idWorkspace=${idWorkspace}&dateBegin=${dateBegin}&dateEnd=${dateEnd}`)
-    .pipe(
-      map(response => response as ExpenseModel[])
-    );
+    ) { }
+    
+    getAllExpensesByWorkspaceAndDateRangePeriod(idWorkspace: number, dateBegin: string, dateEnd: string): Observable<ExpenseModel[]>  {
+      return this._http.get(`${this.URLCOMPL}/expense-workspace?idWorkspace=${idWorkspace}&dateBegin=${dateBegin}&dateEnd=${dateEnd}`)
+      .pipe(
+        map(response => response as ExpenseModel[])
+        );
   }
 
   create(expenseObject: ExpenseModel) : Observable<any> {
     return this._http.post<ExpenseModel>(`${this.URLCOMPL}/expense`,expenseObject,{ headers: this.httpHeaders})
   }
-
+  
   getAllTagsByOwnerId(idOwner: number) : Observable<Tag[]> {
     return this._http.get<Tag[]>(`${this.URLCOMPL}/owner/${idOwner}/tag-list`);
   }
-
+  
   updateStatusPayedExpense(idExpense: number): Observable<any> {
     return this._http.get<any>(`${this.URLCOMPL}/expense/check-pay/${idExpense}`);
   }
-
+  
   deleteExpenseById(idExpense: number): Observable<any> {
     return this._http.delete<any>(`${this.URLCOMPL}/expense/${idExpense}`);
   }
-
-
+  
+  clearExpennseRegisterFromLocalStorage() {
+    localStorage.removeItem("expenseToRegisterPending");
+  }
+  
 }

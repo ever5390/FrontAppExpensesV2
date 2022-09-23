@@ -21,15 +21,14 @@ export class AsideComponent implements OnInit {
   period : PeriodModel = new PeriodModel();
 
   @ViewChild('aside') aside: ElementRef | any;
-  @Output() hiddenMenuNow: EventEmitter<boolean> = new EventEmitter();
   @Input("active_menu") active_menu: boolean = false;
+  @Output() hiddenMenuNow: EventEmitter<boolean> = new EventEmitter();
   @Output() redirectToParent: EventEmitter<boolean> = new EventEmitter();
   
   constructor(
     private _renderer: Renderer2,
     private _routes: Router,
-    private _userService: UserService,
-    private _workspaceService: WorkspacesService
+    private _userService: UserService
   ) {
 
     this._renderer.listen('window','click', (e: Event)=> {

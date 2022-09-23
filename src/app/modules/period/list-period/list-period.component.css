@@ -106,6 +106,18 @@ label {
     width: 75%;
 }
 
+.btn_period_init {
+    border: none;
+    text-align: center;
+    padding: 10px 20px;
+    margin-top: 10px;
+    background-color: rgb(117, 37, 37);
+    border-radius: 8px;
+    color: #fff;
+    font-weight: bold;
+    font-size: .9rem;
+}
+
 @media (max-width: 1500px) {
     .st-content-block {
         width: 100%;

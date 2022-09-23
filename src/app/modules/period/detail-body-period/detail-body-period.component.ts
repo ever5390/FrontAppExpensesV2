@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ExpenseModel } from '@data/models/business/expense.model';
 import { AccountClosedStructure } from '@data/models/Structures/data-account.model';
+import { PeriodService } from '@data/services/period/period.service';
 import { SLoaderService } from '@shared/components/loaders/s-loader/service/s-loader.service';
 import { CONSTANTES } from 'app/data/constantes';
 import { AccountModel, TypeSatusAccountOPC } from 'app/data/models/business/account.model';
@@ -45,7 +47,8 @@ export class DetailBodyPeriodComponent implements OnInit {
 
   constructor(
     private _loadSpinnerService: SLoaderService,
-    private _accountService: AccountService
+    private _accountService: AccountService,
+    private _periodService: PeriodService
   ) {
   }
 
@@ -153,6 +156,7 @@ export class DetailBodyPeriodComponent implements OnInit {
     this._accountService.createAccount(accountToSave).subscribe(
       (response :any)=> {
         Swal.fire("","Cuenta registrada con éxito","success");
+        this._periodService.saveToLocalStorage(response.object.period);
         this.getAllAccountByPeriodSelected(response.object.period.id);
         this.sendUpdateAmountInitialHeader.emit(response.object);
       },
@@ -166,9 +170,12 @@ export class DetailBodyPeriodComponent implements OnInit {
 
   
   updateAccount(accountToSave: AccountModel) {
-    
+    console.log("accountToSave");
+    console.log(accountToSave);
     this._accountService.updateAccount(accountToSave).subscribe(
       (response :any)=> {
+        console.log("accountToSave");
+        console.log(response);
         Swal.fire(response.title,response.message, response.status);
         this.getAllAccountByPeriodSelected(response.object.period.id);
         this.sendUpdateAmountInitialHeader.emit(response.object);

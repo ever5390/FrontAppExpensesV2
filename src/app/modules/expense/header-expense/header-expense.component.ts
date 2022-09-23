@@ -57,8 +57,6 @@ export class HeaderExpenseComponent implements OnInit {
         console.log(error.error);
         this.period.startDate = new Date();
         this.period.finalDate = new Date();
-        // this.period.startDate = this._utilitariesService.convertDateGMTToString(new Date(), "initial");
-        // this.period.finalDate = this._utilitariesService.convertDateGMTToString(new Date(), "final");
       }
     );
   }
@@ -79,16 +77,14 @@ export class HeaderExpenseComponent implements OnInit {
   }
 
   validateHourIfExistPeriod(orden: string) {
-    if(this.period ==null || this.period.id == 0) {
+    if(this.period == null || this.period.id == 0) {
       this.period = new PeriodModel();
-      // this.period.startDate = new Date().toString(),
-      // this.period.finalDate = new Date().toString()
       this.period.startDate = new Date(),
       this.period.finalDate = new Date()
     } else {
-      this.period =JSON.parse(localStorage.getItem("lcstrg_periodo")!);
-      this.sendResponse(this.period.startDate.toString(), this.period.finalDate.toString(), orden);
-    }    
+      this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
+    }
+    this.sendResponse(this.period.startDate.toString(), this.period.finalDate.toString(), orden);
   }
 
   receivingTotalSpentBySearchingExpense() {
@@ -109,8 +105,6 @@ export class HeaderExpenseComponent implements OnInit {
     dataSend.startDate = startDate;
     dataSend.finalDate = finalDate;
 
-    console.log("RESET dataSend");
-    console.log(dataSend);
     this._utilitariesService.sendDatesFromCalendarSelected({
       "component": CONSTANTES.CONST_COMPONENT_HEADER,
       "action": "reset",

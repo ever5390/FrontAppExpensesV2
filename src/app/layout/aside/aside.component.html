@@ -13,10 +13,14 @@
                     <span>{{wrkspc.name}}</span>
                     <i class="fas fa-sort"></i>
                 </div>
-                <div *ngIf="flagShowOptionPeriod" class="st_aside_option_menu d-flex justify-content-start align-items-center" (click)="redirectRoutes('period')">
+                <div class="st_aside_option_menu d-flex justify-content-start align-items-center" (click)="redirectRoutes('period')">
                     <i class="far fa-calendar-day"></i>
                     <span class="px-2">Periodos</span>
                 </div>
+                <!-- <div *ngIf="flagShowOptionPeriod" class="st_aside_option_menu d-flex justify-content-start align-items-center" (click)="redirectRoutes('period')">
+                    <i class="far fa-calendar-day"></i>
+                    <span class="px-2">Periodos</span>
+                </div> -->
             </div>
             <div class="st_body_footer">
                 <div class="st_aside_option_menu d-flex justify-content-start align-items-center" (click)="redirectRoutes('according')">

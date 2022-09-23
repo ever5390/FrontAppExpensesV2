@@ -1,9 +1,9 @@
 <div class="container_login_comp">
     <div class="container_login_box">
         <h2>{{titleAction}}</h2>
-        <!-- <p>{{textDescription}}
+        <p>{{textDescription}}
             <span (click)="changeAction()">{{textAction}}</span>
-        </p> -->
+        </p>
         <div class="form_control" *ngIf="!flagIsLoginAction">
             <input type="text" class="input_fullname" placeholder="Enter full name" 
             [(ngModel)]="usuario.name" required>

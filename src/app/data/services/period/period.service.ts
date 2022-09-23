@@ -50,6 +50,10 @@ export class PeriodService {
     return this._http.post<PeriodModel>(`${this.URLCOMPL}/period-close`,period,{ headers: this.httpHeaders})
   }
 
+  savePeriod(period: PeriodModel) : Observable<any> {
+    return this._http.post<PeriodModel>(`${this.URLCOMPL}/period`,period,{ headers: this.httpHeaders})
+  }
+
   saveToLocalStorage(period: PeriodModel) {
     localStorage.setItem("lcstrg_periodo", JSON.stringify(period));
   }

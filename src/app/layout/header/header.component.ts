@@ -49,9 +49,7 @@ export class HeaderComponent implements OnInit {
    }
 
   ngOnInit(): void {
-    this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
-    this.intervalNotify();
-    
+    //this.intervalNotify();
   }
 
   intervalNotify() {
@@ -131,13 +129,27 @@ export class HeaderComponent implements OnInit {
   }
 
   showFormRegisterExpense() {
-    this.showFormRgister = true;
-    if(this.period != null && (new Date().getTime() > new Date(this.period.finalDate).getTime()) &&
-    this.period.activate == true  && this.period.statusPeriod == true) {
-      console.log("period WERWERWER ADIOS");
-      Swal.fire("","El periodo finalizo, modifique su fecha de cierre o hágalo manualmente para continuar","info");
-      this._router.navigate(["/period/period-detail/"+ this.period.id]);
+    this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
+    if(this.period == null) {
+      Swal.fire("","Inicialice el periodo para poder registrar sus gastos","info");
+      this._router.navigate(["/period"]);
+      return;
     }
+
+    if(this.period.activate == false) {
+      Swal.fire("","Configure una cuenta principal para poder iniciar con el registro de sus gastos","info");
+      this._router.navigate(["/period/period-detail/"+ this.period.id]);
+      return;
+    }
+
+    if((new Date().getTime() > new Date(this.period.finalDate).getTime()) &&
+      this.period.activate == true  && this.period.statusPeriod == true) {
+      Swal.fire("","El periodo finalizo, modifique su fecha de cierre o ejecútelo manualmente para continuar","info");
+      this._router.navigate(["/period/period-detail/"+ this.period.id]);
+      return;
+    }
+
+    this.showFormRgister = true;
     this._router.navigate(['/expense']);
   }
 
