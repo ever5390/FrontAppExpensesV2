@@ -75,8 +75,20 @@
 
             <!-- Lista de categorias: caso Cuentas asociadas -->
             <div class="st_list_account_origen" [ngStyle]="{'display':(flagShowListCategories) ? 'block' : 'none' }">
-                <h6><i (click)="backToAccountWithCategoriesSelected()" class="fas fa-angle-double-left"></i> Seleccione las categorías para asociarlas</h6>
+                <h6>
+                    <i (click)="backToAccountWithCategoriesSelected()" class="fas fa-angle-double-left"></i> Seleccione las categorías para asociarlas
+                </h6>
                 <div #lisCategoriesForSelect>
+                    <div class="form_control st_frm_search" >
+                        <div class="st_block_search d-flex align-items-center justify-content-start">
+                            <i class="far fa-search" ></i>
+                            <input (keyup)="searchMethod($event)" type="text"
+                            spellcheck="false" autocomplete="none" placeholder="Search">
+                            <i  (click)="createNewCategory()" *ngIf="showBtnAddItem" class="fas fa-check-circle"></i>
+                        </div>
+                        <span style="font-size: .8rem; text-align: center; font-weight:bold; color: rgb(82, 207, 82);">{{textSaveCategory}}</span>
+                    </div>
+                    
                     <ng-container *ngFor="let category of listaCategories; let i = index">
                         <label class="st_account_select d-flex justify-content-between align-items-center">
                             <div>
@@ -84,7 +96,7 @@
                                 [value] = "category.id"
                                 [checked] = "category.active"
                                 (change)="onChangeCategory($event)"
-                               
+                                 [disabled]="category.isDisabled"
                                  type="checkbox" 
                                  id="check_categ+{{i}}"
                                  >

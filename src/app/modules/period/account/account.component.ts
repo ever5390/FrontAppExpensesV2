@@ -1,12 +1,20 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
+import { AccountModel, TypeSatusAccountOPC } from '@data/models/business/account.model';
 import { CategoryModel } from '@data/models/business/category.model';
+import { GroupModel } from '@data/models/business/group.model';
+import { PeriodModel } from '@data/models/business/period.model';
+import { TransferenciaModel } from '@data/models/business/transferencia.model';
 import { DataOptionsSelectExpense } from '@data/models/Structures/data-expense-options';
+import { AccountService } from '@data/services/account/account.service';
 import { CategoryService } from '@data/services/category/category.service';
+import { PeriodService } from '@data/services/period/period.service';
 import { SLoaderService } from '@shared/components/loaders/s-loader/service/s-loader.service';
 import { CONSTANTES } from 'app/data/constantes';
 import { OwnerModel } from 'app/data/models/business/owner.model';
 import { ObjectFormularioShared } from 'app/data/models/Structures/data-object-form.model';
 import { DataStructureFormShared } from 'app/data/models/Structures/data-structure-form-shared.model';
+import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -24,6 +32,7 @@ export class AccountComponent implements OnInit {
   heightForm: number = 0;
   item: ElementRef | any;
   heightListContent: number = 0;
+  listaCategoriesFixed: CategoryModel[] = [];
   listaCategories: CategoryModel[] = [];
   flagShowListOptionsSelect: boolean = false;
 
@@ -53,20 +62,28 @@ export class AccountComponent implements OnInit {
 
   categoriesSelected: CategoryModel[] = [];
   categoriesChecked: CategoryModel[] = [];
+  newCategory: CategoryModel = new CategoryModel();
 
   dataOptionsSelectExpense: DataOptionsSelectExpense = new DataOptionsSelectExpense();
   dataOptionsSelectExpenseList: DataOptionsSelectExpense[] = [];
 
+  period: PeriodModel = new PeriodModel();
+  
   constructor(
     private _categoryService: CategoryService,
     private _renderer: Renderer2,
-    private _loadSpinnerService: SLoaderService
+    private _loadSpinnerService: SLoaderService,
+    private _accountService: AccountService,
+    private _periodService: PeriodService
   ) {
     this.catchClickEventOutForm();
   }
 
   ngOnInit(): void {
     this.owner = JSON.parse(localStorage.getItem('lcstrg_owner')!);
+    this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
+    
+    this.searchActivateFunction();
     this.switchDecideFormByComponent();
     this.seteoByComponentParent();
 
@@ -101,7 +118,11 @@ export class AccountComponent implements OnInit {
       case CONSTANTES.CONST_CUENTAS:
         this.objectToFormShared.name = this.dataStructureReceived.object.accountName;
         this.objectToFormShared.monto = this.dataStructureReceived.object.balance;
-        this.objectToFormShared.inputDisabled = this.dataStructureReceived.object.statusAccount.toString()=='PROCESS'?true:false;
+        console.log(this.dataStructureReceived.object);
+        if(this.dataStructureReceived.object.id != 0){
+          this.objectToFormShared.inputDisabled = this.dataStructureReceived.object.statusAccount.toString()=='PROCESS'?true:false;
+        }
+       
         break;
       default:
         break;
@@ -110,9 +131,6 @@ export class AccountComponent implements OnInit {
 
   saveOrUpdate() {
     if(this.validationForm() == false ) return;
-
-    this._loadSpinnerService.showSpinner();
-
     if(this.dataStructureReceived.component == CONSTANTES.CONST_TRANSFERENCIA_EXTERNA
       || this.dataStructureReceived.component == CONSTANTES.CONST_TRANSFERENCIA_INTERNA ) {
     
@@ -126,20 +144,96 @@ export class AccountComponent implements OnInit {
       this.dataStructureReceived.object.accountDestiny  = this.objectToFormShared.destino;
       this.dataStructureReceived.object.accountOrigin  = this.objectToFormShared.origen;
       this.dataStructureReceived.object.amount = this.objectToFormShared.monto;
-      this.responseToFatherComponent.emit(this.dataStructureReceived);
+      
+      this.registerTransference(this.dataStructureReceived.object);
       return;
     }
 
     if(this.dataStructureReceived.component == CONSTANTES.CONST_CUENTAS) {
-        if(this.dataStructureReceived.object.accountType.id == 2){
-          this.catchCategoriesSelectAssoc();
-        }  
+        if(this.dataStructureReceived.object.accountType.id == 2)
+            this.catchCategoriesSelectAssoc();
+
         this.dataStructureReceived.object.accountName  = this.objectToFormShared.name;
         this.dataStructureReceived.object.balance = this.objectToFormShared.monto;
         this.dataStructureReceived.object.categories =  this.categoriesChecked;
-        this.responseToFatherComponent.emit(this.dataStructureReceived);
-        return;
+
+        if(this.dataStructureReceived.object.statusAccount == TypeSatusAccountOPC.INITIAL.toString()) {
+          this.redirectToActionsAccount();
+          return;
+        }
+
+        Swal.fire({
+          title: 'Solicitud de confirmación',
+          text: 'El monto y las categorías asociadas no podrán ser modificadas, únicamente se le permitirá añadir más categorías',
+          icon: 'info',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Confirmar!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.redirectToActionsAccount();
+            return;
+          }
+        })  
     }
+  }
+
+  private redirectToActionsAccount() {
+    if (this.dataStructureReceived.object.id == 0) {
+      console.log("accountToSave");
+      console.log(this.dataStructureReceived.object);
+      this.registerAccount(this.dataStructureReceived.object);
+    } else {
+      this.updateAccount(this.dataStructureReceived.object);
+    }
+  }
+
+  registerTransference(transferToSave: TransferenciaModel) {
+
+    this._accountService.saveTransferenceAccount(transferToSave).subscribe(
+      (response :any)=> {
+        Swal.fire(response.title,response.message,response.status);
+        this.responseToFatherComponent.emit(response);
+      },
+      error => {
+        console.log(error);
+        Swal.fire(error.error.title,error.error.message,error.error.status);
+      }
+    );
+  }
+
+  registerAccount(accountToSave: AccountModel) {
+
+    accountToSave.period = this.period;
+    this._accountService.createAccount(accountToSave).subscribe(
+      (response :any)=> {
+        Swal.fire("","Cuenta registrada con éxito","success");
+        this._periodService.saveToLocalStorage(response.object.period);
+        this.responseToFatherComponent.emit(response);
+      },
+      error => {
+        console.log(error);
+        Swal.fire(error.error.title,error.error.message,error.error.status);
+      }
+    );
+  }
+
+  updateAccount(accountToSave: AccountModel) {
+    console.log("accountToSave");
+    console.log(accountToSave);
+    this._accountService.updateAccount(accountToSave).subscribe(
+      (response :any)=> {
+        console.log("accountToSave");
+        console.log(response);
+        Swal.fire(response.title,response.message, response.status);
+        this.responseToFatherComponent.emit(this.dataStructureReceived);
+      },
+      error => {
+        console.log(error);
+        Swal.fire(error.error.title,error.error.message,error.error.status);
+      }
+    );
   }
 
   backToAccountWithCategoriesSelected() {
@@ -245,7 +339,7 @@ export class AccountComponent implements OnInit {
     this._categoryService.getAllCategories(this.owner.id).subscribe(
       response => {
         console.log(response);
-        this.listaCategories = response;
+        this.listaCategories = response.reverse();
         this.showCategoriesActivesByAccountAndPendings();
         this._loadSpinnerService.hideSpinner();
       },
@@ -261,8 +355,11 @@ export class AccountComponent implements OnInit {
     });
 
     this.dataStructureReceived.object.categories.forEach((categAccount: CategoryModel)=>{
+      categAccount.isDisabled = true;
       this.listaCategories.unshift(categAccount);
     });
+
+    this.listaCategoriesFixed = this.listaCategories;
 
   }
 
@@ -312,6 +409,53 @@ export class AccountComponent implements OnInit {
   hiddenPopUp() {
     this.show__popup = false;
     this.responseToFatherComponent.emit(false);
+  }
+
+  searchActivateFunction() {
+    this.subject.pipe(
+      debounceTime(100)
+    ).subscribe((searchText:any) => {
+      this.showBtnAddItem = false;
+      this.listaCategories = this.listaCategoriesFixed.filter(item => {
+        return item.name.toUpperCase().includes(searchText.toUpperCase()) 
+          }
+        );
+        console.log(this.textSearch);
+        if(this.textSearch != '' && this.listaCategories.length == 0) {
+          this.showBtnAddItem = true;
+        }
+
+      }
+    )
+  }
+
+  subject = new Subject();
+  textSearch: string = '';
+  showBtnAddItem: boolean = false;
+  textSaveCategory: string = '';
+  searchMethod(evt: any){
+    const searchText = evt.target.value;
+    this.textSearch = searchText;
+    this.subject.next(searchText)
+  }
+
+  createNewCategory() {
+    this.newCategory.active = false;
+    this.newCategory.group = new GroupModel(true,"","",2,"",new OwnerModel());
+    this.newCategory.image = CONSTANTES.CONST_IMAGEN_DEFAULT;
+    this.newCategory.name = this.textSearch;
+    this.newCategory.owner = this.owner;
+    this._categoryService.create(this.newCategory).subscribe(
+      response=> {
+        this.textSaveCategory = "categoría creada!";
+        this.textSearch = "";
+        console.log("Éxito al crear la categoría nueva");
+        this.getAllCategories();
+      },
+      error => {
+        console.log("Error al crear la categoria nueva");
+      }
+    );
   }
 
   catchClickEventOutForm() {

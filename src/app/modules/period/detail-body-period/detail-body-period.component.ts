@@ -1,8 +1,7 @@
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ExpenseModel } from '@data/models/business/expense.model';
+import { Router } from '@angular/router';
 import { AccountClosedStructure } from '@data/models/Structures/data-account.model';
-import { PeriodService } from '@data/services/period/period.service';
-import { SLoaderService } from '@shared/components/loaders/s-loader/service/s-loader.service';
 import { CONSTANTES } from 'app/data/constantes';
 import { AccountModel, TypeSatusAccountOPC } from 'app/data/models/business/account.model';
 import { PeriodModel } from 'app/data/models/business/period.model';
@@ -46,9 +45,8 @@ export class DetailBodyPeriodComponent implements OnInit {
   @Output() sendUpdateAmountInitialHeader= new EventEmitter();
 
   constructor(
-    private _loadSpinnerService: SLoaderService,
     private _accountService: AccountService,
-    private _periodService: PeriodService
+    private _router: Router
   ) {
   }
 
@@ -148,44 +146,6 @@ export class DetailBodyPeriodComponent implements OnInit {
     if(this.accountParentClosed.id != 0) {
       this.accountParentShow = this.accountParentClosed;
     }
-
-  }
-
-  registerAccount(accountToSave: AccountModel) {
-    accountToSave.period = this.period;
-    this._accountService.createAccount(accountToSave).subscribe(
-      (response :any)=> {
-        Swal.fire("","Cuenta registrada con éxito","success");
-        this._periodService.saveToLocalStorage(response.object.period);
-        this.getAllAccountByPeriodSelected(response.object.period.id);
-        this.sendUpdateAmountInitialHeader.emit(response.object);
-      },
-      error => {
-        console.log(error);
-        Swal.fire(error.error.title,error.error.message,error.error.status);
-        this.getAllAccountByPeriodSelected(this.period.id);
-      }
-    );
-  }
-
-  
-  updateAccount(accountToSave: AccountModel) {
-    console.log("accountToSave");
-    console.log(accountToSave);
-    this._accountService.updateAccount(accountToSave).subscribe(
-      (response :any)=> {
-        console.log("accountToSave");
-        console.log(response);
-        Swal.fire(response.title,response.message, response.status);
-        this.getAllAccountByPeriodSelected(response.object.period.id);
-        this.sendUpdateAmountInitialHeader.emit(response.object);
-      },
-      error => {
-        console.log(error);
-        this.getAllAccountByPeriodSelected(accountToSave.period.id);
-        Swal.fire(error.error.title,error.error.message,error.error.status);
-      }
-    );
   }
 
   getAllAccountByPeriodSelected(idPeriodReceived: number) {
@@ -197,7 +157,7 @@ export class DetailBodyPeriodComponent implements OnInit {
       },
       error => {
         console.log(error);
-        //Swal.fire("","No se obtuvo datos del periodo buscado","error");
+        this._router.navigate(["/period"]);
       }
     );
   }
@@ -257,6 +217,7 @@ export class DetailBodyPeriodComponent implements OnInit {
     this.dataStructure.action = CONSTANTES.CONST_TEXT_BTN_REGISTRAR;
     this.dataStructure.imagen = CONSTANTES.CONST_IMAGEN_CUENTAS;
     this.dataStructure.object = new AccountModel();
+    this.dataStructure.object.statusAccount = this.accountParentShow.statusAccount;
 
     if(object == 'parent') {
       this.dataStructure.object.accountName = "Principal";
@@ -299,40 +260,11 @@ export class DetailBodyPeriodComponent implements OnInit {
     }
   }
 
-  receiveToSonComponent(dataStructureReceived:any) {
+  receiveToSonComponent(response:any) {
     this.flagFormulario = false;
-
-    if(dataStructureReceived == null) return;
-    this._loadSpinnerService.hideSpinner();
-
-    //Transfer
-    if(dataStructureReceived.component != CONSTANTES.CONST_CUENTAS) {
-      this.registerTransference(dataStructureReceived.object);
-      return;
-    }
-    //Cuentas
-    if(dataStructureReceived.object.id == 0){
-      this.registerAccount(dataStructureReceived.object);
-    } else {
-      this.updateAccount(dataStructureReceived.object);
-    }
+    if(response == null) return;
+    this.getAllAccountByPeriodSelected(response.object.period.id);
+    this.sendUpdateAmountInitialHeader.emit(response.object);
   }
-
-  registerTransference(transferToSave: TransferenciaModel) {
-
-    this._accountService.saveTransferenceAccount(transferToSave).subscribe(
-      (response :any)=> {
-        Swal.fire(response.title,response.message,response.status);
-        this.getAllAccountByPeriodSelected(response.object.period.id);
-        this.sendUpdateAmountInitialHeader.emit(response.object);
-      },
-      error => {
-        console.log(error);
-        Swal.fire(error.error.title,error.error.message,error.error.status);
-        this.getAllAccountByPeriodSelected(this.period.id);
-      }
-    );
-  }
-
 
 }

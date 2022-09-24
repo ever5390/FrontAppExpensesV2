@@ -1,8 +1,15 @@
 <div class="st_list_account_origen" [ngStyle]="{'display':(flagShowComponentReceived) ? 'block' : 'none' }">
-    <h6><i (click)="backToEmitAccount()" class="fas fa-angle-double-left"></i> Seleccione</h6>
-    <div >
+    <h6 class="d-flex justify-content-between align-items-center">
+        <span (click)="backToEmitAccount()" >
+            <i class="fas fa-angle-double-left"></i> Seleccione
+        </span>
+        <span *ngIf="componenteReceivedToBackWithoutSelect == 'Cuentas'" (click)="redirectToAccount()" >
+             <i class="fas fa-cog"></i>
+        </span>
+    </h6>
+    <div>
         <ng-container >
-            <div *ngIf="!isAccountList" class="form_control st_frm_search" >
+            <div class="form_control st_frm_search" >
                 <label> Filtrar</label>
                 <div class="st_block_search d-flex align-items-center justify-content-start">
                     <i class="far fa-search" ></i>
@@ -21,7 +28,7 @@
                                 <i class="{{item.icon}}"></i> 
                                 {{item.name}}
                             </label>
-                            <label *ngIf="isAccountList">
+                            <label *ngIf="isAccountList" >
                                 <span style="font-size: .8rem; color:rgb(83, 40, 40)">
                                     disponible
                                 </span>

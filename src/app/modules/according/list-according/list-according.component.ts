@@ -54,7 +54,9 @@ export class ListAccordingComponent implements OnInit {
     this._accordingService.getAllAccording().subscribe(
       response => {
         
-        this.listaAccording = response;
+        this.listaAccording = response.filter(item => {
+          return item.id != 7;
+        });
         this.flagListShared = true;
         this.dataStructureToListShared.lista = this.listaAccording;
       },

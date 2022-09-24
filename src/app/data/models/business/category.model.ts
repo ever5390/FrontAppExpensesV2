@@ -9,6 +9,7 @@ export class CategoryModel {
         public name: string = '',
         public id:    number = 0,
         public image: string = CONSTANTES.CONST_IMAGEN_DEFAULT,
-        public owner:  OwnerModel = new OwnerModel()
+        public owner:  OwnerModel = new OwnerModel(),
+        public isDisabled: boolean = false //aditional only front
     ){}
 }

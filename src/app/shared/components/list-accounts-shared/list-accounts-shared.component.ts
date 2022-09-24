@@ -2,6 +2,7 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, 
 import { CONSTANTES } from '@data/constantes';
 import { IDataSendItemToExpenseManager } from '@data/interfaces/data-send-item-to-expensemanager.interface';
 import { AccountModel } from '@data/models/business/account.model';
+import { PeriodModel } from '@data/models/business/period.model';
 import { DataOptionsSelectExpense } from '@data/models/Structures/data-expense-options';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -23,7 +24,6 @@ export class ListAccountsSharedComponent implements OnInit {
   time: number = 0;
 
   subject = new Subject();
-  txtSearch: string = '';
   dataOptionsSelectExpenseList: DataOptionsSelectExpense[] = [];
   dataOptionsSelectExpense: DataOptionsSelectExpense = new DataOptionsSelectExpense();
   
@@ -40,49 +40,42 @@ export class ListAccountsSharedComponent implements OnInit {
   componenteReceivedToBackWithoutSelect: string = "";
   textSearch: string = "";
 
+  period: PeriodModel = new PeriodModel();
+
   constructor(
-    private _renderer: Renderer2,
+    private _renderer: Renderer2
   ) { }
 
   ngOnInit(): void {
-    console.log("1.1");
+    this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
     this.searchActivateFunction();
     this.catchWithSetTime();
   }
 
   catchWithSetTime() {
-    console.log("1.2");
     //this.dataOptionsSelectExpenseList = [];
-    this.dataOptionsSelectExpenseList = this.dataOptionsSelectExpenseListReceived;
-    console.log(this.dataOptionsSelectExpenseList);
+    //this.dataOptionsSelectExpenseList = this.dataOptionsSelectExpenseListReceived;
+    //console.log(this.dataOptionsSelectExpenseList);
     setTimeout(() => {
-      
+      this.dataOptionsSelectExpenseList = this.dataOptionsSelectExpenseListReceived;
       this.dataOptionsSelectExpenseList.forEach(element => {
         
         if(element.name ==  CONSTANTES.CONST_TEXT_VACIO){
-            console.log("DEFAULT");
             this.componenteReceivedToBackWithoutSelect = element.component;
             this.dataOptionsSelectExpenseList = [];
-            
             return
         };
         
         if(element.component ==  CONSTANTES.CONST_COMPONENT_CUENTAS){
-          console.log("CUENTA");
-          this.isAccountList =  true;
           this.componenteReceivedToBackWithoutSelect = element.component;
-          //this.dataOptionsSelectExpenseList = [];
+          this.isAccountList = true;
           this.time = 70;
-          
           return
         };
         
         if(element.component !=  CONSTANTES.CONST_COMPONENT_CUENTAS){
-          console.log("DF CUENTAS Y DEF");
           this.componenteReceivedToBackWithoutSelect = element.component;
-          //this.dataOptionsSelectExpenseList = [];
           this.time = 70;
-          
           return
         };
       });      
@@ -132,11 +125,18 @@ export class ListAccountsSharedComponent implements OnInit {
     this.dataSendToExpenseManager.component = this.componenteReceivedToBackWithoutSelect;
     console.log(this.dataSendToExpenseManager);
     this.sendEmittAccountSelected.emit(this.dataSendToExpenseManager);
-    this.flagShowComponentReceived = false;
+    //this.flagShowComponentReceived = false;
+  }
+
+  redirectToAccount() {
+    this.dataSendToExpenseManager.itemSelected = new DataOptionsSelectExpense();
+    this.dataSendToExpenseManager.itemSelected.name = "redirectToAccount";
+    this.dataSendToExpenseManager.component = this.componenteReceivedToBackWithoutSelect;
+    this.sendEmittAccountSelected.emit(this.dataSendToExpenseManager);
   }
 
   resizingWindowList() {
-      if(this.heightListAccounts > (this.heightContainerChild - 50) ) {
+      if(this.heightListAccounts > (this.heightContainerChild - 250) ) {
         this._renderer.setStyle(this.lisCategoriesForSelect.nativeElement, "height",(this.heightContainerChild - 220) + "px");
         this._renderer.setStyle(this.lisCategoriesForSelect.nativeElement, "overflow-y","scroll");
       } else {

@@ -49,7 +49,7 @@ export class HeaderComponent implements OnInit {
    }
 
   ngOnInit(): void {
-    //this.intervalNotify();
+    this.intervalNotify();
   }
 
   intervalNotify() {

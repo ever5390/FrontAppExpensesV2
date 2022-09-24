@@ -42,7 +42,7 @@
 
 <ng-template #templateEmisor let-notification='notification'>
     <span class="subtitle_txt" *ngIf="notification.subtitleText" >{{notification.subtitleText}}</span>
-    <p>El usuario {{notification.payer.name}} realizó el pago del gasto enviado Nro 1356 concerniente a {{notification.expenseShared.category.name}}, 
+    <p>El usuario {{notification.payer.name}} realizó el pago del gasto enviado Nro {{notification.expenseShared.id}} concerniente a {{notification.expenseShared.category.name}}, 
         que asciende a s/ {{notification.expenseShared.amountShow | number : '1.2-2'}} soles realizado el {{notification.createAt | date: 'EEE dd MMM  HH:mm:ss' | uppercase}}
         <label class="st_footer_vouchers">
             <img (click)="showVoucherSelected(voucher.name)" *ngFor="let voucher of notification.vouchers" src="{{voucher.name}}" alt="" srcset="">

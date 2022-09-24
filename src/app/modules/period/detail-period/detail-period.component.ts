@@ -28,6 +28,7 @@ export class DetailPeriodComponent implements OnInit {
     private _accountService: AccountService,
     private _rutaActiva: ActivatedRoute,
     private _renderer: Renderer2,
+    private _router: Router,
     private _periodService: PeriodService  ) {
   }
 
@@ -67,6 +68,7 @@ export class DetailPeriodComponent implements OnInit {
       error => {
           console.log(error);
           Swal.fire("","No se obtuvo datos del periodo buscado","error");
+          this._router.navigate(['/period']);
       }
     );
   }

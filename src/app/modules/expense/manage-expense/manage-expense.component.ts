@@ -1,4 +1,3 @@
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { CONSTANTES } from '@data/constantes';
@@ -21,7 +20,6 @@ import { PeriodModel } from 'app/data/models/business/period.model';
 import { Workspace } from 'app/data/models/business/workspace.model';
 import { DataStructureListShared } from 'app/data/models/data.model';
 import { ExpensesService } from 'app/data/services/expenses/expenses.service';
-import { of } from 'rxjs';
 import Swal from 'sweetalert2';
 
 
@@ -115,7 +113,7 @@ export class ManageExpenseComponent implements OnInit {
   validateIfExistExpensePendingRegister() {
     let expensePendingRegister : ExpenseModel = new ExpenseModel();
     expensePendingRegister = JSON.parse(localStorage.getItem("expenseToRegisterPending")!);
-    if(expensePendingRegister != null && expensePendingRegister.amount != '') {
+    if(expensePendingRegister != null && expensePendingRegister.amountShow != '') {
       Swal.fire({
         title: '',
         text: "Tienes un gasto almacenado en memoria, ¿Deseas registrarlo?",
@@ -209,19 +207,27 @@ export class ManageExpenseComponent implements OnInit {
           confirmButtonText: textBtnConfirm
         }).then((result) => {
           if (result.isConfirmed) {
-            localStorage.setItem("expenseToRegisterPending",JSON.stringify(this.expense));
-            this._router.navigate(["/period/period-detail/"+this.period.id]);
+            if(error.error.status != 'error' && error.error.message.includes("saldo")){
+              this.saveExpenseToLocalAndRedirectToAccount();
+            }
           }
         })
       }
     );
   }
 
-
+  saveExpenseToLocalAndRedirectToAccount() {
+    localStorage.setItem("expenseToRegisterPending",JSON.stringify(this.expense));
+    this._router.navigate(["/period/period-detail/"+this.period.id]);
+  }
 
   registerOrUpdateExpense() {
-
     if(this.validAmount() == false) return;
+    this.setterObjectExpense();
+    this.validateIfExistVoucherUploaded();
+  }
+
+  setterObjectExpense() {
     this.expense.payer = this.payerSelected==''?this.owner.name:this.payerSelected;
     this.expense.amount = this.expense.amountShow;
     this.expense.registerPerson = this.owner;
@@ -235,8 +241,6 @@ export class ManageExpenseComponent implements OnInit {
 
     this.expense.period = this.period;
     this.expense.workspace = this.workspace;
-
-    this.validateIfExistVoucherUploaded();
   }
 
   private validateIfExistVoucherUploaded() {
@@ -299,8 +303,8 @@ export class ManageExpenseComponent implements OnInit {
       this.heightFormRegisterExpense = this.formRegisterContainerToAccountListBlock.nativeElement.clientHeight;
       let windowHeight = window.innerHeight;
       let heightFormRegister = this.formRegister.nativeElement.clientHeight;
-      if (heightFormRegister > windowHeight - 150) {
-        this._renderer.setStyle(this.formRegister.nativeElement, "height", (windowHeight * 0.8) + "px");
+      if (heightFormRegister > windowHeight - 200) {
+        this._renderer.setStyle(this.formRegister.nativeElement, "height", (windowHeight * 0.7) + "px");
         this._renderer.setStyle(this.formRegister.nativeElement, "overflow-y", "scroll");
       }
   }
@@ -399,9 +403,14 @@ export class ManageExpenseComponent implements OnInit {
         break;
       case CONSTANTES.CONST_COMPONENT_CALENDAR:
         this.dateRangeCalendarSelected = element.dateRange.finalDate;
-        console.log(this.dateRangeCalendarSelected);
         break;
       case CONSTANTES.CONST_COMPONENT_CUENTAS:
+        if(element.itemSelected.name == "redirectToAccount"){
+          console.log(element.itemSelected.name);
+          this.setterObjectExpense();
+          this.saveExpenseToLocalAndRedirectToAccount();
+        }
+
         this.itemAccount.id = element.itemSelected.id;
         this.itemAccount.accountName = element.itemSelected.name;
         this.itemAccount.balanceFlow = element.itemSelected.disponible;
@@ -433,6 +442,9 @@ export class ManageExpenseComponent implements OnInit {
         tagSelected.tagName = element.itemSelected.name;
         tagSelected.owner = this.owner;
         this.tagListSelected.push(tagSelected);
+        break;
+      case CONSTANTES.CONST_COMPONENT_USER:
+        this.payerSelected = element.itemSelected.name;
         break;
       case CONSTANTES.CONST_COMPONENT_USER:
         this.payerSelected = element.itemSelected.name;

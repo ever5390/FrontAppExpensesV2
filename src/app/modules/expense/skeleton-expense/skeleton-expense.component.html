@@ -4,7 +4,7 @@
     >
 </app-header-expense>
 
-<app-searching
+<app-searching *ngIf="sendListExpensesToBody.length > 0"
     [receivedListExpensesFromSkeleton]="sendListExpensesToBody"
     (emitterSearching)="receivedSearchingEmitFromHeader($event)"
     >

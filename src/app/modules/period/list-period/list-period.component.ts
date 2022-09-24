@@ -39,6 +39,7 @@ export class ListPeriodComponent implements OnInit {
     this.period.workSpace = this.workspace;
     this._periodService.savePeriod(this.period).subscribe(
       response => {
+        console.log(response);
         this._periodService.saveToLocalStorage(response.object);
         Swal.fire("Éxito","Se inicializó el periodo correctamente","success");
         this._route.navigate(["/period/period-detail/"+response.object.id]);
