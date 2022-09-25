@@ -30,8 +30,8 @@ export class PaymentMethodService {
     return this._http.put<PaymentMethodModel>(`${this.URLCOMPL}/paymentMethod/${id}`,paymentObject,{ headers: this.httpHeaders})
   }
 
-  delete(id: number) : Observable<any> {
-    return this._http.delete<PaymentMethodModel[]>(`${this.URLCOMPL}/paymentMethod/${id}`);
+  delete(periodId: number, paymentMethodId: number ) : Observable<any> {
+    return this._http.delete(`${this.URLCOMPL}/period/${periodId}/paymentMethod/${paymentMethodId}`);
   }
 
 

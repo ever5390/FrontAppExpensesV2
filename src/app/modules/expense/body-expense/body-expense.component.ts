@@ -34,6 +34,7 @@ export class BodyExpenseComponent implements OnInit {
 
   ngOnInit(): void {
     this.sendListExpensesToBodyList = this.receivedListExpensesFromSkeleton;
+    console.log(this.sendListExpensesToBodyList);
   }
 
   sendUpdatePayedExpense(idExpenseUpdate: number) {

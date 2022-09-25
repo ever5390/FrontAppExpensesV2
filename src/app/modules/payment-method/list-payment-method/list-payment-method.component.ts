@@ -1,5 +1,6 @@
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { PeriodModel } from '@data/models/business/period.model';
 import { SLoaderService } from '@shared/components/loaders/s-loader/service/s-loader.service';
 import { CONSTANTES } from 'app/data/constantes';
 import { IDataSendItemToExpenseManager } from 'app/data/interfaces/data-send-item-to-expensemanager.interface';
@@ -22,6 +23,7 @@ export class ListPaymentMethodComponent implements OnInit {
     itemSelected: null
   };
   owner : OwnerModel = new OwnerModel();
+  period: PeriodModel = new PeriodModel();
   listaPaymentMethod: PaymentMethodModel[] = [];
   flagFormulario: boolean = false;
   flagListShared: boolean = false;
@@ -55,6 +57,7 @@ export class ListPaymentMethodComponent implements OnInit {
 
   ngOnInit(): void {
     this.owner = JSON.parse(localStorage.getItem('lcstrg_owner')!);
+    this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
     this.getAllPaymentMethod();
   }
   
@@ -120,28 +123,28 @@ export class ListPaymentMethodComponent implements OnInit {
 
   }
   
-  delete(element: any) {
-    this._paymentMethodService.delete(element.id).subscribe(
+  delete(element: PaymentMethodModel) {
+    this._paymentMethodService.delete(this.period.id, element.id).subscribe(
       response => {
         Swal.fire(
-          "Exito",
-          "El objeto " + element.name + " se eliminó con éxito",
-          "success"
+          response.title,
+          response.message,
+          response.status
         )
         this.getAllPaymentMethod();
-
       },
       error => {
         console.log(error);
         Swal.fire(
-          "Error",
-          "Ocurrió un error al intentar elimnar, inténtelo nuevamente",
-          "error"
+          error.error.title,
+          error.error.message,
+          error.error.status
         )
         this.getAllPaymentMethod();
       }
     );
   }
+
 
   updateElement(element: PaymentMethodModel) {
     this._paymentMethodService.update(element, element.id).subscribe(

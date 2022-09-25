@@ -40,6 +40,14 @@ export class ExpensesService {
   create(expenseObject: ExpenseModel) : Observable<any> {
     return this._http.post<ExpenseModel>(`${this.URLCOMPL}/expense`,expenseObject,{ headers: this.httpHeaders})
   }
+
+  updateVouchersToExpense(expenseObject: ExpenseModel) : Observable<any> {
+    return this._http.put<ExpenseModel>(`${this.URLCOMPL}/expense/vouchers`,expenseObject,{ headers: this.httpHeaders})
+  }
+
+  updateObjectExpense(expenseObject: ExpenseModel) : Observable<any> {
+    return this._http.put<ExpenseModel>(`${this.URLCOMPL}/expense/${expenseObject.id}`,expenseObject,{ headers: this.httpHeaders})
+  }
   
   getAllTagsByOwnerId(idOwner: number) : Observable<Tag[]> {
     return this._http.get<Tag[]>(`${this.URLCOMPL}/owner/${idOwner}/tag-list`);

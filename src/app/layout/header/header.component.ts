@@ -53,7 +53,7 @@ export class HeaderComponent implements OnInit {
   }
 
   intervalNotify() {
-    const numberNotification  = interval(1000);
+    const numberNotification  = interval(3000);
     const subscribe = numberNotification.subscribe(
       (n) => {
           this.getNotificationRequest(numberNotification);

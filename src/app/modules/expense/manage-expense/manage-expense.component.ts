@@ -141,11 +141,8 @@ export class ManageExpenseComponent implements OnInit {
     this.itemPaymentMethod = expensePendingRegister.paymentMethod;
     this.payerSelected = expensePendingRegister.payer;
     this.tagListSelected = expensePendingRegister.tag;
-    this.accountListSelected.forEach(account => {
-      if (account.id == expensePendingRegister.account.id) {
-        this.itemAccount = account;
-      }
-    });
+    this.itemAccount = expensePendingRegister.account;
+    this.dateRangeCalendarSelected = expensePendingRegister.createAt;
     expensePendingRegister.vouchers.forEach(item => {
       this.vouchersListToShow.push(item.name);
     });
@@ -185,20 +182,98 @@ export class ManageExpenseComponent implements OnInit {
     }
   }
 
+  saveExpenseToLocalStorageAndRedirectToAccount() {
+    this._loadSpinnerService.hideSpinner();
+    this.vouchersListToShow.forEach(item => {
+      this.expense.vouchers.push(new Voucher(0, item));
+    });
+
+    localStorage.setItem("expenseToRegisterPending",JSON.stringify(this.expense));
+    this._router.navigate(["/period/period-detail/"+this.period.id]);
+  }
+
+  registerOrUpdateExpense(idExpense: number) {
+    if(this.validAmount() == false) return;
+    this.setterObjectExpense();
+    if(idExpense != 0){
+      this.updateExpenseObject();
+    } else {
+      this.saveExpense();
+    }
+  }
+
+  updateExpenseObject() {
+    console.log("Editar");
+    this._expenseService.updateObjectExpense(this.expense).subscribe(
+      response => {
+        this.period = response.object.period;
+        this._periodService.saveToLocalStorage(this.period);
+        this._expenseService.clearExpennseRegisterFromLocalStorage();
+        this.expense = response.object;
+        if(this.voucherSelectedFileToStorageSave.length > 0) {
+          this.uploadImageToFirestore();
+          return;
+        }
+        this._loadSpinnerService.hideSlow();
+        Swal.fire("",response.message,response.status);
+        this._router.navigate(["/"]);
+      },
+      error => {
+        console.log(error);
+        this._loadSpinnerService.hideSlow();
+        let textBtnConfirm = "OK";
+        let showBtnCancelFlag = false;
+        if(error.error.status != 'error' && error.error.message.includes("saldo")){
+          showBtnCancelFlag = true;
+          textBtnConfirm = "Agregar saldo a cuenta!";
+        }
+        Swal.fire({
+          title: '',
+          text: error.error.message,
+          icon: error.error.status,
+          showCancelButton: showBtnCancelFlag,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: textBtnConfirm
+        }).then((result) => {
+          if (result.isConfirmed) {
+            if(error.error.status != 'error' && error.error.message.includes("saldo")){
+              this.saveExpenseToLocalStorageAndRedirectToAccount();
+            }
+          }
+        })
+      }
+    );
+  }
+
+  setterObjectExpense() {
+    this.expense.payer = this.payerSelected==''?this.owner.name:this.payerSelected;
+    this.expense.amount = this.expense.amountShow;
+    this.expense.registerPerson = this.owner;
+    this.expense.account = this.itemAccount;
+    this.expense.category = this.itemCategory;
+    this.expense.accordingType = this.itemAccording;
+    this.expense.paymentMethod = this.itemPaymentMethod;
+    this.expense.tag = this.tagListSelected;
+    this.expense.createAt = this.dateRangeCalendarSelected;
+    this.expense.period = this.period;
+    this.expense.workspace = this.workspace;
+  }
+
   saveExpense() {
+    this._loadSpinnerService.showSpinner();
     this._expenseService.create(this.expense).subscribe(
       response => {
-        this._loadSpinnerService.hideSlow();
         this.period = response.object.period;
-        this._expenseService.clearExpennseRegisterFromLocalStorage();
         this._periodService.saveToLocalStorage(this.period);
-
-        if(this.flagReceiveNotificationParamRoute){
-          this.notificationExpense.vouchers = response.object.vouchers;
-          this.updateNotificationStatus(this.notificationExpense);
+        this._expenseService.clearExpennseRegisterFromLocalStorage();
+        this.expense = response.object;
+        if(this.voucherSelectedFileToStorageSave.length > 0) {
+          this.uploadImageToFirestore();
+          return;
         }
-
-        Swal.fire("","Registro exitoso","success");
+        this._loadSpinnerService.hideSlow();
+        Swal.fire("",response.message,response.status);
         this._router.navigate(["/"]);
       },
       error => {
@@ -220,48 +295,12 @@ export class ManageExpenseComponent implements OnInit {
         }).then((result) => {
           if (result.isConfirmed) {
             if(error.error.status != 'error' && error.error.message.includes("saldo")){
-              this.saveExpenseToLocalAndRedirectToAccount();
+              this.saveExpenseToLocalStorageAndRedirectToAccount();
             }
           }
         })
       }
     );
-  }
-
-  saveExpenseToLocalAndRedirectToAccount() {
-    localStorage.setItem("expenseToRegisterPending",JSON.stringify(this.expense));
-    this._router.navigate(["/period/period-detail/"+this.period.id]);
-  }
-
-  registerOrUpdateExpense() {
-    if(this.validAmount() == false) return;
-    this.setterObjectExpense();
-    this.validateIfExistVoucherUploaded();
-  }
-
-  setterObjectExpense() {
-    this.expense.payer = this.payerSelected==''?this.owner.name:this.payerSelected;
-    this.expense.amount = this.expense.amountShow;
-    this.expense.registerPerson = this.owner;
-    this.expense.account = this.itemAccount;
-    this.expense.category = this.itemCategory;
-    this.expense.accordingType = this.itemAccording;
-    this.expense.paymentMethod = this.itemPaymentMethod;
-    this.expense.tag = this.tagListSelected;
-    this.expense.createAt = this.dateRangeCalendarSelected;
-    if(this.period == null) this.period = new PeriodModel();
-
-    this.expense.period = this.period;
-    this.expense.workspace = this.workspace;
-  }
-
-  private validateIfExistVoucherUploaded() {
-    this._loadSpinnerService.showSpinner();
-    if(this.voucherSelectedFileToStorageSave.length == 0) {
-      this.saveExpense();
-      return;
-    }
-    this.uploadImageToFirestore();
   }
 
   getAllAccording() {
@@ -420,7 +459,7 @@ export class ManageExpenseComponent implements OnInit {
         if(element.itemSelected.name == "redirectToAccount"){
           console.log(element.itemSelected.name);
           this.setterObjectExpense();
-          this.saveExpenseToLocalAndRedirectToAccount();
+          this.saveExpenseToLocalStorageAndRedirectToAccount();
         }
 
         this.itemAccount.id = element.itemSelected.id;
@@ -458,9 +497,6 @@ export class ManageExpenseComponent implements OnInit {
       case CONSTANTES.CONST_COMPONENT_USER:
         this.payerSelected = element.itemSelected.name;
         break;
-      case CONSTANTES.CONST_COMPONENT_USER:
-        this.payerSelected = element.itemSelected.name;
-        break;
       default:
         //received ONLY close order, not object
         this.show__list__items = false;
@@ -486,9 +522,6 @@ export class ManageExpenseComponent implements OnInit {
     this._userService.getAllPayersDistictToSelect(this.workspace.id).subscribe(
       response => {
         this.flagShowListOptionsSelect = true;
-        // response = response.filter(item => {
-        //   return item!= this.owner.name;
-        // });
 
         if(response.length == 0) {
           this.dataOptionsSelectExpense = new DataOptionsSelectExpense();
@@ -543,7 +576,7 @@ export class ManageExpenseComponent implements OnInit {
 
   //Uploads vouchers
   uploadImageToFirestore() {
-    this.expense.vouchers = [];
+    //this.expense.vouchers = [];
     var totalElementArray = this.voucherSelectedFileToStorageSave.length;
     var countIteration = 0;
     this.voucherSelectedFileToStorageSave.forEach(voucher => {
@@ -560,12 +593,15 @@ export class ManageExpenseComponent implements OnInit {
             voucherToSave.id = 0;
             voucherToSave.name = urlImagen!;
             this.expense.vouchers.push(voucherToSave);
-            //Save expense
+            //Save vpucher to expense DB
             if(countIteration == totalElementArray){
-              this.saveExpense();
+              this.saveVouchersExpense();
             }
           }, (e) => {
             console.log(e);
+            this._loadSpinnerService.hideSlow();
+            Swal.fire("","Se registró el gasto correctamente excepto los vouchers, actualice el registro por favor","info");
+            this._router.navigate(["/"]);
           }
         );
       }
@@ -573,9 +609,30 @@ export class ManageExpenseComponent implements OnInit {
 
   }
 
+  saveVouchersExpense() {
+    this._expenseService.updateVouchersToExpense(this.expense).subscribe(
+      response => {
+        this._loadSpinnerService.hideSlow();
+        if(this.flagReceiveNotificationParamRoute){
+          this.notificationExpense.vouchers = response.vouchers;
+          this.updateNotificationStatus(this.notificationExpense);
+          return;
+        }
+        Swal.fire("","Registro exitoso","success");
+        this._router.navigate(["/"]);
+      },
+      error => {
+        this._loadSpinnerService.hideSlow();
+        Swal.fire("","Se registró el gasto correctamente excepto los vouchers, actualice el registro por favor","info");
+        this._router.navigate(["/"]);
+      }
+    );
+  }
+
   uploadFoto(event: any) {
     var allowedExtensions = /(.jpg|.jpeg|.png|.gif)$/i;
-    if(event.target.files.length > 2) {
+    
+    if((this.vouchersListToShow.length + event.target.files.length) > 2) {
       Swal.fire("","Suba hasta 2 comprobantes como máximo.","info");
       return;
     }
@@ -601,9 +658,11 @@ export class ManageExpenseComponent implements OnInit {
     this._notificationExpenseService.updateStatusNotificationExpense(notificationRequest).subscribe(
       response => {
         console.log(response);
+        this._router.navigate(["/"]);
       },
       error => {
         console.log(error.error);
+        this._router.navigate(["/"]);
       }
     );
   }
