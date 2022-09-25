@@ -25,7 +25,7 @@ export class HeaderComponent implements OnInit {
   sendComponentParentToCalendar: string = CONSTANTES.CONST_COMPONENT_HEADER;
   flagNotificationpPopUp: boolean= false;
   flagCalendarpPopUp: boolean = false;
-  showFormRgister: boolean = false;
+  // showFormRgister: boolean = false;
   showInfoByTypeUser: boolean = false; //FALSE: EMISOR, TRUE = RECEPTOR
   
   @Output() showMenuNow: EventEmitter<boolean> = new EventEmitter();
@@ -149,7 +149,7 @@ export class HeaderComponent implements OnInit {
       return;
     }
 
-    this.showFormRgister = true;
+    // this.showFormRgister = true;
     this._router.navigate(['/expense']);
   }
 

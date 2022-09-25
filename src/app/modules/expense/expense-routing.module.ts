@@ -23,6 +23,10 @@ const routes: Routes = [
   {
     path:'expense/notification/:idNotification',
     component: ManageExpenseComponent
+  },
+  {
+    path:'expense/:idExpense',
+    component: ManageExpenseComponent
   }
   
 ];

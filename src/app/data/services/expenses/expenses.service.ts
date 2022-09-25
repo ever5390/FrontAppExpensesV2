@@ -10,16 +10,28 @@ import { map } from 'rxjs/internal/operators/map';
 })
 export class ExpensesService {
 
-  
   private URLCOMPL: string = URL_BASE_API_V1;
   private httpHeaders =  new HttpHeaders({'Content-type':'application/json'});
+
+  private _expenseToEdit: ExpenseModel | undefined;
+
+  public get expenseToEdit(): ExpenseModel {
+    if(this._expenseToEdit != null && this._expenseToEdit != undefined ) {
+      return this._expenseToEdit;
+    }
+    return new ExpenseModel();
+  }
   
   constructor(
     private _http: HttpClient
     ) { }
+
+  guardarExpenseToEdit(expenseReqToEdit: ExpenseModel) : void {
+      this._expenseToEdit = expenseReqToEdit;
+  }
     
-    getAllExpensesByWorkspaceAndDateRangePeriod(idWorkspace: number, dateBegin: string, dateEnd: string): Observable<ExpenseModel[]>  {
-      return this._http.get(`${this.URLCOMPL}/expense-workspace?idWorkspace=${idWorkspace}&dateBegin=${dateBegin}&dateEnd=${dateEnd}`)
+  getAllExpensesByWorkspaceAndDateRangePeriod(idWorkspace: number, dateBegin: string, dateEnd: string): Observable<ExpenseModel[]>  {
+    return this._http.get(`${this.URLCOMPL}/expense-workspace?idWorkspace=${idWorkspace}&dateBegin=${dateBegin}&dateEnd=${dateEnd}`)
       .pipe(
         map(response => response as ExpenseModel[])
         );

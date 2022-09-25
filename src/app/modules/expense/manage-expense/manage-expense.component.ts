@@ -61,9 +61,9 @@ export class ManageExpenseComponent implements OnInit {
   payerSelected: string ="";
   tagListSelected: Tag[] = [];
 
-  //NotificationExpense
+  //Objects from route
   notificationExpense: NotificationExpense = new NotificationExpense();
-
+  expenseToEdit: ExpenseModel = new ExpenseModel();
 
   //Account
   accountListSelected: AccountModel[] = [];
@@ -80,8 +80,8 @@ export class ManageExpenseComponent implements OnInit {
 
   @Input() show__popup: boolean = false;
   @Output() sendHiddenFormRegister: EventEmitter<boolean> = new EventEmitter();
-  @ViewChild('popup__formulario') popup__formulario: ElementRef | any;
   @ViewChild('formRegister') formRegister: ElementRef | any;
+  @ViewChild('popup__formulario') popup__formulario: ElementRef | any;
   @ViewChild('formRegisterContainerToAccountListBlock') formRegisterContainerToAccountListBlock: ElementRef | any;
 
   constructor(
@@ -125,21 +125,7 @@ export class ManageExpenseComponent implements OnInit {
         confirmButtonText: 'Si, continuar'
       }).then((result) => {
         if (result.isConfirmed) {
-          this.expense = expensePendingRegister;
-          this.itemAccording = expensePendingRegister.accordingType;
-          this.itemCategory = expensePendingRegister.category;
-          this.itemPaymentMethod = expensePendingRegister.paymentMethod;
-          this.payerSelected = expensePendingRegister.payer;
-          this.tagListSelected = expensePendingRegister.tag;
-          this.accountListSelected.forEach( account => {
-            if(account.id == expensePendingRegister.account.id) {
-              this.itemAccount = account;
-            }
-          });
-          expensePendingRegister.vouchers.forEach( item => {
-            this.vouchersListToShow.push(item.name);
-          });
-
+          this.setterExpenseReceivedFromParam(expensePendingRegister);
         } else {
           //Clear
           this._expenseService.clearExpennseRegisterFromLocalStorage();
@@ -148,19 +134,45 @@ export class ManageExpenseComponent implements OnInit {
     }
   }
 
+  private setterExpenseReceivedFromParam(expensePendingRegister: ExpenseModel) {
+    this.expense = expensePendingRegister;
+    this.itemAccording = expensePendingRegister.accordingType;
+    this.itemCategory = expensePendingRegister.category;
+    this.itemPaymentMethod = expensePendingRegister.paymentMethod;
+    this.payerSelected = expensePendingRegister.payer;
+    this.tagListSelected = expensePendingRegister.tag;
+    this.accountListSelected.forEach(account => {
+      if (account.id == expensePendingRegister.account.id) {
+        this.itemAccount = account;
+      }
+    });
+    expensePendingRegister.vouchers.forEach(item => {
+      this.vouchersListToShow.push(item.name);
+    });
+  }
+
   private validateIfNotifitionPayByParam() {
     this._rutaActiva.params.subscribe(
       (params: Params) => {
         if (params.idNotification != undefined) {
           this.notificationExpense = this._notificationExpenseService.notificationExpense;
-          if (this.notificationExpense.id == 0) {
+          if (this.notificationExpense.id == 0)
             this._router.navigate(["/"]);
-            return;
-          }
+
           this.flagReceiveNotificationParamRoute = true;
           this.textActionButton = "Realizar Pago";
           this.expense.description = `Se realiza el pago generado por ${this.notificationExpense.expenseShared.workspace.owner.name} para ${this.notificationExpense.expenseShared.category.name} de tipo ${this.notificationExpense.expenseShared.accordingType.name} que asciendió a ${this.notificationExpense.expenseShared.amountShow} soles.`;
           this.expense.amountShow = this.notificationExpense.expenseShared.accordingType.name != "COMPARTIDO" ? this.notificationExpense.expenseShared.amountShow : (parseFloat(this.notificationExpense.expenseShared.amountShow) / 2).toString();
+        }
+
+        if (params.idExpense != undefined) {
+          this.expenseToEdit = this._expenseService.expenseToEdit;
+          if (this.expenseToEdit.id == 0)
+            this._router.navigate(["/"]);
+ 
+          this.textActionButton = "Actualizar gasto";
+          this.setterExpenseReceivedFromParam(this.expenseToEdit);
+          
         }
       }
     );
