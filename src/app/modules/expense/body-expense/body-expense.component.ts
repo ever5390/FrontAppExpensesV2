@@ -1,5 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { ExpenseModel } from '@data/models/business/expense.model';
+import { SLoaderService } from '@shared/components/loaders/s-loader/service/s-loader.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -25,12 +26,14 @@ export class BodyExpenseComponent implements OnInit {
 
   constructor(
     private _renderer: Renderer2,
+    private _loadSpinnerService: SLoaderService
   ) { 
   }
 
   ngOnInit(): void {
     //console.log("HELLO BODY");
     //console.log(this.receivedListExpensesFromSkeleton);
+    this._loadSpinnerService.hideSpinner();
     this.sendListExpensesToBodyList = this.receivedListExpensesFromSkeleton;
   }
 

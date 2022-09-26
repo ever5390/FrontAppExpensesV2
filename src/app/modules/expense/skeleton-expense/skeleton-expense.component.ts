@@ -4,6 +4,7 @@ import { CONSTANTES } from '@data/constantes';
 import { OwnerModel } from '@data/models/business/owner.model';
 import { Workspace } from '@data/models/business/workspace.model';
 import { FilterExpensesModel } from '@data/models/Structures/data-object-filtering.model';
+import { SLoaderService } from '@shared/components/loaders/s-loader/service/s-loader.service';
 import { UtilService } from '@shared/services/util.service';
 import { ExpenseModel, Tag } from 'app/data/models/business/expense.model';
 import { PeriodModel } from 'app/data/models/business/period.model';
@@ -35,6 +36,7 @@ export class SkeletonExpenseComponent implements OnInit {
   constructor(
     private _expenseService: ExpensesService,
     private _rutaActiva: ActivatedRoute,
+    private _loadSpinnerService: SLoaderService,
     private _utilitariesService: UtilService
   ) {
     this.owner = JSON.parse(localStorage.getItem('lcstrg_owner')!);
@@ -89,6 +91,7 @@ export class SkeletonExpenseComponent implements OnInit {
 
   getAllExpensesByWorkspaceAndDateRangePeriod(idWrkspc: number, dateBegin: string, dateEnd: string) {
     this.showBody = false;
+    this._loadSpinnerService.showSpinner();
     this._expenseService.getAllExpensesByWorkspaceAndDateRangePeriod(idWrkspc, dateBegin, dateEnd).subscribe(
       response => {
         this.showBody = true;
