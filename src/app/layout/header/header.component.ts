@@ -56,7 +56,7 @@ export class HeaderComponent implements OnInit {
     const numberNotification  = interval(3000);
     const subscribe = numberNotification.subscribe(
       (n) => {
-          this.getNotificationRequest(numberNotification);
+          //this.getNotificationRequest(numberNotification);
           if(this._userService.isTokenExpirado()) {
             subscribe.unsubscribe()
           }
@@ -108,9 +108,12 @@ export class HeaderComponent implements OnInit {
           }
         });
 
-        if(this.notificationExpenseList.length == 0) {
-          this.flagNotificationpPopUp = false;
-        }
+        // if(this.notificationExpenseList.length == 0) {
+        //   this.flagNotificationpPopUp = false;
+        // }
+
+        if(this.notificationExpenseList.length != 0)
+          this.flagNotificationpPopUp = true;
       },
       error => {
         if(error.error.error_description != null && error.error.error_description.includes("token expired")) {
@@ -154,8 +157,7 @@ export class HeaderComponent implements OnInit {
   }
 
   showNotificationpPopUp() {
-    if(this.notificationExpenseList.length != 0)
-      this.flagNotificationpPopUp = true;
+    this.getNotificationRequest(null);
   }
 
   receivedHiddenNotificationtoHeader(orderHidden: any) {
