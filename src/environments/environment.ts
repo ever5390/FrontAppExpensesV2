@@ -17,7 +17,7 @@
 // };
 
 export const environment = {
-  production: false,
+  production: true,
   firebaseConfig : {
     apiKey: "AIzaSyB4Z0Xr3CHnicUZqg0iVoba0XqQyd8Qgsw",
     authDomain: "appexpensemanager.firebaseapp.com",
