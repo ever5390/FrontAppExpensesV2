@@ -25,7 +25,8 @@ export class ExpenseModel {
         public workspace:       Workspace = new Workspace(),
         public tag:             Tag[] = [],
         public strSearchAllJoin: string = '',
-        public strFilterParamsJoin: string = ''
+        public strFilterParamsJoin: string = '',
+        public editable: boolean = false
     ){}
 }
 

@@ -86,8 +86,12 @@
                                 <i class="fas fa-arrow-alt-square-up"></i>
                         </label>
                         <div class="container-vouchers" >
-                            <span class="st_voucher" *ngFor="let voucher of vouchersListToShow; let i = index" >
+                            <!-- <span class="st_voucher" *ngFor="let voucher of vouchersListToShow; let i = index" >
                                 <img src="{{voucher}}"  accept="image/png, image/jpeg, image/jpg"  alt="" srcset="">
+                                <i class="close-voucher fas fa-times st_delete_voucher" (click)="removeVoucherFromList(i)"></i>
+                            </span> -->
+                            <span class="st_voucher" *ngFor="let voucher of expense.vouchers; let i = index" >
+                                <img src="{{voucher.name}}"  accept="image/png, image/jpeg, image/jpg"  alt="" srcset="">
                                 <i class="close-voucher fas fa-times st_delete_voucher" (click)="removeVoucherFromList(i)"></i>
                             </span>
                         </div>
@@ -95,7 +99,7 @@
                 </div>
                
             </div>
-            <button (click)="registerOrUpdateExpense()">{{textActionButton}}</button>
+            <button (click)="registerOrUpdateExpense(expense.id)">{{textActionButton}}</button>
 
 
 

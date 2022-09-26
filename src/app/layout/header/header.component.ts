@@ -25,7 +25,7 @@ export class HeaderComponent implements OnInit {
   sendComponentParentToCalendar: string = CONSTANTES.CONST_COMPONENT_HEADER;
   flagNotificationpPopUp: boolean= false;
   flagCalendarpPopUp: boolean = false;
-  showFormRgister: boolean = false;
+  // showFormRgister: boolean = false;
   showInfoByTypeUser: boolean = false; //FALSE: EMISOR, TRUE = RECEPTOR
   
   @Output() showMenuNow: EventEmitter<boolean> = new EventEmitter();
@@ -53,10 +53,10 @@ export class HeaderComponent implements OnInit {
   }
 
   intervalNotify() {
-    const numberNotification  = interval(1000);
+    const numberNotification  = interval(3000);
     const subscribe = numberNotification.subscribe(
       (n) => {
-          this.getNotificationRequest(numberNotification);
+          //this.getNotificationRequest(numberNotification);
           if(this._userService.isTokenExpirado()) {
             subscribe.unsubscribe()
           }
@@ -108,9 +108,12 @@ export class HeaderComponent implements OnInit {
           }
         });
 
-        if(this.notificationExpenseList.length == 0) {
-          this.flagNotificationpPopUp = false;
-        }
+        // if(this.notificationExpenseList.length == 0) {
+        //   this.flagNotificationpPopUp = false;
+        // }
+
+        if(this.notificationExpenseList.length != 0)
+          this.flagNotificationpPopUp = true;
       },
       error => {
         if(error.error.error_description != null && error.error.error_description.includes("token expired")) {
@@ -149,13 +152,12 @@ export class HeaderComponent implements OnInit {
       return;
     }
 
-    this.showFormRgister = true;
+    // this.showFormRgister = true;
     this._router.navigate(['/expense']);
   }
 
   showNotificationpPopUp() {
-    if(this.notificationExpenseList.length != 0)
-      this.flagNotificationpPopUp = true;
+    this.getNotificationRequest(null);
   }
 
   receivedHiddenNotificationtoHeader(orderHidden: any) {

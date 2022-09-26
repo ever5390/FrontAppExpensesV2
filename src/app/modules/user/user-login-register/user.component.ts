@@ -31,6 +31,9 @@ export class UserComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    if(this._usuarioService.isAuthenticated()){
+        this._router.navigate(["/"]);
+    }
   }
 
   signUpOwner() {

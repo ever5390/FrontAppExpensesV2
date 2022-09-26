@@ -1,68 +1,48 @@
 <div #contentList class="st_container_list_expense" >
-    <!-- <div class="st_tag_filters d-flex px-2" >
-    </div> -->
-    <!-- <app-list-expense 
-        [receivedListExpensesToBodyList]="sendListExpensesToBodyList"
-    ></app-list-expense> -->
-
-
-    <!-- <div class="cst_container_list"> -->
-        <ng-container *ngFor="let expense of sendListExpensesToBodyList; let i = index;">
-            <div class="st_block_expense">
-                <div class="st_expense_header" [ngStyle]="{'color':(expense.accordingType.id == 3) ? '#95A5A6' : '#000'}">
-                    <label>COD: G{{expense.id}} S/ {{expense.amountShow | number : '1.2-2'}}</label>
-                    <label>{{expense.createAt | date: 'EEE dd MMM  HH:mm:ss' | uppercase}}
-                        <label (click)="deletExpense(expense)"> <i class="fal fa-trash-alt"></i></label>
-                    </label>
-                </div>
-                <div class="st_expense_body">
-                    <div class="st_body_header">
-                        <span [ngStyle]="{'background-color':(!expense.pendingPayment) ? '#47B152' : '#c9291e'}" *ngIf="!expense.pendingPayment">
-                            Pagado por {{expense.payer}}
-                            <!-- <span *ngIf="(expense.accordingType.name == 'CON REPOSICION' 
-                                        || expense.accordingType.name == 'COMPARTIDO'
-                                        || expense.accordingType.name == 'POR REGISTRAR'
-                                        || expense.accordingType.id == 7)
-                                        && expense.workspace.owner.name != expense.payer">
-                                por {{expense.payer}}
-                            </span> -->
-                        </span>
-                        <span (click)="sendUpdatePayedExpense(expense.id)" [ngStyle]="{'background-color':(expense.pendingPayment) ? '#c9291e' : '#47B152'}" *ngIf="expense.pendingPayment">
-                            Pendiente de pago<br>
-                            Payer: {{expense.payer}}
-                        </span>
-                        <!-- <span *ngIf="expense.isPendingPayment">Pendiente de pago</span> -->
-                        <span>
-                            <strong>ACCORD:</strong> {{expense.accordingType.name}}
-                        </span>
-                        <span *ngIf="expense.account!=null">
-                            <strong>ACC:</strong> {{expense.account.accountName}}
-                        </span>
-                    </div>
-                    <div class="st_body_body">
-                        {{expense.description}}
-                    </div>
-                    <div class="st_body_footer">
-                        <span><strong>CATEG:</strong> {{expense.category.name}}</span>
-                        <span><strong>PM:</strong> {{expense.paymentMethod.name}}</span>
-                    </div>
-                </div>
-                <div class="st_expense_footer">
-                    <div class="st_footer_tag">
-                        <div *ngFor="let tag of expense.tag">#{{tag.tagName}} </div>
-                    </div>
-                    <div class="st_footer_vouchers">
-                        <img (click)="showVoucherSelected(voucher.name)" *ngFor="let voucher of expense.vouchers" src="{{voucher.name}}" alt="" srcset="">
-                    </div>
+    <ng-container *ngFor="let expense of sendListExpensesToBodyList; let i = index;">
+        <div class="st_block_expense">
+            <div class="st_expense_header" [ngStyle]="{'color':(expense.accordingType.id == 3) ? '#95A5A6' : '#000'}">
+                <div>COD: G{{expense.id}} S/ {{expense.amountShow | number : '1.2-2'}}</div>
+                <div>{{expense.createAt | date: 'EEE dd MMM  HH:mm:ss' | uppercase}}
+                    <label *ngIf="!expense.editable" (click)="updateExpense(expense)"> <i class="fas fa-edit"></i></label>
+                    <label *ngIf="!expense.editable" (click)="deletExpense(expense)"> <i class="fal fa-trash-alt"></i></label>
                 </div>
             </div>
-        </ng-container>
-        
-    <!-- </div> -->
-    
-    <!-- <app-formulary-register-expense-shared #show__popup></app-formulary-register-expense-shared> -->
-    
-
+            <div class="st_expense_body">
+                <div class="st_body_header">
+                    <span [ngStyle]="{'background-color':(!expense.pendingPayment) ? '#47B152' : '#c9291e'}" *ngIf="!expense.pendingPayment">
+                        Pagado por {{expense.payer}}
+                    </span>
+                    <span (click)="sendUpdatePayedExpense(expense.id)" [ngStyle]="{'background-color':(expense.pendingPayment) ? '#c9291e' : '#47B152'}" *ngIf="expense.pendingPayment">
+                        Pendiente de pago<br>
+                        Payer: {{expense.payer}}
+                    </span>
+                    <!-- <span *ngIf="expense.isPendingPayment">Pendiente de pago</span> -->
+                    <span>
+                        <strong>ACCORD:</strong> {{expense.accordingType.name}}
+                    </span>
+                    <span *ngIf="expense.account!=null">
+                        <strong>ACC:</strong> {{expense.account.accountName}}
+                    </span>
+                </div>
+                <div class="st_body_body">
+                    {{expense.description}}
+                </div>
+                <div class="st_body_footer">
+                    <span><strong>CATEG:</strong> {{expense.category.name}}</span>
+                    <span><strong>PM:</strong> {{expense.paymentMethod.name}}</span>
+                </div>
+            </div>
+            <div class="st_expense_footer">
+                <div class="st_footer_tag">
+                    <div *ngFor="let tag of expense.tag">#{{tag.tagName}} </div>
+                </div>
+                <div class="st_footer_vouchers">
+                    <img (click)="showVoucherSelected(voucher.name)" *ngFor="let voucher of expense.vouchers" src="{{voucher.name}}" alt="" srcset="">
+                </div>
+            </div>
+        </div>
+    </ng-container>
 </div>
 
 <app-visualizador-voucher *ngIf="flagShowVoucherPopUp" 

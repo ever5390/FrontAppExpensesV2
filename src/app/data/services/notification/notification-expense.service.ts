@@ -25,9 +25,9 @@ export class NotificationExpenseService {
     private _http: HttpClient
     ) { }
     
-    guardarNotificationExpense(notificationReq: NotificationExpense) : void {
+  guardarNotificationExpense(notificationReq: NotificationExpense) : void {
       this._notificationExpense = notificationReq;
-    }
+  }
   
   getAllNotificationByTypeUserAndUserId(idUser: number) : Observable<NotificationExpense[]> {
     return this._http.get<NotificationExpense[]>(`${this.URLCOMPL}/notification/owner?idUser=${idUser}`);

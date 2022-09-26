@@ -41,8 +41,8 @@ export class CategoryService {
     );
   }
 
-  delete(id: number) : Observable<any> {
-    return this._http.delete<CategoryModel[]>(`${this.URLCOMPL}/category/${id}`);
+  delete(periodId: number, categoryId: number ) : Observable<any> {
+    return this._http.delete<CategoryModel[]>(`${this.URLCOMPL}/period/${periodId}/category/${categoryId}`);
   }
 
 

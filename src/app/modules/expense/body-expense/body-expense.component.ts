@@ -1,6 +1,8 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { ExpenseModel } from '@data/models/business/expense.model';
 import { SLoaderService } from '@shared/components/loaders/s-loader/service/s-loader.service';
+import { ExpensesService } from '@data/services/expenses/expenses.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -26,7 +28,9 @@ export class BodyExpenseComponent implements OnInit {
 
   constructor(
     private _renderer: Renderer2,
-    private _loadSpinnerService: SLoaderService
+    private _loadSpinnerService: SLoaderService,
+    private _expenseService: ExpensesService,
+    private _router: Router
   ) { 
   }
 
@@ -35,6 +39,7 @@ export class BodyExpenseComponent implements OnInit {
     //console.log(this.receivedListExpensesFromSkeleton);
     this._loadSpinnerService.hideSpinner();
     this.sendListExpensesToBodyList = this.receivedListExpensesFromSkeleton;
+    console.log(this.sendListExpensesToBodyList);
   }
 
   sendUpdatePayedExpense(idExpenseUpdate: number) {
@@ -72,6 +77,11 @@ export class BodyExpenseComponent implements OnInit {
       }
     })
 
+  }
+
+  updateExpense(expenseToEdit: ExpenseModel) {
+    this._expenseService.guardarExpenseToEdit(expenseToEdit);
+    this._router.navigate(["/expense/" + expenseToEdit.id]);
   }
 
   receivedResponseFromVoucherShowToParent(event: any) {

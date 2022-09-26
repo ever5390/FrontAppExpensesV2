@@ -102,6 +102,9 @@ export class SkeletonExpenseComponent implements OnInit {
           if(element.payer == "") {
             element.payer = element.registerPerson.name
           };
+          if(element.pendingPayment == false && element.payer != element.registerPerson.name){
+            element.editable = true;
+          }
           this.totalGastadoSend = this.totalGastadoSend + parseFloat(element.amount);
         });
 
