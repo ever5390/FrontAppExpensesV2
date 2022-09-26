@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Workspace } from '@data/models/business/workspace.model';
+import { SLoaderService } from '@shared/components/loaders/s-loader/service/s-loader.service';
 import { PeriodModel } from 'app/data/models/business/period.model';
 import { PeriodDetailHeader } from 'app/data/models/business/periodDetailHeader.model';
 import { PeriodService } from 'app/data/services/period/period.service';
@@ -23,7 +24,8 @@ export class ListPeriodComponent implements OnInit {
   constructor(
     private _periodService: PeriodService,
     private _route: Router,
-    private _renderer: Renderer2
+    private _renderer: Renderer2,
+    private _loadSpinnerService: SLoaderService
   ) {}
 
   ngAfterViewInit() {
@@ -32,6 +34,8 @@ export class ListPeriodComponent implements OnInit {
 
   ngOnInit(): void {
     this.workspace = JSON.parse(localStorage.getItem("lcstrg_worskpace")!);
+    this._loadSpinnerService.showSpinner();
+
     this.getAllDataCardPeriod();
   }
 
@@ -60,10 +64,12 @@ export class ListPeriodComponent implements OnInit {
           this.flagShowBtn = false;
         }
         this.getSizeBloclListPeriod();
+        this._loadSpinnerService.hideSpinner();
       },
       error => {
           console.log(error);
           Swal.fire("","Error al obtener la lista de periodos","error");
+          this._loadSpinnerService.hideSpinner();
           this._route.navigate(["/"]);
       }
     );
