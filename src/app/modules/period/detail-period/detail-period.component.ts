@@ -1,5 +1,7 @@
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { SLoaderService } from '@shared/components/loaders/s-loader/service/s-loader.service';
 import { AccountModel } from 'app/data/models/business/account.model';
 import { PeriodDetailHeader } from 'app/data/models/business/periodDetailHeader.model';
 import { AccountService } from 'app/data/services/account/account.service';
@@ -29,6 +31,7 @@ export class DetailPeriodComponent implements OnInit {
     private _rutaActiva: ActivatedRoute,
     private _renderer: Renderer2,
     private _router: Router,
+    private _loadSevice: SLoaderService,
     private _periodService: PeriodService  ) {
   }
 
@@ -37,6 +40,7 @@ export class DetailPeriodComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this._loadSevice.showSpinner();
     this._rutaActiva.params.subscribe(
       (params: Params) => {
         if(params.idPeriod != undefined) {
@@ -67,6 +71,7 @@ export class DetailPeriodComponent implements OnInit {
       },
       error => {
           console.log(error);
+          this._loadSevice.hideSpinner();
           Swal.fire("","No se obtuvo datos del periodo buscado","error");
           this._router.navigate(['/period']);
       }
@@ -84,6 +89,7 @@ export class DetailPeriodComponent implements OnInit {
       },
       error => {
         console.log(error);
+        this._loadSevice.hideSpinner();
       }
     );
   }
