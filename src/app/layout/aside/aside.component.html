@@ -1,15 +1,15 @@
 <div id="aside" #aside class="st_aside_container" [ngClass]="active_menu === true?'st_aside_show':'st_aside_container'">
     <div  class="st_aside">
         <div class="st_aside_header">
-            <div class="d-flex justify-content-start align-items-center">
-                <img width="30" src="{{owner.image}}" alt="img_prof" srcset="">
-                <span class="px-2">{{owner.username}}</span>
+            <div class="st_aside_header_profile">
+                <div class="d-flex justify-content-start align-items-center">
+                    <img width="30" src="{{owner.image}}" alt="img_prof" srcset="">
+                    <span class="px-2">{{owner.username}}</span>
+                </div>
+                <i class="far fa-times" (click)="this.active_menu=false;this.hiddenMenuNow.emit(false);"></i>
             </div>
-            <i class="far fa-times" (click)="this.active_menu=false;this.hiddenMenuNow.emit(false);"></i>
-        </div>
-        <div class="st_aside_body">
-            <div class="st_body_header">
-                <div class="st_aside_dropdown_wrkspc d-flex justify-content-between align-items-center" (click)="redirectRoutes('workspace')">
+            <div class="st_aside_header_options">
+                <div class="st_aside_option_menu st_aside_dropdown_wrkspc d-flex justify-content-between align-items-center" (click)="redirectRoutes('workspace')">
                     <span>{{wrkspc.name}}</span>
                     <i class="fas fa-sort"></i>
                 </div>
@@ -17,11 +17,9 @@
                     <i class="far fa-calendar-day"></i>
                     <span class="px-2">Periodos</span>
                 </div>
-                <!-- <div *ngIf="flagShowOptionPeriod" class="st_aside_option_menu d-flex justify-content-start align-items-center" (click)="redirectRoutes('period')">
-                    <i class="far fa-calendar-day"></i>
-                    <span class="px-2">Periodos</span>
-                </div> -->
             </div>
+        </div>
+        <div class="st_aside_body">
             <div class="st_body_footer">
                 <div class="st_aside_option_menu d-flex justify-content-start align-items-center" (click)="redirectRoutes('according')">
                     <i class="fas fa-handshake"></i>
@@ -36,10 +34,10 @@
                     <span class="px-2" >Medio de pago</span>
                 </div>
             </div>
+            <div class="st_aside_body_footer">
+                <span (click)="loggout()" class="px-2"><i class="far fa-sign-out"></i> Cerrar sessión</span>
+            </div>
         </div>
-        <div class="st_aside_footer">
-            <i class="far fa-sign-out"></i>
-            <span (click)="loggout()" class="px-2">Cerrar sessión</span>
-        </div>
+
     </div>
 </div>

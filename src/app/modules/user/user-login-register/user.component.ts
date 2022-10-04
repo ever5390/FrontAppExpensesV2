@@ -3,6 +3,7 @@ import { Route, Router } from '@angular/router';
 import { CONSTANTES } from '@data/constantes';
 import { OwnerModel } from '@data/models/business/owner.model';
 import { UserService } from '@data/services/user/user.service';
+import { SLoaderService } from '@shared/components/loaders/s-loader/service/s-loader.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -27,6 +28,7 @@ export class UserComponent implements OnInit {
    
   constructor(
     private _usuarioService: UserService,
+    private _sloader: SLoaderService,
     private _router: Router
   ) { }
 
@@ -56,7 +58,7 @@ export class UserComponent implements OnInit {
   }
 
   loginOwner() : void{
-
+    this._sloader.showSpinner();
     if(this.validateCamposLogin() == false)
         return;
 
@@ -65,12 +67,13 @@ export class UserComponent implements OnInit {
                 console.log(response);
                 this._usuarioService.guardarUsuario(response.access_token);
                 this._usuarioService.guardarToken(response.access_token);
-
+                this._sloader.hideSlow();
                 let usuario = this._usuarioService.usuario;
                 Swal.fire("Login",`Hola ${usuario.username}, has iniciado sessión con éxito`,"success")
                 this._router.navigate(['/']);                
             }, err => {
                 Swal.fire("Error Login",err.message,"error")
+                this._sloader.hideSlow();
                 console.log(err);
                 if(err.status = 400) {
                 

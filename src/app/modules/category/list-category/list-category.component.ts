@@ -53,6 +53,7 @@ export class ListCategoryComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this._loadSpinnerService.showSpinner();
     this.owner = JSON.parse(localStorage.getItem('lcstrg_owner')!);
     this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
     this.getAllCategories();
