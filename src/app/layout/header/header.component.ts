@@ -37,35 +37,28 @@ export class HeaderComponent implements OnInit {
     private _notificationExpenseService: NotificationExpenseService
   ) {
     this.owner = JSON.parse(localStorage.getItem("lcstrg_owner")!);
-    
-    this._utilService.receivingCountNotifications().subscribe(
-      response => {
-        this.countNotification = response;
-      },
-      error => {
-        console.log(error.error);
-      }
-    );
-   }
+  }
 
   ngOnInit(): void {
     this.intervalNotify();
+    this.getNotificationRequest();
   }
 
   intervalNotify() {
-    const numberNotification  = interval(3000);
+    const numberNotification  = interval(2000);
     const subscribe = numberNotification.subscribe(
       (n) => {
           //this.getNotificationRequest(numberNotification);
           if(this._userService.isTokenExpirado()) {
             subscribe.unsubscribe()
+            this._router.navigate(["/login"]);
           }
       }
     );
   
   }
 
-  getNotificationRequest(numberNotification: any) {
+  getNotificationRequest() {
     this._notificationExpenseService.getAllNotificationByTypeUserAndUserId(this.owner.id).subscribe(
       response => {
         if(response != null) {
@@ -108,10 +101,6 @@ export class HeaderComponent implements OnInit {
           }
         });
 
-        // if(this.notificationExpenseList.length == 0) {
-        //   this.flagNotificationpPopUp = false;
-        // }
-
         if(this.notificationExpenseList.length != 0)
           this.flagNotificationpPopUp = true;
       },
@@ -121,7 +110,7 @@ export class HeaderComponent implements OnInit {
           this._userService.logoutSession();
           this._router.navigate(["/login"]);
         }
-        
+        console.log(error.error);
       }
     );
 
@@ -152,12 +141,11 @@ export class HeaderComponent implements OnInit {
       return;
     }
 
-    // this.showFormRgister = true;
     this._router.navigate(['/expense']);
   }
 
   showNotificationpPopUp() {
-    this.getNotificationRequest(null);
+    this.getNotificationRequest();
   }
 
   receivedHiddenNotificationtoHeader(orderHidden: any) {
