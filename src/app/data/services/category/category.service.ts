@@ -4,7 +4,7 @@ import { URL_BASE_API_V1, URL_BASE_HOST } from 'app/config/global.url';
 import { CategoryModel } from 'app/data/models/business/category.model';
 import { GroupModel } from 'app/data/models/business/group.model';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/internal/operators/map';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'

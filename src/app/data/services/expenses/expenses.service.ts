@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { URL_BASE_API_V1 } from 'app/config/global.url';
 import { ExpenseModel, Tag } from 'app/data/models/business/expense.model';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/internal/operators/map';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -63,6 +63,40 @@ export class ExpensesService {
   
   clearExpennseRegisterFromLocalStorage() {
     localStorage.removeItem("expenseToRegisterPending");
+  }
+
+  saveExpenseToLocalStorage(expenseToSaveLocalStorage: ExpenseModel) {
+    let willBeSaveExpense: boolean = false;  
+    if(expenseToSaveLocalStorage.amountShow != '') {
+      willBeSaveExpense = true;
+    }
+    if(expenseToSaveLocalStorage.description != '') {
+      willBeSaveExpense = true;
+    }
+    if(expenseToSaveLocalStorage.category.name != '') {
+      willBeSaveExpense = true;
+    }
+    if(expenseToSaveLocalStorage.paymentMethod.name != '') {
+      willBeSaveExpense = true;
+    }
+    if(expenseToSaveLocalStorage.accordingType.name != '') {
+      willBeSaveExpense = true;
+    }
+    if(expenseToSaveLocalStorage.tag.length > 0) {
+      willBeSaveExpense = true;
+    }
+    if(expenseToSaveLocalStorage.account.accountName != '') {
+      willBeSaveExpense = true;
+    }
+    if(expenseToSaveLocalStorage.vouchers.length > 0 ) {
+      willBeSaveExpense = true;
+    }
+    if(willBeSaveExpense == false) {
+      this.clearExpennseRegisterFromLocalStorage();
+      return;
+    }
+
+    localStorage.setItem("expenseToRegisterPending",JSON.stringify(expenseToSaveLocalStorage));
   }
   
 }

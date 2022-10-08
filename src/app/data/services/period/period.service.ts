@@ -6,7 +6,7 @@ import { URL_BASE_API_V1, URL_BASE_HOST } from 'app/config/global.url';
 import { PeriodModel } from 'app/data/models/business/period.model';
 import { PeriodDetailHeader } from 'app/data/models/business/periodDetailHeader.model';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/internal/operators/map';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'

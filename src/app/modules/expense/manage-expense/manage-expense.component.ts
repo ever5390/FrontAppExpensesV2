@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, OnDestroy, Output, Renderer2, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { CONSTANTES } from '@data/constantes';
 import { AccountModel } from '@data/models/business/account.model';
@@ -28,7 +28,7 @@ import Swal from 'sweetalert2';
   templateUrl: './manage-expense.component.html',
   styleUrls: ['./manage-expense.component.css']
 })
-export class ManageExpenseComponent implements OnInit {
+export class ManageExpenseComponent implements OnInit, OnDestroy {
 
   owner : OwnerModel = new OwnerModel();
 
@@ -102,7 +102,12 @@ export class ManageExpenseComponent implements OnInit {
     this.workspace = JSON.parse(localStorage.getItem("lcstrg_worskpace")!);
     this.owner = this.workspace.owner;
     this.identifyEventClickOutWindow();
-   }
+  }
+
+  ngOnDestroy(): void {
+    this.setterObjectExpense();
+    this._expenseService.saveExpenseToLocalStorage(this.expense);
+  }
 
   ngOnInit(): void {
     this.getAllAccording();
@@ -114,7 +119,7 @@ export class ManageExpenseComponent implements OnInit {
   validateIfExistExpensePendingRegister() {
     let expensePendingRegister : ExpenseModel = new ExpenseModel();
     expensePendingRegister = JSON.parse(localStorage.getItem("expenseToRegisterPending")!);
-    if(expensePendingRegister != null && expensePendingRegister.amountShow != '') {
+    if(expensePendingRegister != null) {
       Swal.fire({
         title: '',
         text: "Tienes un gasto almacenado en memoria, ¿Deseas registrarlo?",
@@ -189,7 +194,7 @@ export class ManageExpenseComponent implements OnInit {
       this.expense.vouchers.push(new Voucher(0, item));
     });
 
-    localStorage.setItem("expenseToRegisterPending",JSON.stringify(this.expense));
+    this._expenseService.saveExpenseToLocalStorage(this.expense);
     this._router.navigate(["/period/period-detail/"+this.period.id]);
   }
 
@@ -685,4 +690,5 @@ export class ManageExpenseComponent implements OnInit {
       }
     });
   }
+
 }

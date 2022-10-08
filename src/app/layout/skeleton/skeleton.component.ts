@@ -41,7 +41,7 @@ export class SkeletonComponent implements OnInit {
     if(!this._usuarioService.isAuthenticated()) {
       this._router.navigate(['/login']);
       return;
-    } 
+    }
     this.getAllWorkspaceByOwnerId();
   }
 
