@@ -46,7 +46,6 @@ export class SkeletonExpenseComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log("Hello skeleton expense");
     this.validateParamsByPeriod();
   }
 
@@ -209,7 +208,6 @@ export class SkeletonExpenseComponent implements OnInit {
           }
           
         });
-        console.log(this.listShowExpenses);
 
         this.sendListExpensesToBody =  this.listShowExpenses;
 

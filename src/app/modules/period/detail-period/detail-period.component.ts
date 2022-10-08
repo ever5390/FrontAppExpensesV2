@@ -82,7 +82,6 @@ export class DetailPeriodComponent implements OnInit {
   getAllAccountByPeriodSelected(idPeriodReceived: number) {
     this._accountService.getListAccountByIdPeriod(idPeriodReceived).subscribe(
       response => {
-        console.log(response);
         this.accountListSend = response;
         this.flagShowBody = true;
         this.validateShowBlockAccounts();

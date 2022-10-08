@@ -118,7 +118,6 @@ export class AccountComponent implements OnInit {
       case CONSTANTES.CONST_CUENTAS:
         this.objectToFormShared.name = this.dataStructureReceived.object.accountName;
         this.objectToFormShared.monto = this.dataStructureReceived.object.balance;
-        console.log(this.dataStructureReceived.object);
         if(this.dataStructureReceived.object.id != 0){
           this.objectToFormShared.inputDisabled = this.dataStructureReceived.object.statusAccount.toString()=='PROCESS'?true:false;
         }
@@ -181,8 +180,6 @@ export class AccountComponent implements OnInit {
 
   private redirectToActionsAccount() {
     if (this.dataStructureReceived.object.id == 0) {
-      console.log("accountToSave");
-      console.log(this.dataStructureReceived.object);
       this.registerAccount(this.dataStructureReceived.object);
     } else {
       this.updateAccount(this.dataStructureReceived.object);
@@ -220,12 +217,8 @@ export class AccountComponent implements OnInit {
   }
 
   updateAccount(accountToSave: AccountModel) {
-    console.log("accountToSave");
-    console.log(accountToSave);
     this._accountService.updateAccount(accountToSave).subscribe(
       (response :any)=> {
-        console.log("accountToSave");
-        console.log(response);
         Swal.fire(response.title,response.message, response.status);
         this.responseToFatherComponent.emit(this.dataStructureReceived);
       },
@@ -251,7 +244,6 @@ export class AccountComponent implements OnInit {
       return category.active === true
     });
 
-    console.log(this.categoriesChecked);
   }
 
   delete() {
@@ -301,7 +293,6 @@ export class AccountComponent implements OnInit {
       Swal.fire("Alerta","El campo Monto se encuentra vacío","info");
       return false;
     }
-    console.log(Number(this.objectToFormShared.monto));
     if(isNaN(Number(this.objectToFormShared.monto))) {
       Swal.fire("Alerta","El campo Monto solo acepta números mayores a cero","info");
       return false;
@@ -327,18 +318,15 @@ export class AccountComponent implements OnInit {
   }
 
   receivedItemSelectedaFromPopUp(itemReceived: any) {
-    console.log(itemReceived);
     this.objectToFormShared.origen.id = itemReceived.itemSelected.id;
     this.objectToFormShared.origen.accountName = itemReceived.itemSelected.name;
     this.objectToFormShared.origen.balanceFlow = itemReceived.itemSelected.disponible;
-    console.log(this.objectToFormShared.origen);
     this.flagShowListOptionsSelect = false;
   }
 
   getAllCategories() {
     this._categoryService.getAllCategories(this.owner.id).subscribe(
       response => {
-        console.log(response);
         this.listaCategories = response.reverse();
         this.showCategoriesActivesByAccountAndPendings();
         this._loadSpinnerService.hideSpinner();
@@ -420,7 +408,6 @@ export class AccountComponent implements OnInit {
         return item.name.toUpperCase().includes(searchText.toUpperCase()) 
           }
         );
-        console.log(this.textSearch);
         if(this.textSearch != '' && this.listaCategories.length == 0) {
           this.showBtnAddItem = true;
         }
@@ -449,7 +436,6 @@ export class AccountComponent implements OnInit {
       response=> {
         this.textSaveCategory = "categoría creada!";
         this.textSearch = "";
-        console.log("Éxito al crear la categoría nueva");
         this.getAllCategories();
       },
       error => {

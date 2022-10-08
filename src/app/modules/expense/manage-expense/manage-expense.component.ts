@@ -219,12 +219,10 @@ export class ManageExpenseComponent implements OnInit {
     //vouchers
     if(this.expense.vouchers.length == 0) return;
     this.vouchersBckp = this.expense.vouchers;
-    console.log(this.vouchersBckp);
     this.expense.vouchers = this.vouchersBckp.filter(item => item.id != 0);
   }
 
   updateExpenseObject() {
-    console.log("Editar");
     this._loadSpinnerService.showSpinner();
     this._expenseService.updateObjectExpense(this.expense).subscribe(
       response => {
@@ -269,7 +267,6 @@ export class ManageExpenseComponent implements OnInit {
   }
 
   saveExpense() {
-    console.log(this.expense);
     this._loadSpinnerService.showSpinner();
     this._expenseService.create(this.expense).subscribe(
       response => {
@@ -340,7 +337,6 @@ export class ManageExpenseComponent implements OnInit {
     this._accountService.getListAccountByIdPeriod(idPeriodReceived).subscribe(
       response => {
         this.accountListSelected = response.filter( account => account.statusAccount.toString() == 'PROCESS');
-        console.log(this.accountListSelected);
 
         if(response.length > 0 && this.accountListSelected.length == 0) {
           Swal.fire("","Tiene cuentas pendientes por confirmar, previo a registrar algún gasto","info");
@@ -467,7 +463,6 @@ export class ManageExpenseComponent implements OnInit {
         break;
       case CONSTANTES.CONST_COMPONENT_CUENTAS:
         if(element.itemSelected.name == "redirectToAccount"){
-          console.log(element.itemSelected.name);
           this.setterObjectExpense();
           this.saveExpenseToLocalStorageAndRedirectToAccount();
           return;
@@ -593,7 +588,6 @@ export class ManageExpenseComponent implements OnInit {
     var countIteration = 0;
 
     voucherNews.forEach(voucher => {
-      console.log("init foreach");
       let imgBase64 = voucher.name;
       this._storageService.uploadImage( "IMG_" + Date.now(), imgBase64,
                             "expenses"+ "/"+ this.owner.username)
@@ -603,7 +597,6 @@ export class ManageExpenseComponent implements OnInit {
           let voucherToSave = new Voucher();
           voucherToSave.name = urlImagen!;
           vouchersNewUploadedStorage.push(voucherToSave);
-          console.log(countIteration);
           if(countIteration == totalElementArray){
             this.expense.vouchers = vouchersNewUploadedStorage.concat(vouchersOrigins);
             this.saveVouchersExpense();
@@ -611,7 +604,6 @@ export class ManageExpenseComponent implements OnInit {
         }, (e) => {
           countIteration++;
           this._loadSpinnerService.hideSlow();
-          console.log("No se subió imagen a la nube: " + e);
           if(countIteration == totalElementArray){
             this._router.navigate(["/"]);
           }
@@ -628,7 +620,6 @@ export class ManageExpenseComponent implements OnInit {
   }
 
   saveVouchersExpense() {
-    console.log(this.expense.vouchers);
     this._expenseService.updateVouchersToExpense(this.expense).subscribe(
       response => {
         this._loadSpinnerService.hideSlow();

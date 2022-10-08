@@ -161,7 +161,6 @@ export class HeaderComponent implements OnInit {
   }
 
   receivedHiddenNotificationtoHeader(orderHidden: any) {
-    console.log("RECEIVED NOTIF: " + orderHidden );
     this.flagNotificationpPopUp = false;
   }
 

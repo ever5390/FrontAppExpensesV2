@@ -30,7 +30,6 @@ export class FilterByItemSharedComponent implements OnInit {
   }
 
   translateHiddenMenuFilterSecundary() {
-    console.log(this.listResumens);
     this.active_menu = false;
     setTimeout(()=> {
       this.reditectToMenu.emit(false);
@@ -66,7 +65,6 @@ export class FilterByItemSharedComponent implements OnInit {
   }
 
   itemResumeSelected(itemResume: any) {
-    console.log("intemSend");
     this._utilService.sendItemResumeSelected(itemResume);
     return;
   }

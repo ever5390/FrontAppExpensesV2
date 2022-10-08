@@ -101,7 +101,6 @@ export class ListNotificationComponent implements OnInit {
     this._notificationExpenseService.updateStatusNotificationExpense(notificationSelected).subscribe(
       response => {
 
-        console.log("OK update notification");
         if(this.orderTypeUpdate == 1 || this.orderTypeUpdate == 3){
           let dataSend:any = [];
           dataSend.startDate = this.period.startDate;

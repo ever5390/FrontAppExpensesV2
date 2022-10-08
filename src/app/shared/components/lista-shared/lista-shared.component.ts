@@ -48,9 +48,7 @@ export class ListaSharedComponent implements OnInit {
 
     this.hiddenButtonAddItemIfFromAccording();
     this.dataStructureList = this.dataStructureListReceived;
-    console.log(this.dataStructureListReceived.lista);
     this.listaShared = this.dataStructureList.lista;
-    console.log(this.listaShared);
     this.searchActivateFunction();
     
   }

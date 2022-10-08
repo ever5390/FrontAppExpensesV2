@@ -43,7 +43,6 @@ export class ListPeriodComponent implements OnInit {
     this.period.workSpace = this.workspace;
     this._periodService.savePeriod(this.period).subscribe(
       response => {
-        console.log(response);
         this._periodService.saveToLocalStorage(response.object);
         Swal.fire("Éxito","Se inicializó el periodo correctamente","success");
         this._route.navigate(["/period/period-detail/"+response.object.id]);
@@ -84,7 +83,6 @@ export class ListPeriodComponent implements OnInit {
     setTimeout(() => {
       let windowHeight = window.innerHeight;
       let heightForm = this.idFormShared.nativeElement.clientHeight;
-      console.log(windowHeight + " -- " + heightForm);
       if(heightForm > (windowHeight-20)){
         this._renderer.setStyle(this.idFormShared.nativeElement,"height",(windowHeight*0.8)+"px");
         this._renderer.setStyle(this.idFormShared.nativeElement,"overflow-y","scroll");

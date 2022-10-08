@@ -63,7 +63,6 @@ export class ListCategoryComponent implements OnInit {
   getAllGroups(objectFromListToForm:any) {
     this._categoryService.getAllGroups().subscribe(
       response => {
-        console.log(response);
         this.seterDataStructureTosendForm(objectFromListToForm, response);
       },
       error => {

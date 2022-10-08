@@ -53,9 +53,6 @@ export class ListAccountsSharedComponent implements OnInit {
   }
 
   catchWithSetTime() {
-    //this.dataOptionsSelectExpenseList = [];
-    //this.dataOptionsSelectExpenseList = this.dataOptionsSelectExpenseListReceived;
-    //console.log(this.dataOptionsSelectExpenseList);
     setTimeout(() => {
       this.dataOptionsSelectExpenseList = this.dataOptionsSelectExpenseListReceived;
       this.dataOptionsSelectExpenseList.forEach(element => {
@@ -92,7 +89,6 @@ export class ListAccountsSharedComponent implements OnInit {
           return item.name.toUpperCase().includes(searchText.toUpperCase()) 
             }
           );
-          console.log(this.textSearch);
           if(this.textSearch != '' && this.dataOptionsSelectExpenseList.length == 0) {
             this.showBtnAddItem = true;
           }
@@ -123,9 +119,7 @@ export class ListAccountsSharedComponent implements OnInit {
   backToEmitAccount() {
     this.dataSendToExpenseManager.itemSelected = new DataOptionsSelectExpense();
     this.dataSendToExpenseManager.component = this.componenteReceivedToBackWithoutSelect;
-    console.log(this.dataSendToExpenseManager);
     this.sendEmittAccountSelected.emit(this.dataSendToExpenseManager);
-    //this.flagShowComponentReceived = false;
   }
 
   redirectToAccount() {

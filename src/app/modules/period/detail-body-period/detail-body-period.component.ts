@@ -131,7 +131,6 @@ export class DetailBodyPeriodComponent implements OnInit {
 
     //Caso No existe ParentInitial
     if(this.accountParentInit.id == 0) {
-      console.log("No existen cuentas para este periodo, agregue cuentas...");
       return;
     }
 

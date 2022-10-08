@@ -49,7 +49,6 @@ export class SkeletonComponent implements OnInit {
     
     this._workspaceService.getAllWorkspaceByOwnerId(this.owner.id).subscribe(
       response => {
-        console.log("all");
         this.wrkspc = response.filter( item => item.active == true)[0];
         localStorage.setItem("lcstrg_worskpace", JSON.stringify(this.wrkspc));
         this.getAllPeriodsByWorskpaceId();

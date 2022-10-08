@@ -489,8 +489,7 @@ export class CalendarComponent implements OnInit {
         }
       }
     }
-    console.log(this.receivedComponentParent);
-    console.log(this.dateSend);    
+ 
     this.sendResponse(this.dateSend);
   }
 
@@ -545,9 +544,6 @@ export class CalendarComponent implements OnInit {
   }
 
   private sendResponse(dataSend: any) {    
-    console.log("CALENDAR SEND"); 
-    // dataSend.startDate =   dataSend.startDate.toString();
-    // dataSend.finalDate =   dataSend.finalDate.toString();
     this.sendResponseFromCalendarToParent.emit({
       "component": CONSTANTES.CONST_COMPONENT_CALENDAR,
       "dateRange": dataSend
@@ -555,7 +551,6 @@ export class CalendarComponent implements OnInit {
   }
 
   addHourAndMinutes(order: string) {
-    console.log(order + "--" + this.hour);
   }
 
   getDateWithMinusDay(monthDiscount: number, dayDiscount: number ): Date {

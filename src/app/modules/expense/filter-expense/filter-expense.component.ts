@@ -143,7 +143,6 @@ export class FilterExpenseComponent implements OnInit {
   listShowExpenses: ExpenseModel[] = [];
   listExpensesToBodyBackup: ExpenseModel[] = [];
   receivingDataFromChildFilter(response: any) {
-     console.log("sdsdsd");
     let listActive = response.filter( (itemActive: { active: boolean; }) => itemActive.active === true);
       
     this.showBody = false;
@@ -165,7 +164,6 @@ export class FilterExpenseComponent implements OnInit {
       }
       
     });
-    console.log(this.listShowExpenses);
 
     this.receivedListExpensesFromSearching =  this.listShowExpenses;
 

@@ -46,7 +46,6 @@ export class UserComponent implements OnInit {
     this._usuarioService.create(this.usuario).subscribe(
         response => {
           Swal.fire(response.title, response.message, response.status);
-          console.log(response);
           this.flagIsLoginAction = true;
           this._router.navigate(['/']);
         }, err => {
@@ -64,7 +63,6 @@ export class UserComponent implements OnInit {
 
     this._usuarioService.login(this.usuario).subscribe(
         response => {
-                console.log(response);
                 this._usuarioService.guardarUsuario(response.access_token);
                 this._usuarioService.guardarToken(response.access_token);
                 this._sloader.hideSlow();
