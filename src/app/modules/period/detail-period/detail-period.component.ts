@@ -1,6 +1,7 @@
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { PeriodModel } from '@data/models/business/period.model';
 import { SLoaderService } from '@shared/components/loaders/s-loader/service/s-loader.service';
 import { AccountModel } from 'app/data/models/business/account.model';
 import { PeriodDetailHeader } from 'app/data/models/business/periodDetailHeader.model';
@@ -23,6 +24,7 @@ export class DetailPeriodComponent implements OnInit {
   accountListSend: AccountModel[] = [];
 
   idPeriodReceivedFromListPeriod: string = "0";
+  period: PeriodModel = new PeriodModel();
 
   @ViewChild('idPeriod') idPeriod: ElementRef | any;
   
@@ -33,6 +35,7 @@ export class DetailPeriodComponent implements OnInit {
     private _router: Router,
     private _loadSevice: SLoaderService,
     private _periodService: PeriodService  ) {
+      this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
   }
 
   ngAfterViewInit() {
@@ -70,7 +73,6 @@ export class DetailPeriodComponent implements OnInit {
         this.getAllAccountByPeriodSelected(this.periodDetailHeaderSend.period.id);
       },
       error => {
-          console.log(error);
           this._loadSevice.hideSpinner();
           Swal.fire("","No se obtuvo datos del periodo buscado","error");
           this._router.navigate(['/period']);
@@ -93,8 +95,8 @@ export class DetailPeriodComponent implements OnInit {
     );
   }
 
-  receivedUpdateAmountInitialHeader(object: any) {
-    this.getAllDataCardPeriod(object.period.id);
+  receivedUpdateAmountInitialHeader() {
+    this.getAllDataCardPeriod(this.period.id);
   }
 
   getSizeBloclListPeriod() {

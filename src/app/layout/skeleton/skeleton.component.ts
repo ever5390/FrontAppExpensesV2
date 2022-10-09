@@ -30,7 +30,6 @@ export class SkeletonComponent implements OnInit {
   constructor(
     private _router: Router,
     private _usuarioService: UserService,
-    private _rutaActiva: ActivatedRoute,
     private _periodService: PeriodService,
     private _workspaceService: WorkspacesService
   ) { 
@@ -54,7 +53,6 @@ export class SkeletonComponent implements OnInit {
         this.getAllPeriodsByWorskpaceId();
 
       }, error => {
-        console.log(error);
       }
     );
   }
@@ -76,7 +74,6 @@ export class SkeletonComponent implements OnInit {
         
       },
       error => {
-          console.log(error);
           Swal.fire("","Error al obtener la lista de periodos","error");
       }
     );
@@ -132,7 +129,6 @@ export class SkeletonComponent implements OnInit {
         this._router.navigate(["period/period-list"]);
       }, 
       error => {
-        console.log(error);
         if(error.error.status == "info"){
           Swal.fire(error.error.title, error.error.message,error.error.status);
           this._router.navigate(["period/period-detail/"+this.period.id]);

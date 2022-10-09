@@ -9,7 +9,6 @@ import { UtilService } from '@shared/services/util.service';
 import { ExpenseModel, Tag } from 'app/data/models/business/expense.model';
 import { PeriodModel } from 'app/data/models/business/period.model';
 import { ExpensesService } from 'app/data/services/expenses/expenses.service';
-import { PeriodService } from 'app/data/services/period/period.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -93,6 +92,7 @@ export class SkeletonExpenseComponent implements OnInit {
     this._loadSpinnerService.showSpinner();
     this._expenseService.getAllExpensesByWorkspaceAndDateRangePeriod(idWrkspc, dateBegin, dateEnd).subscribe(
       response => {
+        this._loadSpinnerService.hideSpinner();
         this.showBody = true;
         this.sendListExpensesToBody = response;
         this.listExpensesToBody = response;

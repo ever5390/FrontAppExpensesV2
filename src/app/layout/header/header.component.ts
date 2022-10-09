@@ -41,14 +41,13 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit(): void {
     this.intervalNotify();
-    this.getNotificationRequest();
+    this.getNotificationRequest(false);
   }
 
   intervalNotify() {
     const numberNotification  = interval(2000);
     const subscribe = numberNotification.subscribe(
       (n) => {
-          //this.getNotificationRequest(numberNotification);
           if(this._userService.isTokenExpirado()) {
             subscribe.unsubscribe()
             this._router.navigate(["/login"]);
@@ -58,7 +57,7 @@ export class HeaderComponent implements OnInit {
   
   }
 
-  getNotificationRequest() {
+  getNotificationRequest(showBlockNotify: boolean) {
     this._notificationExpenseService.getAllNotificationByTypeUserAndUserId(this.owner.id).subscribe(
       response => {
         if(response != null) {
@@ -101,7 +100,8 @@ export class HeaderComponent implements OnInit {
           }
         });
 
-        if(this.notificationExpenseList.length != 0)
+        this.countNotification = this.notificationExpenseList.length;
+        if(this.notificationExpenseList.length != 0 && showBlockNotify == true)
           this.flagNotificationpPopUp = true;
       },
       error => {
@@ -110,7 +110,6 @@ export class HeaderComponent implements OnInit {
           this._userService.logoutSession();
           this._router.navigate(["/login"]);
         }
-        console.log(error.error);
       }
     );
 
@@ -145,7 +144,7 @@ export class HeaderComponent implements OnInit {
   }
 
   showNotificationpPopUp() {
-    this.getNotificationRequest();
+    this.getNotificationRequest(true);
   }
 
   receivedHiddenNotificationtoHeader(orderHidden: any) {

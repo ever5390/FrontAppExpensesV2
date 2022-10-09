@@ -54,7 +54,6 @@ export class HeaderExpenseComponent implements OnInit {
         this.period.finalDate = (response.action =='reset')?response.dateRange.finalDate:this._utilitariesService.convertDateGMTToString(new Date(response.dateRange.finalDate), "final");  
       }, 
       error => {
-        console.log(error.error);
         this.period.startDate = new Date();
         this.period.finalDate = new Date();
       }

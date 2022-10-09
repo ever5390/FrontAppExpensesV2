@@ -1,4 +1,4 @@
-<ng-container *ngIf="show__popup">
+<ng-container >
     <div class="container-fluid" #popup__formulario>
         <div class="container_form" #container_formulario>
             <div class="st_content">
@@ -65,13 +65,6 @@
                 </ng-container>     
             </div>
             <button (click)="saveOrUpdate()">{{dataStructureReceived.action}}</button>
-
-            <app-list-accounts-shared *ngIf="flagShowListOptionsSelect"        
-                    [heightContainerChild]="heightForm"
-                    [flagShowComponentReceived]="flagShowListOptionsSelect"
-                    [dataOptionsSelectExpenseListReceived]="dataOptionsSelectExpenseList"
-                    (sendEmittAccountSelected)="receivedItemSelectedaFromPopUp($event)"
-            ></app-list-accounts-shared>
 
             <!-- Lista de categorias: caso Cuentas asociadas -->
             <div class="st_list_account_origen" [ngStyle]="{'display':(flagShowListCategories) ? 'block' : 'none' }">

@@ -33,8 +33,7 @@ export class ManageExpenseComponent implements OnInit, OnDestroy {
   owner : OwnerModel = new OwnerModel();
 
   sendComponentParentToCalendar: string = CONSTANTES.CONST_COMPONENT_EXPENSEREGISTER;
-  // sendComponentToBlockListAccount: string = CONSTANTES.CONST_COMPONENT_EXPENSEREGISTER;
-  sendComponentToBlockListOptions: string = "";
+  sendComponentToBlockListOptions: string = CONSTANTES.CONST_TEXT_VACIO;
 
   flagReceiveNotificationParamRoute: boolean = false;
   flagShowListAccording: boolean = false;
@@ -43,6 +42,7 @@ export class ManageExpenseComponent implements OnInit, OnDestroy {
   flagShowListOptionsSelect: boolean = false;
   flagShowCalendar: boolean = false;
   flagShowBtnSelectCalendar: boolean = false;
+  flagIsSaveOK: boolean = false;
 
   itemPaymentMethod: PaymentMethodModel =  new PaymentMethodModel();
   itemCategory: CategoryModel =  new CategoryModel();
@@ -54,11 +54,11 @@ export class ManageExpenseComponent implements OnInit, OnDestroy {
   expense: ExpenseModel = new ExpenseModel();
   period: PeriodModel = new PeriodModel();
   heightFormRegisterExpense: number = 0;
-  textActionButton: string = "Registrar";
+  textActionButton: string = CONSTANTES.CONST_TEXT_BTN_REGISTRAR;
 
   dataOptionsSelectExpense: DataOptionsSelectExpense = new DataOptionsSelectExpense();
   dataOptionsSelectExpenseList: DataOptionsSelectExpense[] = [];
-  payerSelected: string ="";
+  payerSelected: string = CONSTANTES.CONST_TEXT_VACIO;
   tagListSelected: Tag[] = [];
 
   //Objects from route
@@ -69,15 +69,10 @@ export class ManageExpenseComponent implements OnInit, OnDestroy {
   //Account
   accountListSelected: AccountModel[] = [];
   vouchersListToShow: string[] = [];
-  // voucherSelectedFileToStorageSave: File[] = [];
-
   listaAccording: AccordingModel[] = [];
-
   workspace: Workspace = new Workspace();
-
   show__list__items: boolean = false;
   dataStructure: DataStructureListShared = new DataStructureListShared();
-
 
   @Input() show__popup: boolean = false;
   @Output() sendHiddenFormRegister: EventEmitter<boolean> = new EventEmitter();
@@ -98,21 +93,23 @@ export class ManageExpenseComponent implements OnInit, OnDestroy {
     private _loadSpinnerService: SLoaderService,
     private _rutaActiva: ActivatedRoute
   ) {
-    this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
     this.workspace = JSON.parse(localStorage.getItem("lcstrg_worskpace")!);
+    this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
     this.owner = this.workspace.owner;
     this.identifyEventClickOutWindow();
   }
 
   ngOnDestroy(): void {
-    this.setterObjectExpense();
-    this._expenseService.saveExpenseToLocalStorage(this.expense);
+    if(!this.flagIsSaveOK) {
+      this.setterObjectExpense();
+      this._expenseService.saveExpenseToLocalStorage(this.expense);
+    }
   }
 
   ngOnInit(): void {
     this.getAllAccording();
     this.getAccountIfExitPeriod();
-    this.validateIfNotifitionPayByParam();
+    this.validateIfExistNotifitionPayByParamRoute();
     this.validateIfExistExpensePendingRegister();
   }
 
@@ -154,7 +151,7 @@ export class ManageExpenseComponent implements OnInit, OnDestroy {
     });
   }
 
-  private validateIfNotifitionPayByParam() {
+  private validateIfExistNotifitionPayByParamRoute() {
     this._rutaActiva.params.subscribe(
       (params: Params) => {
         if (params.idNotification != undefined) {
@@ -186,16 +183,6 @@ export class ManageExpenseComponent implements OnInit, OnDestroy {
       this.flagShowBtnSelectCalendar = true;
       this.getAllAccountByPeriodSelected(this.period.id);
     }
-  }
-
-  saveExpenseToLocalStorageAndRedirectToAccount() {
-    this._loadSpinnerService.hideSpinner();
-    this.vouchersListToShow.forEach(item => {
-      this.expense.vouchers.push(new Voucher(0, item));
-    });
-
-    this._expenseService.saveExpenseToLocalStorage(this.expense);
-    this._router.navigate(["/period/period-detail/"+this.period.id]);
   }
 
   registerOrUpdateExpense(idExpense: number) {
@@ -231,6 +218,7 @@ export class ManageExpenseComponent implements OnInit, OnDestroy {
     this._loadSpinnerService.showSpinner();
     this._expenseService.updateObjectExpense(this.expense).subscribe(
       response => {
+        this.flagIsSaveOK = true;
         this.expense = response.object;
         this.period = response.object.period;
         this._periodService.saveToLocalStorage(this.period);
@@ -244,41 +232,45 @@ export class ManageExpenseComponent implements OnInit, OnDestroy {
         this._router.navigate(["/"]);
       },
       error => {
-        console.log(error);
-        this._loadSpinnerService.hideSlow();
-        let textBtnConfirm = "OK";
-        let showBtnCancelFlag = false;
-        if(error.error.status != 'error' && error.error.message.includes("saldo")){
-          showBtnCancelFlag = true;
-          textBtnConfirm = "Agregar saldo a cuenta!";
-        }
-        Swal.fire({
-          title: '',
-          text: error.error.message,
-          icon: error.error.status,
-          showCancelButton: showBtnCancelFlag,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: textBtnConfirm
-        }).then((result) => {
-          if (result.isConfirmed) {
-            if(error.error.status != 'error' && error.error.message.includes("saldo")){
-              this.saveExpenseToLocalStorageAndRedirectToAccount();
-            }
-          }
-        })
+        this.manageErrorExpense(error);
       }
     );
+  }
+
+  private manageErrorExpense(error: any) {
+    this.flagIsSaveOK = false;
+    this._loadSpinnerService.hideSlow();
+    let textBtnConfirm = "OK";
+    let showBtnCancelFlag = false;
+    if (error.error.status != 'error' && error.error.message.includes("saldo")) {
+      showBtnCancelFlag = true;
+      textBtnConfirm = "Agregar saldo a cuenta!";
+    }
+    Swal.fire({
+      text: error.error.message,
+      icon: error.error.status,
+      showCancelButton: showBtnCancelFlag,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: textBtnConfirm
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (error.error.status != 'error' && error.error.message.includes("saldo")) {
+          this._router.navigate(["/period/period-detail/"+this.period.id]);
+        }
+      }
+    });
   }
 
   saveExpense() {
     this._loadSpinnerService.showSpinner();
     this._expenseService.create(this.expense).subscribe(
       response => {
+        this.flagIsSaveOK = true;
+        this.expense = response.object;
         this.period = response.object.period;
         this._periodService.saveToLocalStorage(this.period);
         this._expenseService.clearExpennseRegisterFromLocalStorage();
-        this.expense = response.object;
         if(this.vouchersBckp.length > 0) {
           this.uploadImageToFirestore(this.vouchersBckp);
           return;
@@ -288,29 +280,7 @@ export class ManageExpenseComponent implements OnInit, OnDestroy {
         this._router.navigate(["/"]);
       },
       error => {
-        console.log(error);
-        this._loadSpinnerService.hideSlow();
-        let textBtnConfirm = "OK";
-        let showBtnCancelFlag = false;
-        if(error.error.status != 'error' && error.error.message!=null && error.error.message.includes("saldo")){
-          showBtnCancelFlag = true;
-          textBtnConfirm = "Agregar saldo a cuenta!";
-        }
-        Swal.fire({
-          title: '',
-          text: error.error.message,
-          icon: error.error.status,
-          showCancelButton: showBtnCancelFlag,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: textBtnConfirm
-        }).then((result) => {
-          if (result.isConfirmed) {
-            if(error.error.status != 'error' && error.error.message.includes("saldo")){
-              this.saveExpenseToLocalStorageAndRedirectToAccount();
-            }
-          }
-        })
+        this.manageErrorExpense(error);
       }
     );
   }
@@ -468,8 +438,8 @@ export class ManageExpenseComponent implements OnInit, OnDestroy {
         break;
       case CONSTANTES.CONST_COMPONENT_CUENTAS:
         if(element.itemSelected.name == "redirectToAccount"){
-          this.setterObjectExpense();
-          this.saveExpenseToLocalStorageAndRedirectToAccount();
+          this.flagIsSaveOK = false;          
+          this._router.navigate(["/period/period-detail/"+this.period.id]);
           return;
         }
 
@@ -673,11 +643,9 @@ export class ManageExpenseComponent implements OnInit, OnDestroy {
   private updateNotificationStatus(notificationRequest: NotificationExpense) {
     this._notificationExpenseService.updateStatusNotificationExpense(notificationRequest).subscribe(
       response => {
-        console.log(response);
         this._router.navigate(["/"]);
       },
       error => {
-        console.log(error.error);
         this._router.navigate(["/"]);
       }
     );

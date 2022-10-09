@@ -218,7 +218,9 @@ export class DetailBodyPeriodComponent implements OnInit {
   }
 
   showFormularyRegisterOrUpdate(order: any, object: any) {
+    console.log(object);
     this.flagFormulario = true;
+    this.dataStructure = new DataStructureFormShared();
     this.dataStructure.title = CONSTANTES.CONST_CUENTAS;
     this.dataStructure.component = CONSTANTES.CONST_CUENTAS;
     this.dataStructure.action = CONSTANTES.CONST_TEXT_BTN_REGISTRAR;
@@ -268,10 +270,11 @@ export class DetailBodyPeriodComponent implements OnInit {
   }
 
   receiveToSonComponent(response:any) {
+    console.log(response);
     this.flagFormulario = false;
-    if(response == null) return;
-    this.getAllAccountByPeriodSelected(response.object.period.id);
-    this.sendUpdateAmountInitialHeader.emit(response.object);
+    this.getAllAccountByPeriodSelected(this.period.id);
+    if(response == null)  return;
+    this.sendUpdateAmountInitialHeader.emit();
   }
 
 }

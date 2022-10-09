@@ -24,6 +24,11 @@ import Swal from 'sweetalert2';
 })
 export class AccountComponent implements OnInit {
 
+  subject = new Subject();
+  textSearch: string = '';
+  showBtnAddItem: boolean = false;
+  textSaveCategory: string = '';
+  
   fotoSeleccionada: File | undefined;
   owner: OwnerModel = new OwnerModel();
   objectToFormShared : ObjectFormularioShared = new ObjectFormularioShared();
@@ -86,23 +91,44 @@ export class AccountComponent implements OnInit {
     this.searchActivateFunction();
     this.switchDecideFormByComponent();
     this.seteoByComponentParent();
-
+    console.log("catecCheck");
+    console.log(this.categoriesChecked);
     this.categoriesChecked = this.dataStructureReceived.object.categories;
-
-    this.setterDataStructureSendToAccouuntList();
   }
 
-  private setterDataStructureSendToAccouuntList() {
-    this.dataOptionsSelectExpenseList = [];
-    this.dataStructureReceived.listAccoutOrigen.forEach((element: { id: number; accountName: string; balanceFlow: string; }) => {
-      this.dataOptionsSelectExpense = new DataOptionsSelectExpense();
-      this.dataOptionsSelectExpense.id = element.id;
-      this.dataOptionsSelectExpense.name = element.accountName;
-      this.dataOptionsSelectExpense.disponible = element.balanceFlow;
-      this.dataOptionsSelectExpense.component = CONSTANTES.CONST_COMPONENT_CUENTAS;
-      this.dataOptionsSelectExpense.icon = CONSTANTES.CONST_COMPONENT_CUENTAS_ICON;
-      this.dataOptionsSelectExpenseList.push(this.dataOptionsSelectExpense);
-    });
+  switchDecideFormByComponent() {
+    // if(this.dataStructureReceived.component != CONSTANTES.CONST_TEXT_VACIO)
+    //     this.show__popup = true;
+
+    switch (this.dataStructureReceived.component) {
+      case CONSTANTES.CONST_TRANSFERENCIA_INTERNA:
+        this.dataStructureReceived.titleDos = this.dataStructureReceived.title;
+        this.flagInputNameFormulario=false;
+        this.flagBlockTransferFormulario=true;
+        this.flagBlockAmountAccountFormulario=false;
+        this.flagActivateInputFile=false;
+        break;
+      case CONSTANTES.CONST_TRANSFERENCIA_EXTERNA:
+        this.dataStructureReceived.titleDos = this.dataStructureReceived.title;
+        this.flagInputNameFormulario=false;
+        this.flagBlockTransferFormulario=true;
+        this.flagBlockAmountAccountFormulario=false;
+        this.flagActivateInputFile=false;
+        break;
+      case CONSTANTES.CONST_CUENTAS:
+        this.dataStructureReceived.titleDos = this.dataStructureReceived.title;
+        this.flagInputNameFormulario=true;
+        this.flagBlockTransferFormulario=false;
+        this.flagBlockAmountAccountFormulario=true;
+        this.flagActivateInputFile=false;
+        if(this.dataStructureReceived.object.accountType.id == 2){
+          this.showBtnSelectCategoriesOnlyChildAccount = true;
+          this.getAllCategories();
+        }
+        break;
+      default:
+        break;
+    }
   }
 
   seteoByComponentParent() {
@@ -152,18 +178,20 @@ export class AccountComponent implements OnInit {
         if(this.dataStructureReceived.object.accountType.id == 2)
             this.catchCategoriesSelectAssoc();
 
-        this.dataStructureReceived.object.accountName  = this.objectToFormShared.name;
-        this.dataStructureReceived.object.balance = this.objectToFormShared.monto;
-        this.dataStructureReceived.object.categories =  this.categoriesChecked;
-
         if(this.dataStructureReceived.object.statusAccount == TypeSatusAccountOPC.INITIAL.toString()) {
           this.redirectToActionsAccount();
           return;
         }
 
+        let textMessage = "El monto y las categorías que asigne no podrán ser modificadas una vez guardadas.";
+
+        if(this.dataStructureReceived.object.id != 0) {
+          textMessage = "Solo se permite asociar categorias, no podrá quitar alguna que ya se encuentre asignada.";
+        }
+
         Swal.fire({
-          title: 'Solicitud de confirmación',
-          text: 'El monto y las categorías asociadas no podrán ser modificadas, únicamente se le permitirá añadir más categorías',
+          title: 'Recuerde!',
+          text: textMessage,
           icon: 'info',
           showCancelButton: true,
           confirmButtonColor: '#3085d6',
@@ -179,6 +207,10 @@ export class AccountComponent implements OnInit {
   }
 
   private redirectToActionsAccount() {
+    this.dataStructureReceived.object.accountName  = this.objectToFormShared.name;
+    this.dataStructureReceived.object.balance = this.objectToFormShared.monto;
+    this.dataStructureReceived.object.categories =  this.categoriesChecked;
+    
     if (this.dataStructureReceived.object.id == 0) {
       this.registerAccount(this.dataStructureReceived.object);
     } else {
@@ -317,13 +349,6 @@ export class AccountComponent implements OnInit {
     }
   }
 
-  receivedItemSelectedaFromPopUp(itemReceived: any) {
-    this.objectToFormShared.origen.id = itemReceived.itemSelected.id;
-    this.objectToFormShared.origen.accountName = itemReceived.itemSelected.name;
-    this.objectToFormShared.origen.balanceFlow = itemReceived.itemSelected.disponible;
-    this.flagShowListOptionsSelect = false;
-  }
-
   getAllCategories() {
     this._categoryService.getAllCategories(this.owner.id).subscribe(
       response => {
@@ -349,45 +374,6 @@ export class AccountComponent implements OnInit {
 
     this.listaCategoriesFixed = this.listaCategories;
 
-  }
-
-  switchDecideFormByComponent() {
-    var flagContentSeleccione = false;
-    if(this.dataStructureReceived.title.toLocaleLowerCase().includes('seleccione'))
-      flagContentSeleccione = true;
-
-    if(this.dataStructureReceived.component != CONSTANTES.CONST_TEXT_VACIO)
-        this.show__popup = true;
-
-    switch (this.dataStructureReceived.component) {
-      case CONSTANTES.CONST_TRANSFERENCIA_INTERNA:
-        this.dataStructureReceived.titleDos = this.dataStructureReceived.title;
-        this.flagInputNameFormulario=false;
-        this.flagBlockTransferFormulario=true;
-        this.flagBlockAmountAccountFormulario=false;
-        this.flagActivateInputFile=false;
-        break;
-      case CONSTANTES.CONST_TRANSFERENCIA_EXTERNA:
-        this.dataStructureReceived.titleDos = this.dataStructureReceived.title;
-        this.flagInputNameFormulario=false;
-        this.flagBlockTransferFormulario=true;
-        this.flagBlockAmountAccountFormulario=false;
-        this.flagActivateInputFile=false;
-        break;
-      case CONSTANTES.CONST_CUENTAS:
-        this.dataStructureReceived.titleDos = this.dataStructureReceived.title;
-        this.flagInputNameFormulario=true;
-        this.flagBlockTransferFormulario=false;
-        this.flagBlockAmountAccountFormulario=true;
-        this.flagActivateInputFile=false;
-        if(this.dataStructureReceived.object.accountType.id == 2){
-          this.showBtnSelectCategoriesOnlyChildAccount = true;
-          this.getAllCategories();
-        }
-        break;
-      default:
-        break;
-    }
   }
 
   showPopUp() {
@@ -416,10 +402,6 @@ export class AccountComponent implements OnInit {
     )
   }
 
-  subject = new Subject();
-  textSearch: string = '';
-  showBtnAddItem: boolean = false;
-  textSaveCategory: string = '';
   searchMethod(evt: any){
     const searchText = evt.target.value;
     this.textSearch = searchText;
