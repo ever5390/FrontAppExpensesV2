@@ -94,6 +94,20 @@ export class AccountComponent implements OnInit {
     console.log("catecCheck");
     console.log(this.categoriesChecked);
     this.categoriesChecked = this.dataStructureReceived.object.categories;
+    this.setterDataStructureSendToAccouuntList();
+  }
+
+  private setterDataStructureSendToAccouuntList() {
+    this.dataOptionsSelectExpenseList = [];
+    this.dataStructureReceived.listAccoutOrigen.forEach((element: { id: number; accountName: string; balanceFlow: string; }) => {
+      this.dataOptionsSelectExpense = new DataOptionsSelectExpense();
+      this.dataOptionsSelectExpense.id = element.id;
+      this.dataOptionsSelectExpense.name = element.accountName;
+      this.dataOptionsSelectExpense.disponible = element.balanceFlow;
+      this.dataOptionsSelectExpense.component = CONSTANTES.CONST_COMPONENT_CUENTAS;
+      this.dataOptionsSelectExpense.icon = CONSTANTES.CONST_COMPONENT_CUENTAS_ICON;
+      this.dataOptionsSelectExpenseList.push(this.dataOptionsSelectExpense);
+    });
   }
 
   switchDecideFormByComponent() {
@@ -219,10 +233,11 @@ export class AccountComponent implements OnInit {
   }
 
   registerTransference(transferToSave: TransferenciaModel) {
-
+    this._loadSpinnerService.showSpinner();
     this._accountService.saveTransferenceAccount(transferToSave).subscribe(
       (response :any)=> {
         Swal.fire(response.title,response.message,response.status);
+        this._loadSpinnerService.hideSlow();
         this.responseToFatherComponent.emit(response);
       },
       error => {
@@ -233,12 +248,13 @@ export class AccountComponent implements OnInit {
   }
 
   registerAccount(accountToSave: AccountModel) {
-
+    this._loadSpinnerService.showSpinner();
     accountToSave.period = this.period;
     this._accountService.createAccount(accountToSave).subscribe(
       (response :any)=> {
         Swal.fire("","Cuenta registrada con éxito","success");
         this._periodService.saveToLocalStorage(response.object.period);
+        this._loadSpinnerService.hideSpinner();
         this.responseToFatherComponent.emit(response);
       },
       error => {
@@ -249,9 +265,11 @@ export class AccountComponent implements OnInit {
   }
 
   updateAccount(accountToSave: AccountModel) {
+    this._loadSpinnerService.showSpinner();
     this._accountService.updateAccount(accountToSave).subscribe(
       (response :any)=> {
         Swal.fire(response.title,response.message, response.status);
+        this._loadSpinnerService.hideSpinner();
         this.responseToFatherComponent.emit(this.dataStructureReceived);
       },
       error => {
@@ -368,7 +386,7 @@ export class AccountComponent implements OnInit {
     });
 
     this.dataStructureReceived.object.categories.forEach((categAccount: CategoryModel)=>{
-      categAccount.isDisabled = true;
+      if(this.dataStructureReceived.object.statusAccount.toString() == "PROCESS") categAccount.isDisabled = true;
       this.listaCategories.unshift(categAccount);
     });
 
@@ -424,6 +442,13 @@ export class AccountComponent implements OnInit {
         console.log("Error al crear la categoria nueva");
       }
     );
+  }
+
+  receivedItemSelectedaFromPopUp(itemReceived: any) {
+    this.objectToFormShared.origen.id = itemReceived.itemSelected.id;
+    this.objectToFormShared.origen.accountName = itemReceived.itemSelected.name;
+    this.objectToFormShared.origen.balanceFlow = itemReceived.itemSelected.disponible;
+    this.flagShowListOptionsSelect = false;
   }
 
   catchClickEventOutForm() {

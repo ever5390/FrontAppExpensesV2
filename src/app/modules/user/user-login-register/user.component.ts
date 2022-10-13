@@ -65,7 +65,6 @@ export class UserComponent implements OnInit {
         response => {
                 this._usuarioService.guardarUsuario(response.access_token);
                 this._usuarioService.guardarToken(response.access_token);
-                this._sloader.hideSlow();
                 let usuario = this._usuarioService.usuario;
                 Swal.fire("Login",`Hola ${usuario.username}, has iniciado sessión con éxito`,"success")
                 this._router.navigate(['/']);                

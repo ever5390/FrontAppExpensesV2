@@ -51,8 +51,7 @@ export class ListNotificationComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.receivedShowNotificationFromHeader = true;
-    
+    this.receivedShowNotificationFromHeader = true;    
   }
 
   updateItem(notificationSelected: NotificationExpense, orderUpdate: number) {
@@ -106,7 +105,7 @@ export class ListNotificationComponent implements OnInit {
           dataSend.startDate = this.period.startDate;
           dataSend.finalDate = this.period.finalDate;
           dataSend.origin = "notification"
-
+          this.receivedShowNotificationFromHeader = false;
           this._utilitariesService.sendDatesFromCalendarSelected({
             "component": CONSTANTES.CONST_COMPONENT_NOTIFICATION,
             "action": "reset",

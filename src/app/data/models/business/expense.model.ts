@@ -26,7 +26,8 @@ export class ExpenseModel {
         public tag:             Tag[] = [],
         public strSearchAllJoin: string = '',
         public strFilterParamsJoin: string = '',
-        public editable: boolean = false
+        public editable: boolean = false,
+        public isOriginNotification: boolean = false
     ){}
 }
 

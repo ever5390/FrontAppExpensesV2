@@ -41,7 +41,7 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit(): void {
     this.intervalNotify();
-    this.getNotificationRequest(false);
+    
   }
 
   intervalNotify() {
@@ -52,6 +52,7 @@ export class HeaderComponent implements OnInit {
             subscribe.unsubscribe()
             this._router.navigate(["/login"]);
           }
+          this.getNotificationRequest(false);
       }
     );
   
@@ -80,12 +81,15 @@ export class HeaderComponent implements OnInit {
           if(item.expenseShared.workspace.owner.id == this.owner.id){
             if(item.statusNotification.toString() == TypeStatusNotificationExpense.POR_CONFIRMAR) {
               item.subtitleText = CONSTANTES.CONST_TEXT_SUBTITLE_EMISOR_NOTIF_PDTE_CONFIRMACION;
+              item.textActionReclamadoOrPay = "pago";
             }
             if(item.statusNotification.toString() == TypeStatusNotificationExpense.RECLAMADO) {
               item.subtitleText = CONSTANTES.CONST_TEXT_SUBTITLE_EMISOR_NOTIF_RECLAMADO;
+              item.textActionReclamadoOrPay = CONSTANTES.CONST_TEXT_ACTION_RECEPTOR_NOTIF_RECLAMADO;
             }
             if(item.statusNotification.toString() == TypeStatusNotificationExpense.RECHAZADO) {
               item.subtitleText = CONSTANTES.CONST_TEXT_SUBTITLE_EMISOR_NOTIF_RECHAZADO;
+              item.textActionReclamadoOrPay = "pago";
             }
           } else {
             if(item.statusNotification.toString() == TypeStatusNotificationExpense.POR_CONFIRMAR) {
@@ -101,8 +105,15 @@ export class HeaderComponent implements OnInit {
         });
 
         this.countNotification = this.notificationExpenseList.length;
-        if(this.notificationExpenseList.length != 0 && showBlockNotify == true)
+
+        if(showBlockNotify == true) {
           this.flagNotificationpPopUp = true;
+        }
+
+        if(this.flagNotificationpPopUp == true && this.countNotification == 0)  {
+          this.flagNotificationpPopUp = false;
+        }
+
       },
       error => {
         if(error.error.error_description != null && error.error.error_description.includes("token expired")) {

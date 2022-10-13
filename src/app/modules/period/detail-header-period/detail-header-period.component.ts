@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { CONSTANTES } from '@data/constantes';
 import { PeriodModel } from '@data/models/business/period.model';
 import { PeriodService } from '@data/services/period/period.service';
+import { SLoaderService } from '@shared/components/loaders/s-loader/service/s-loader.service';
 import { PeriodDetailHeader } from 'app/data/models/business/periodDetailHeader.model';
 import Swal from 'sweetalert2';
 
@@ -21,7 +22,8 @@ export class DetailHeaderPeriodComponent implements OnInit {
   @Input() periodDetailHeaderReceived: PeriodDetailHeader = new PeriodDetailHeader();
 
   constructor(
-    private _periodService: PeriodService, 
+    private _periodService: PeriodService,
+    private _loadSpinnerService: SLoaderService,
     private _router: Router
     ) { }
 
@@ -35,17 +37,20 @@ export class DetailHeaderPeriodComponent implements OnInit {
   }
 
   closePeriodAtomatic(originAction: string) {
+    this._loadSpinnerService.showSpinner();
     if(originAction == 'manual') {
       this.periodDetailHeaderReceived.period.finalDate = new Date();
     }
 
     this._periodService.closePeriod(this.periodDetailHeaderReceived.period).subscribe(
       response => {
+        this._loadSpinnerService.hideSpinner();
         Swal.fire(response.title, response.message,response.status);
         this._periodService.saveToLocalStorage(response.object);
         this._router.navigate(["/period"]);
       }, 
       error => {
+        this._loadSpinnerService.hideSpinner();
         console.log(error);
         Swal.fire(error.error.title, error.error.message,error.error.status);
       }
@@ -124,6 +129,7 @@ export class DetailHeaderPeriodComponent implements OnInit {
   }
 
   updateFinalDatePeriod(newFinalDate: Date) {
+    this._loadSpinnerService.showSpinner();
     //Seteo de fecha final y activación
     this.periodShow = this.periodDetailHeaderReceived.period;
     this.periodShow.activate = true;
@@ -132,6 +138,7 @@ export class DetailHeaderPeriodComponent implements OnInit {
     this._periodService.updatePeriod(this.periodShow, 
         this.periodDetailHeaderReceived.period.id).subscribe(
       response => {
+        this._loadSpinnerService.hideSlow();
         Swal.fire("","Se realizó con éxito la modificación de la fecha de cierre.","info");
         if(response.object == null) return;
 
@@ -139,6 +146,7 @@ export class DetailHeaderPeriodComponent implements OnInit {
         this._periodService.saveToLocalStorage(response.object);
       }, 
       error => {
+        this._loadSpinnerService.hideSpinner();
         console.log(error.error);
       }
     );

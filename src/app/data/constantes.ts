@@ -48,9 +48,11 @@ export class CONSTANTES {
     public static TYPE_USER_NOTIFICATION_RECEPTOR = 'receptor';
 
     public static CONST_TEXT_SUBTITLE_RECEPTOR_NOTIF_RECLAMADO = 'Tienes un reclamo enviado pendiente de confirmación';
+    public static CONST_TEXT_ACTION_RECEPTOR_NOTIF_RECLAMADO = 'reclamo';
     public static CONST_TEXT_SUBTITLE_RECEPTOR_NOTIF_RECHAZADO = 'Tu pago fue rechazado (Comunícate con la contraparte)';
     public static CONST_TEXT_SUBTITLE_RECEPTOR_NOTIF_PDTE_CONFIRMACION = 'Su pago realizado se encuentra a espera de confirmación';
     public static CONST_TEXT_SUBTITLE_EMISOR_NOTIF_RECHAZADO = 'Rechazaste el pago realizado por la contraparte';
+    public static CONST_TEXT_SUBTITLE_EMISOR_NOTIF_RECHAZADO_LO_RECLAMADO = 'Rechazaste el reclamo realizado por la contraparte';
     public static CONST_TEXT_SUBTITLE_EMISOR_NOTIF_PDTE_CONFIRMACION = 'Tienes un pago recibido pendiente de confirmación';
     public static CONST_TEXT_SUBTITLE_EMISOR_NOTIF_RECLAMADO = 'Tienes un reclamo recibido pendiente de confirmación';
 }

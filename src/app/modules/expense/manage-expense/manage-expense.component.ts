@@ -100,7 +100,7 @@ export class ManageExpenseComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if(!this.flagIsSaveOK) {
+    if(!this.flagIsSaveOK && this.expense.id == 0 && !this.flagReceiveNotificationParamRoute) {
       this.setterObjectExpense();
       this._expenseService.saveExpenseToLocalStorage(this.expense);
     }
@@ -156,13 +156,17 @@ export class ManageExpenseComponent implements OnInit, OnDestroy {
       (params: Params) => {
         if (params.idNotification != undefined) {
           this.notificationExpense = this._notificationExpenseService.notificationExpense;
+          let expenseEmisor = this.notificationExpense.expenseShared;
           if (this.notificationExpense.id == 0)
             this._router.navigate(["/"]);
 
+          let textDescriptIfExist = (expenseEmisor.description != "")?" y con detalle:"+ expenseEmisor.description:".";
           this.flagReceiveNotificationParamRoute = true;
           this.textActionButton = "Realizar Pago";
-          this.expense.description = `Se realiza el pago generado por ${this.notificationExpense.expenseShared.workspace.owner.name} para ${this.notificationExpense.expenseShared.category.name} de tipo ${this.notificationExpense.expenseShared.accordingType.name} que asciendió a ${this.notificationExpense.expenseShared.amountShow} soles.`;
-          this.expense.amountShow = this.notificationExpense.expenseShared.accordingType.name != "COMPARTIDO" ? this.notificationExpense.expenseShared.amountShow : (parseFloat(this.notificationExpense.expenseShared.amountShow) / 2).toString();
+          this.expense.description = "Se realiza el pago generado por" + expenseEmisor.workspace.owner.name + " para " + expenseEmisor.category.name + " de tipo "
+                                      + expenseEmisor.accordingType.name + " que asciendió a " + expenseEmisor.amountShow + " soles" + textDescriptIfExist;      
+          this.expense.amountShow = expenseEmisor.accordingType.name != "COMPARTIDO" ? expenseEmisor.amountShow : (parseFloat(this.notificationExpense.expenseShared.amountShow) / 2).toString();
+          return;
         }
 
         if (params.idExpense != undefined) {
@@ -172,7 +176,7 @@ export class ManageExpenseComponent implements OnInit, OnDestroy {
  
           this.textActionButton = "Actualizar gasto";
           this.setterExpenseReceivedFromParam(this.expenseToEdit);
-          
+          return;
         }
       }
     );
@@ -268,21 +272,30 @@ export class ManageExpenseComponent implements OnInit, OnDestroy {
       response => {
         this.flagIsSaveOK = true;
         this.expense = response.object;
-        this.period = response.object.period;
-        this._periodService.saveToLocalStorage(this.period);
         this._expenseService.clearExpennseRegisterFromLocalStorage();
-        if(this.vouchersBckp.length > 0) {
-          this.uploadImageToFirestore(this.vouchersBckp);
-          return;
-        }
-        this._loadSpinnerService.hideSlow();
-        Swal.fire("",response.message,response.status);
-        this._router.navigate(["/"]);
+        this.processVoucherifExist();
       },
       error => {
         this.manageErrorExpense(error);
       }
     );
+  }
+
+  processVoucherifExist() {
+    if(this.vouchersBckp.length > 0) {
+      this.uploadImageToFirestore(this.vouchersBckp);
+    } else {
+      this.processNotificationStatusIfExist();
+    }
+  }
+
+  processNotificationStatusIfExist() {
+    if(this.flagReceiveNotificationParamRoute) {
+      this.updateNotificationStatus(this.notificationExpense);
+    } else {
+      Swal.fire("","Registro exitoso","success");
+      this._router.navigate(["/"]);
+    }
   }
 
   getAllAccording() {
@@ -313,7 +326,12 @@ export class ManageExpenseComponent implements OnInit, OnDestroy {
       response => {
         this.accountListSelected = response.filter( account => account.statusAccount.toString() == 'PROCESS');
 
-        if(response.length > 0 && this.accountListSelected.length == 0) {
+        if(response.length == 0) {
+          Swal.fire("","Configure cuentas para poder administrar correctamente sus gastos.","info");
+          this._router.navigate(["/period/period-detail/" + this.period.id]);
+        }
+
+        if(this.accountListSelected.length == 0) {
           Swal.fire("","Tiene cuentas pendientes por confirmar, previo a registrar algún gasto","info");
           this._router.navigate(["/period/period-detail/" + this.period.id]);
         }
@@ -597,14 +615,15 @@ export class ManageExpenseComponent implements OnInit, OnDestroy {
   saveVouchersExpense() {
     this._expenseService.updateVouchersToExpense(this.expense).subscribe(
       response => {
-        this._loadSpinnerService.hideSlow();
+        
         if(this.flagReceiveNotificationParamRoute){
           this.notificationExpense.vouchers = response.vouchers;
           this.updateNotificationStatus(this.notificationExpense);
-          return;
+        } else {
+          Swal.fire("","Registro exitoso","success");
+          this._router.navigate(["/"]);
         }
-        Swal.fire("","Registro exitoso","success");
-        this._router.navigate(["/"]);
+
       },
       error => {
         this._loadSpinnerService.hideSlow();
@@ -643,9 +662,11 @@ export class ManageExpenseComponent implements OnInit, OnDestroy {
   private updateNotificationStatus(notificationRequest: NotificationExpense) {
     this._notificationExpenseService.updateStatusNotificationExpense(notificationRequest).subscribe(
       response => {
+        Swal.fire("","Registro exitoso","success");
         this._router.navigate(["/"]);
       },
       error => {
+        Swal.fire("Error","Ocurrió un error al intentar actualizar el estado de la notificación","error");
         this._router.navigate(["/"]);
       }
     );

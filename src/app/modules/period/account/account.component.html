@@ -18,7 +18,7 @@
                         <label>{{dataStructureReceived.title}}</label>
                         <input *ngIf="flagInputNameFormulario" type="text" 
                         [(ngModel)]="objectToFormShared.name"
-                        placeholder="Escribir nombre" [disabled]="objectToFormShared.inputDisabled">
+                        placeholder="Escribir nombre">
                     </div>
                 </div>
                 <div class="form_control" *ngIf="flagBlockTransferFormulario && this.dataStructureReceived.title != 'Transferencia externa'">
@@ -65,6 +65,14 @@
                 </ng-container>     
             </div>
             <button (click)="saveOrUpdate()">{{dataStructureReceived.action}}</button>
+
+            <!-- Lista de cuentas: caso selección de cuenta de origen -->
+            <app-list-accounts-shared *ngIf="flagShowListOptionsSelect"        
+                    [heightContainerChild]="heightForm"
+                    [flagShowComponentReceived]="flagShowListOptionsSelect"
+                    [dataOptionsSelectExpenseListReceived]="dataOptionsSelectExpenseList"
+                    (sendEmittAccountSelected)="receivedItemSelectedaFromPopUp($event)"
+            ></app-list-accounts-shared>
 
             <!-- Lista de categorias: caso Cuentas asociadas -->
             <div class="st_list_account_origen" [ngStyle]="{'display':(flagShowListCategories) ? 'block' : 'none' }">

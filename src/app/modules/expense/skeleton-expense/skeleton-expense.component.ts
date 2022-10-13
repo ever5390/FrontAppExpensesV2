@@ -92,7 +92,7 @@ export class SkeletonExpenseComponent implements OnInit {
     this._loadSpinnerService.showSpinner();
     this._expenseService.getAllExpensesByWorkspaceAndDateRangePeriod(idWrkspc, dateBegin, dateEnd).subscribe(
       response => {
-        this._loadSpinnerService.hideSpinner();
+        this._loadSpinnerService.hideSlow();
         this.showBody = true;
         this.sendListExpensesToBody = response;
         this.listExpensesToBody = response;
@@ -246,6 +246,7 @@ export class SkeletonExpenseComponent implements OnInit {
 
   receivedExpenseToUpdateStatausPay(objectReceived: any){
     this.showBody = false;
+    this._loadSpinnerService.showSpinner();
     if(objectReceived.action =="updateStatusPay"){
       this.updateStatusPayExpense(objectReceived.idExpense);
     } else {
@@ -279,6 +280,7 @@ export class SkeletonExpenseComponent implements OnInit {
       response => {
         Swal.fire(response.title, response.message, response.status);
         this.showBody = true;
+         
         if(response.status == "success"){
           this.catchPeriodAndGetAllListExpenses();
         }

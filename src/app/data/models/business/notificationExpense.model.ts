@@ -12,7 +12,8 @@ export class NotificationExpense {
         public expenseShared:       ExpenseModel = new ExpenseModel(),
         public statusNotification = TypeStatusNotificationExpense.POR_CONFIRMAR,
         public isEmisorUser: boolean = false,
-        public subtitleText: string = ''){
+        public subtitleText: string = '',
+        public textActionReclamadoOrPay: string = "pago"){
     }
 }
 
@@ -24,6 +25,3 @@ export enum TypeStatusNotificationExpense {
 	RECHAZADO = 'RECHAZADO',
     RECLAMADO = 'RECLAMADO'
 }
-
-    
-
