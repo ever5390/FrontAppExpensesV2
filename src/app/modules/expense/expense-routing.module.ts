@@ -21,12 +21,20 @@ const routes: Routes = [
     component: ManageExpenseComponent
   },
   {
+    path:'expenses/pending-to-collect/:isPending',
+    component: SkeletonExpenseComponent
+  },
+  {
     path:'expense/notification/:idNotification',
     component: ManageExpenseComponent
   },
   {
     path:'expense/:idExpense',
     component: ManageExpenseComponent
+  },
+  {
+    path:'**',
+    component: SkeletonExpenseComponent
   }
   
 ];

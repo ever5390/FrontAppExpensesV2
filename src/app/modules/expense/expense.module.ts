@@ -7,7 +7,6 @@ import { HeaderExpenseComponent } from './header-expense/header-expense.componen
 import { ExpenseRoutingModule } from './expense-routing.module';
 import { SharedModule } from 'app/shared/shared.module';
 import { ListPaymentMethodComponent } from '@modules/payment-method/list-payment-method/list-payment-method.component';
-import { ListCategoryComponent } from '@modules/category/list-category/list-category.component';
 import { ListAccordingComponent } from '@modules/according/list-according/list-according.component';
 import { SearchingComponent } from './searching/searching.component';
 

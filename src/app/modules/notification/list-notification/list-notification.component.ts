@@ -5,6 +5,7 @@ import { NotificationExpense, TypeStatusNotificationExpense } from '@data/models
 import { OwnerModel } from '@data/models/business/owner.model';
 import { PeriodModel } from '@data/models/business/period.model';
 import { NotificationExpenseService } from '@data/services/notification/notification-expense.service';
+import { SLoaderService } from '@shared/components/loaders/s-loader/service/s-loader.service';
 import { UtilService } from '@shared/services/util.service';
 
 @Component({
@@ -33,7 +34,7 @@ export class ListNotificationComponent implements OnInit {
   constructor(
     private _renderer: Renderer2,
     private _router: Router,
-    private _utilitariesService: UtilService,
+    private _loadSpinnerService: SLoaderService,
     private _notificationExpenseService: NotificationExpenseService
   ) { 
 
@@ -97,20 +98,22 @@ export class ListNotificationComponent implements OnInit {
   }
 
   private updateStatusFromService(notificationSelected: NotificationExpense) {
+    this._loadSpinnerService.showSpinner();
     this._notificationExpenseService.updateStatusNotificationExpense(notificationSelected).subscribe(
       response => {
 
         if(this.orderTypeUpdate == 1 || this.orderTypeUpdate == 3){
-          let dataSend:any = [];
-          dataSend.startDate = this.period.startDate;
-          dataSend.finalDate = this.period.finalDate;
-          dataSend.origin = "notification"
-          this.receivedShowNotificationFromHeader = false;
-          this._utilitariesService.sendDatesFromCalendarSelected({
-            "component": CONSTANTES.CONST_COMPONENT_NOTIFICATION,
-            "action": "reset",
-            "dateRange": dataSend
-          });
+          this._router.navigate(["/"]);
+          // let dataSend:any = [];
+          // dataSend.startDate = this.period.startDate;
+          // dataSend.finalDate = this.period.finalDate;
+          // dataSend.origin = "notification"
+          // this.receivedShowNotificationFromHeader = false;
+          // this._utilitariesService.sendDatesFromCalendarSelected({
+          //   "component": CONSTANTES.CONST_COMPONENT_NOTIFICATION,
+          //   "action": "reset",
+          //   "dateRange": dataSend
+          // });
         }
       },
       error => {

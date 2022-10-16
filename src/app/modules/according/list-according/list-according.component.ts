@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { SLoaderService } from '@shared/components/loaders/s-loader/service/s-loader.service';
 import { CONSTANTES } from 'app/data/constantes';
 import { IDataSendItemToExpenseManager } from 'app/data/interfaces/data-send-item-to-expensemanager.interface';
 import { AccordingModel } from 'app/data/models/business/according.model';
@@ -41,11 +42,11 @@ export class ListAccordingComponent implements OnInit {
   //Send to ExpenseManager: item selected
   @Output() sendItemSelectedToFormExpense = new EventEmitter();
 
-  constructor(private _accordingService: AccordingService) { 
+  constructor(private _accordingService: AccordingService, private _loadSpinnerService: SLoaderService) { 
   }
 
   ngOnInit(): void {
-    
+    this._loadSpinnerService.showSpinner();
     this.getAllAccording();
   }
 
@@ -53,7 +54,7 @@ export class ListAccordingComponent implements OnInit {
     this.flagListShared = false;
     this._accordingService.getAllAccording().subscribe(
       response => {
-        
+        this._loadSpinnerService.hideSpinner();
         this.listaAccording = response.filter(item => {
           return item.id != 7;
         });

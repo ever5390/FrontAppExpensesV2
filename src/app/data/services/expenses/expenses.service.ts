@@ -14,12 +14,17 @@ export class ExpensesService {
   private httpHeaders =  new HttpHeaders({'Content-type':'application/json'});
 
   private _expenseToEdit: ExpenseModel | undefined;
+  private _expensePendingCollect: ExpenseModel[] = [];
 
   public get expenseToEdit(): ExpenseModel {
     if(this._expenseToEdit != null && this._expenseToEdit != undefined ) {
       return this._expenseToEdit;
     }
     return new ExpenseModel();
+  }
+
+  public get expensePendingCollect(): ExpenseModel[] {
+      return this._expensePendingCollect;
   }
   
   constructor(
@@ -29,9 +34,27 @@ export class ExpensesService {
   guardarExpenseToEdit(expenseReqToEdit: ExpenseModel) : void {
       this._expenseToEdit = expenseReqToEdit;
   }
+
+  guardarListExpensePendingCollect(expenseList: ExpenseModel[]) : void {
+    this._expensePendingCollect = expenseList;
+  }
     
   getAllExpensesByWorkspaceAndDateRangePeriod(idWorkspace: number, dateBegin: string, dateEnd: string): Observable<ExpenseModel[]>  {
     return this._http.get(`${this.URLCOMPL}/expense-workspace?idWorkspace=${idWorkspace}&dateBegin=${dateBegin}&dateEnd=${dateEnd}`)
+      .pipe(
+        map(response => response as ExpenseModel[])
+        );
+  }
+
+  getAllExpensesByPeriodId(idPeriod: number, idOwner: number): Observable<ExpenseModel[]>  {
+    return this._http.get(`${this.URLCOMPL}/owner/${idOwner}/period/${idPeriod}/expenses`)
+      .pipe(
+        map(response => response as ExpenseModel[])
+        );
+  }
+
+  getAllExpensesByPeriodIdAndStatusPay(idPeriod: number): Observable<ExpenseModel[]>  {
+    return this._http.get(`${this.URLCOMPL}/period/${idPeriod}/expenses/statuspay/1`)
       .pipe(
         map(response => response as ExpenseModel[])
         );

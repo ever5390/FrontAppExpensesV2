@@ -1,11 +1,11 @@
 <div #contentList class="st_container_list_expense" >
-    <ng-container *ngFor="let expense of sendListExpensesToBodyList; let i = index;">
-        <div class="st_block_expense">
+    <ng-container *ngIf="sendListExpensesToBodyList.length > 0; else templateNoRows">
+        <div class="st_block_expense" *ngFor="let expense of sendListExpensesToBodyList; let i = index;">
             <div class="st_expense_header" [ngStyle]="{'color':(expense.accordingType.id == 3) ? '#95A5A6' : '#000'}">
                 <div>COD: G{{expense.id}} S/ {{expense.amountShow | number : '1.2-2'}}</div>
                 <div>{{expense.createAt | date: 'EEE dd MMM  HH:mm:ss' | uppercase}}
-                    <label *ngIf="!expense.editable" (click)="updateExpense(expense)"> <i class="fas fa-edit"></i></label>
-                    <label *ngIf="!expense.editable" (click)="deletExpense(expense)"> <i class="fal fa-trash-alt"></i></label>
+                    <label *ngIf="!expense.editable && expense.period.statusPeriod" (click)="updateExpense(expense)"> <i class="fas fa-edit"></i></label>
+                    <label *ngIf="!expense.editable && expense.period.statusPeriod" (click)="deletExpense(expense)"> <i class="fal fa-trash-alt"></i></label>
                 </div>
             </div>
             <div class="st_expense_body">
@@ -49,3 +49,10 @@
     [receivedVoucher]="voucherSelectedToShow" 
     (sendResponseFromVoucherShowToParent)="receivedResponseFromVoucherShowToParent($event)">
 </app-visualizador-voucher>
+
+
+<ng-template #templateNoRows>
+    <div class="d-flex justify-content-center align-items-center">
+        Sin registros
+    </div>
+</ng-template>

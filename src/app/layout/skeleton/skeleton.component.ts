@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { PeriodModel } from '@data/models/business/period.model';
 import { Workspace } from '@data/models/business/workspace.model';
 import { PeriodService } from '@data/services/period/period.service';
@@ -8,6 +8,8 @@ import { WorkspacesService } from '@data/services/workspace/workspaces.service';
 import { OwnerModel } from 'app/data/models/business/owner.model';
 import Swal from 'sweetalert2';
 import { interval } from 'rxjs';
+import { SLoaderService } from '@shared/components/loaders/s-loader/service/s-loader.service';
+import { ExpensesService } from '@data/services/expenses/expenses.service';
 
 
 @Component({
@@ -27,15 +29,20 @@ export class SkeletonComponent implements OnInit {
   period : PeriodModel = new PeriodModel();
   dateFinalAutomaticCatch: Date = new Date();
 
+  
+
   constructor(
     private _router: Router,
     private _usuarioService: UserService,
     private _periodService: PeriodService,
-    private _workspaceService: WorkspacesService
+    private _workspaceService: WorkspacesService,
+    private _loadSpinnerService: SLoaderService,
+    private _expenseService: ExpensesService,
   ) { 
   }
 
   ngOnInit(): void {
+    //this._loadSpinnerService.showSpinner();
     this.owner = JSON.parse(localStorage.getItem('lcstrg_owner')!);
     if(!this._usuarioService.isAuthenticated()) {
       this._router.navigate(['/login']);
@@ -45,7 +52,7 @@ export class SkeletonComponent implements OnInit {
   }
 
   getAllWorkspaceByOwnerId() {
-    
+    this._loadSpinnerService.showSpinner();
     this._workspaceService.getAllWorkspaceByOwnerId(this.owner.id).subscribe(
       response => {
         this.wrkspc = response.filter( item => item.active == true)[0];
@@ -53,12 +60,13 @@ export class SkeletonComponent implements OnInit {
         this.getAllPeriodsByWorskpaceId();
 
       }, error => {
+
+        this._loadSpinnerService.hideSpinner();
       }
     );
   }
  
   getAllPeriodsByWorskpaceId() {
-    //Obtiene lista de periodos.
     this._periodService.getAllPeriodaByWorkspace(this.wrkspc.id).subscribe(
       response => {
         if(response.length != 0){ 
@@ -71,9 +79,10 @@ export class SkeletonComponent implements OnInit {
           }
         }
         this.showBody = true;
-        
+        this._loadSpinnerService.hideSpinner();
       },
       error => {
+        this._loadSpinnerService.hideSpinner();
           Swal.fire("","Error al obtener la lista de periodos","error");
       }
     );
@@ -113,7 +122,7 @@ export class SkeletonComponent implements OnInit {
       confirmButtonText: 'Confirmar cierre!'
     }).then((result) => {
       if (result.isConfirmed) {
-        this.closePeriodAtomatic();
+        this.validExpensesStatusPayInPeriod("automatic");
       } else {
         this._router.navigate(["period/period-detail/"+this.period.id]);
         Swal.fire("","Presione en modificar fecha de cierre para continuar con su registro de gastos.","info");
@@ -121,21 +130,53 @@ export class SkeletonComponent implements OnInit {
     })
   }
 
-  closePeriodAtomatic() {
+  validExpensesStatusPayInPeriod(originAction: string) {
+    this._loadSpinnerService.showSpinner();
+    this._expenseService.getAllExpensesByPeriodIdAndStatusPay(this.period.id).subscribe(
+      response => {
+        if(response.length > 0) {
+          this.confirmationExpensePendingPay(originAction);
+          return;
+        }
+        this.closePeriod();
+      },
+      error => {
+        Swal.fire("","Ocurrió un error inesperado al intentar validar gastos pendientes previo cierre de periodo","error");
+      }
+    );
+  }
+
+  closePeriod() {
     this._periodService.closePeriod(this.period).subscribe(
       response => {
+        this._loadSpinnerService.hideSpinner();
         Swal.fire(response.title, response.message,response.status);
         this._periodService.saveToLocalStorage(response.object);
-        this._router.navigate(["period/period-list"]);
+        this._router.navigate(["/period"]);
       }, 
       error => {
-        if(error.error.status == "info"){
-          Swal.fire(error.error.title, error.error.message,error.error.status);
-          this._router.navigate(["period/period-detail/"+this.period.id]);
-        }
+        this._loadSpinnerService.hideSpinner();
         Swal.fire(error.error.title, error.error.message,error.error.status);
       }
     );
+  }
+
+  confirmationExpensePendingPay(originAction: string){
+    Swal.fire({
+      title: '',
+      text: " Se encontraron gasto pendientes de pago en este periodo ¿Desea continuar con el cierre?",
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Confirmar!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.closePeriod();
+      }
+      this._loadSpinnerService.hideSpinner();
+    })
+    
   }
 
   ReceivedshowMenuNow(event: boolean) {

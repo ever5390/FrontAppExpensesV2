@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CONSTANTES } from '@data/constantes';
 import { PeriodModel } from '@data/models/business/period.model';
+import { ExpensesService } from '@data/services/expenses/expenses.service';
 import { PeriodService } from '@data/services/period/period.service';
 import { SLoaderService } from '@shared/components/loaders/s-loader/service/s-loader.service';
 import { PeriodDetailHeader } from 'app/data/models/business/periodDetailHeader.model';
@@ -23,11 +24,13 @@ export class DetailHeaderPeriodComponent implements OnInit {
 
   constructor(
     private _periodService: PeriodService,
-    private _loadSpinnerService: SLoaderService,
+    private _expenseService: ExpensesService,
+    private _loaderService: SLoaderService,
     private _router: Router
     ) { }
 
   ngOnInit(): void {
+    this._loaderService.showSpinner();
     this.periodShow = this.periodDetailHeaderReceived.period;
   }
 
@@ -36,22 +39,34 @@ export class DetailHeaderPeriodComponent implements OnInit {
     this._router.navigate(['/period/'+this.periodShow.id+"/expense"]);
   }
 
-  closePeriodAtomatic(originAction: string) {
-    this._loadSpinnerService.showSpinner();
-    if(originAction == 'manual') {
+  validExpensesStatusPayInPeriod(originAction: string) {
+    this._loaderService.showSpinner();
+    if(originAction == 'manual')
       this.periodDetailHeaderReceived.period.finalDate = new Date();
-    }
 
+    this._expenseService.getAllExpensesByPeriodIdAndStatusPay(this.periodDetailHeaderReceived.period.id).subscribe(
+      response => {
+        if(response.length > 0) {
+          this.confirmationExpensePendingPay(originAction);
+          return;
+        }
+        this.closePeriod();
+      },
+      error => {
+        Swal.fire("","Ocurrió un error inesperado al intentar validar gastos pendientes previo cierre de periodo","error");
+      }
+    );
+  }
+
+  closePeriod() {
     this._periodService.closePeriod(this.periodDetailHeaderReceived.period).subscribe(
       response => {
-        this._loadSpinnerService.hideSpinner();
+        this._loaderService.hideSpinner();
         Swal.fire(response.title, response.message,response.status);
         this._periodService.saveToLocalStorage(response.object);
         this._router.navigate(["/period"]);
       }, 
       error => {
-        this._loadSpinnerService.hideSpinner();
-        console.log(error);
         Swal.fire(error.error.title, error.error.message,error.error.status);
       }
     );
@@ -61,7 +76,25 @@ export class DetailHeaderPeriodComponent implements OnInit {
     this.flagCalendarpPopUp = true;
   }
 
-  closePeriod(originAction: string){
+  confirmationExpensePendingPay(originAction: string){
+    Swal.fire({
+      title: '',
+      text: " Se encontraron gasto pendientes de pago en este periodo ¿Desea continuar con el cierre?",
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Confirmar!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.closePeriod();
+      }
+      this._loaderService.hideSpinner();
+    })
+    
+  }
+
+  confirmationClosePeriod(originAction: string){
     Swal.fire({
       title: '',
       text: "Este procedimiento cerrará y aperturará un nuevo periodo, por favor confirmar acción.",
@@ -72,8 +105,9 @@ export class DetailHeaderPeriodComponent implements OnInit {
       confirmButtonText: 'Confirmar!'
     }).then((result) => {
       if (result.isConfirmed) {
-        this.closePeriodAtomatic(originAction);
+        this.validExpensesStatusPayInPeriod(originAction);
       }
+      
     })
     
   }
@@ -129,7 +163,7 @@ export class DetailHeaderPeriodComponent implements OnInit {
   }
 
   updateFinalDatePeriod(newFinalDate: Date) {
-    this._loadSpinnerService.showSpinner();
+    this._loaderService.showSpinner();
     //Seteo de fecha final y activación
     this.periodShow = this.periodDetailHeaderReceived.period;
     this.periodShow.activate = true;
@@ -138,7 +172,7 @@ export class DetailHeaderPeriodComponent implements OnInit {
     this._periodService.updatePeriod(this.periodShow, 
         this.periodDetailHeaderReceived.period.id).subscribe(
       response => {
-        this._loadSpinnerService.hideSlow();
+        this._loaderService.hideSlow();
         Swal.fire("","Se realizó con éxito la modificación de la fecha de cierre.","info");
         if(response.object == null) return;
 
@@ -146,7 +180,7 @@ export class DetailHeaderPeriodComponent implements OnInit {
         this._periodService.saveToLocalStorage(response.object);
       }, 
       error => {
-        this._loadSpinnerService.hideSpinner();
+        this._loaderService.hideSpinner();
         console.log(error.error);
       }
     );

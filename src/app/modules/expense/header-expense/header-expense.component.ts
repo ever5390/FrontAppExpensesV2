@@ -1,9 +1,8 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { CONSTANTES } from '@data/constantes';
 import { AccountModel, TypeSatusAccountOPC } from '@data/models/business/account.model';
 import { Workspace } from '@data/models/business/workspace.model';
 import { AccountService } from '@data/services/account/account.service';
-import { ExpensesService } from '@data/services/expenses/expenses.service';
 import { UtilService } from '@shared/services/util.service';
 import { PeriodModel } from 'app/data/models/business/period.model';
 
@@ -17,15 +16,17 @@ export class HeaderExpenseComponent implements OnInit {
   wrkspc: Workspace = new Workspace();
   period: PeriodModel = new PeriodModel();
   accountMain: AccountModel =  new AccountModel();
-
-  @Input() totalGastadoReceived: number = 0.00;
-  // totalGastadoReceived: number = 0.00;
+  
+  @Input() dataReceivedFromExpenseBody =  {
+    totalExpense : 0,
+    showPendingCollect: false
+  }
 
   //Catching & send height header component
   heightHeader: number = 0;
   availableAmount: number = 0.00;
 
-  originComponentToHtml : string = "initial";
+  emisorComponent : string = "initial";
   
   @ViewChild("container_header") container_header : ElementRef | any;
   @Output() emitterHeight= new EventEmitter();
@@ -42,17 +43,15 @@ export class HeaderExpenseComponent implements OnInit {
   ngOnInit(): void {
     this.wrkspc = JSON.parse(localStorage.getItem("lcstrg_worskpace")!);
     this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
-    
-    this.validateHourIfExistPeriod("");
   }
 
   receivingDataCalendar() {
     this._utilitariesService.receivingdDatesFromCalendarSelected().subscribe(
       response => {
-        this.originComponentToHtml = "calendar";
+        this.emisorComponent = "calendar";
         this.period.startDate = (response.action =='reset')?response.dateRange.startDate:this._utilitariesService.convertDateGMTToString(new Date(response.dateRange.startDate), "initial");
         this.period.finalDate = (response.action =='reset')?response.dateRange.finalDate:this._utilitariesService.convertDateGMTToString(new Date(response.dateRange.finalDate), "final");  
-      }, 
+      },
       error => {
         this.period.startDate = new Date();
         this.period.finalDate = new Date();
@@ -66,7 +65,7 @@ export class HeaderExpenseComponent implements OnInit {
         response => {
           this.accountMain = response;
           if(this.accountMain != null && originReceived == "initial"){
-            this.availableAmount =  parseFloat(this.accountMain.balance) - this.totalGastadoReceived;
+            this.availableAmount =  parseFloat(this.accountMain.balance) - this.dataReceivedFromExpenseBody.totalExpense;
           }
         },
         error => {
@@ -75,40 +74,29 @@ export class HeaderExpenseComponent implements OnInit {
       );
   }
 
-  validateHourIfExistPeriod(orden: string) {
-    if(this.period == null || this.period.id == 0) {
-      this.period = new PeriodModel();
-      this.period.startDate = new Date(),
-      this.period.finalDate = new Date()
-    } else {
-      this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
-    }
-    this.sendResponse(this.period.startDate.toString(), this.period.finalDate.toString(), orden);
-  }
-
-  receivingTotalSpentBySearchingExpense() {
-    this.totalGastadoReceived = 0;
-    this._utilitariesService.receivingTotalSpentToHeaderFromExpenseListMessage().subscribe(
-      response => {
-        this.totalGastadoReceived = response.total;
-        this.showAvailableAmountFromAccountMain(response.from);
-      }, 
-      error =>{
-        console.log(error.error);
-      });
-  }
-
-  private sendResponse(startDate: string, finalDate: string, orden: string) {
-    if(orden != "reset") return;
+  resetExpenseByPeriodSelected(orden: string) {
+    this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
     let dataSend:any = [];
-    dataSend.startDate = startDate;
-    dataSend.finalDate = finalDate;
+    dataSend.startDate = this.period.startDate.toString();
+    dataSend.finalDate = this.period.finalDate.toString();
 
     this._utilitariesService.sendDatesFromCalendarSelected({
       "component": CONSTANTES.CONST_COMPONENT_HEADER,
       "action": "reset",
       "dateRange": dataSend
     });
+  }
+
+  receivingTotalSpentBySearchingExpense() {
+    this.dataReceivedFromExpenseBody.totalExpense = 0;
+    this._utilitariesService.receivingTotalSpentToHeaderFromExpenseListMessage().subscribe(
+      response => {
+        this.dataReceivedFromExpenseBody.totalExpense = response.total;
+        this.showAvailableAmountFromAccountMain(response.from);
+      }, 
+      error =>{
+        console.log(error.error);
+      });
   }
 
   ngAfterViewInit() {

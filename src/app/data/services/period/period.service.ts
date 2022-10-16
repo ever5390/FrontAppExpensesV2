@@ -36,8 +36,8 @@ export class PeriodService {
     );
   }
 
-  getPeriodDetailHeaderByPeriodId(periodId: number): Observable<PeriodDetailHeader>  {
-    return this._http.get(`${this.URLCOMPL}/period-detail/${periodId}`).pipe(
+  getPeriodDetailHeaderByPeriodId(periodId: number, idOwner: number): Observable<PeriodDetailHeader>  {
+    return this._http.get(`${this.URLCOMPL}/owner/${idOwner}/period-detail/${periodId}`).pipe(
       map(response => response as PeriodDetailHeader)
     );
   }

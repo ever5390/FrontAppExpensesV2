@@ -2,6 +2,7 @@ import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { AccountClosedStructure } from '@data/models/Structures/data-account.model';
+import { PeriodService } from '@data/services/period/period.service';
 import { SLoaderService } from '@shared/components/loaders/s-loader/service/s-loader.service';
 import { CONSTANTES } from 'app/data/constantes';
 import { AccountModel, TypeSatusAccountOPC } from 'app/data/models/business/account.model';
@@ -47,13 +48,14 @@ export class DetailBodyPeriodComponent implements OnInit {
 
   constructor(
     private _accountService: AccountService,
-    private _loaderService: SLoaderService,
+    private _loadSpinnerService: SLoaderService,
+    private _periodService: PeriodService,
     private _router: Router
   ) {
   }
 
   ngOnInit(): void {
-    this._loaderService.hideSpinner();
+    this._loadSpinnerService.hideSpinner();
     this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
     this.catchAccountParent();
     this.catchAccountChilds();
@@ -90,7 +92,7 @@ export class DetailBodyPeriodComponent implements OnInit {
           }
         })
       })
-
+      
       return;
     } else {
       this.accountClosedStructureList = []; 
@@ -151,37 +153,36 @@ export class DetailBodyPeriodComponent implements OnInit {
   }
 
   getAllAccountByPeriodSelected(idPeriodReceived: number) {
+    this._loadSpinnerService.showSpinner();
     this._accountService.getListAccountByIdPeriod(idPeriodReceived).subscribe(
       response => {
-        this._loaderService.hideSpinner();
+        this._loadSpinnerService.hideSpinner();
         this.accountListReceived = response;
         this.catchAccountParent();
         this.catchAccountChilds();
       },
       error => {
         console.log(error);
-        this._loaderService.hideSpinner();
+        this._loadSpinnerService.hideSpinner();
         this._router.navigate(["/period"]);
       }
     );
   }
 
   confirmAccount() {
-    this._loaderService.showSpinner();
     this._accountService.confirmAccountStatus(this.period.id).subscribe(
       response => {
         Swal.fire("",response.message,response.status);
         this.getAllAccountByPeriodSelected(this.period.id);
       },
       error => {
-        this._loaderService.hideSpinner();
+        this._loadSpinnerService.hideSpinner();
         Swal.fire(error.error.title,error.error.message,error.error.status);
       }
     );
   }
 
   deleteConfirmAccount(account: AccountModel) {
-    this._loaderService.showSpinner();
     let textMessage = "Se elminará por completo la subcuenta seleccionada";
     if(account.accountType.id== 1)
         textMessage = "Se eliminarán por completo todas las cuentas creadas.";
@@ -197,16 +198,21 @@ export class DetailBodyPeriodComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         this.deleteAccount(account)
+      } else {
+        this._loadSpinnerService.hideSpinner();
       }
     })
-    this._loaderService.hideSpinner();
+    
     
   }
 
   deleteAccount(account: AccountModel) {
+    
+    this._loadSpinnerService.showSpinner();
     this._accountService.deleteAccount(account.id).subscribe(
       response => {
         Swal.fire(response.title, response.message, response.status);
+        this._periodService.saveToLocalStorage(response.object);
         this.getAllAccountByPeriodSelected(this.period.id);
       },
       error => {
@@ -270,7 +276,8 @@ export class DetailBodyPeriodComponent implements OnInit {
   }
 
   receiveToSonComponent(response:any) {
-    console.log(response);
+    console.log("eee");
+    this._loadSpinnerService.hideSpinner();
     this.flagFormulario = false;
     this.getAllAccountByPeriodSelected(this.period.id);
     if(response == null)  return;

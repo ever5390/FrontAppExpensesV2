@@ -21,12 +21,6 @@ const routes: Routes = [
     component: SkeletonComponent,
     children: [
       {
-        path:'',
-        canActivate: [AuthGuard],
-        loadChildren: ()=> import('@modules/expense/expense.module')
-              .then( m => m.ExpenseModule)
-      },
-      {
         path:'period',
         canActivate: [AuthGuard],
         loadChildren: ()=> import('@modules/period/period.module')
@@ -49,7 +43,13 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         loadChildren: ()=> import('@modules/payment-method/payment-method.module')
               .then( m => m.PaymentMethodModule)
-      }
+      },
+      {
+        path:'',
+        canActivate: [AuthGuard],
+        loadChildren: ()=> import('@modules/expense/expense.module')
+              .then( m => m.ExpenseModule)
+      },
     ]
   }
 ];

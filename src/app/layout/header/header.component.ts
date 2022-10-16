@@ -61,6 +61,7 @@ export class HeaderComponent implements OnInit {
   getNotificationRequest(showBlockNotify: boolean) {
     this._notificationExpenseService.getAllNotificationByTypeUserAndUserId(this.owner.id).subscribe(
       response => {
+        // console.log("POOLING ... ");
         if(response != null) {
           this.notificationExpenseList = response.filter( item => {
             if(item.expenseShared.workspace.owner.id == this.owner.id) {
@@ -165,7 +166,7 @@ export class HeaderComponent implements OnInit {
   receiveResponseFromCalendarToParent(data: any) {
     this.flagCalendarpPopUp = false;
     if(data.dateRange == undefined) return;
-
+    console.log(data);
     this._utilService.sendDatesFromCalendarSelected(data);
 
   }

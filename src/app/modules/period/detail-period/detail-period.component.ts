@@ -1,6 +1,7 @@
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { OwnerDaoModel } from '@data/models/business/owner.model';
 import { PeriodModel } from '@data/models/business/period.model';
 import { SLoaderService } from '@shared/components/loaders/s-loader/service/s-loader.service';
 import { AccountModel } from 'app/data/models/business/account.model';
@@ -25,6 +26,7 @@ export class DetailPeriodComponent implements OnInit {
 
   idPeriodReceivedFromListPeriod: string = "0";
   period: PeriodModel = new PeriodModel();
+  owner : OwnerDaoModel = new OwnerDaoModel();
 
   @ViewChild('idPeriod') idPeriod: ElementRef | any;
   
@@ -35,6 +37,7 @@ export class DetailPeriodComponent implements OnInit {
     private _router: Router,
     private _loadSevice: SLoaderService,
     private _periodService: PeriodService  ) {
+      this.owner = JSON.parse(localStorage.getItem("lcstrg_owner")!);
       this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
   }
 
@@ -66,7 +69,7 @@ export class DetailPeriodComponent implements OnInit {
   getAllDataCardPeriod(idPeriodReceived: number) {
     //Obtiene lista de periodos.
     this.flagShowHeader = false;
-    this._periodService.getPeriodDetailHeaderByPeriodId(idPeriodReceived).subscribe(
+    this._periodService.getPeriodDetailHeaderByPeriodId(idPeriodReceived, this.owner.id).subscribe(
       response => {
         this.periodDetailHeaderSend = response;
         this.flagShowHeader = true;

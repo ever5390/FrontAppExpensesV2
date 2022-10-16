@@ -17,6 +17,13 @@
                     <i class="far fa-calendar-day"></i>
                     <span class="px-2">Periodos</span>
                 </div>
+                <div *ngIf="totalExpensesPengingCollect > 0" class="st_aside_option_menu d-flex justify-content-between align-items-center" (click)="redirectRoutes('expensesCollect')">
+                    <div>
+                        <i class="fas fa-comments-dollar"></i>
+                        <span class="px-2">Gastos por cobrar</span>
+                    </div>
+                    <span>{{totalExpensesPengingCollect}}</span>
+                </div>
             </div>
         </div>
         <div class="st_aside_body">

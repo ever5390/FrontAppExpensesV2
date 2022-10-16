@@ -4,6 +4,7 @@ import { CONSTANTES } from '@data/constantes';
 import { OwnerModel } from '@data/models/business/owner.model';
 import { Workspace } from '@data/models/business/workspace.model';
 import { FilterExpensesModel } from '@data/models/Structures/data-object-filtering.model';
+import { NotificationExpenseService } from '@data/services/notification/notification-expense.service';
 import { SLoaderService } from '@shared/components/loaders/s-loader/service/s-loader.service';
 import { UtilService } from '@shared/services/util.service';
 import { ExpenseModel, Tag } from 'app/data/models/business/expense.model';
@@ -20,11 +21,16 @@ export class SkeletonExpenseComponent implements OnInit {
 
   sendHeightHeaderToBody: string = '';
   showBody: boolean = false;
+  isOnlyPendingCollect: boolean = false;
 
   // expense: Expense
   listExpensesToBody: ExpenseModel[] = [];
   sendListExpensesToBody: ExpenseModel[] = [];
   totalGastadoSend: number = 0;
+  dataSendToHeader =  {
+    totalExpense : 0,
+    showPendingCollect: false
+  }
 
   owner : OwnerModel = new OwnerModel();
   wrkspc: Workspace = new Workspace();
@@ -32,72 +38,98 @@ export class SkeletonExpenseComponent implements OnInit {
 
   originComponent : string = "initial";
 
+  listaSelcetedFilter: any[] = [];
+  beforeItem: FilterExpensesModel = new FilterExpensesModel();
+  listShowExpenses: ExpenseModel[] = [];
+
   constructor(
     private _expenseService: ExpensesService,
-    private _rutaActiva: ActivatedRoute,
     private _loadSpinnerService: SLoaderService,
-    private _utilitariesService: UtilService
+    private _utilitariesService: UtilService,
+    private _rutaActiva: ActivatedRoute
   ) {
     this.owner = JSON.parse(localStorage.getItem('lcstrg_owner')!);
     this.wrkspc = JSON.parse(localStorage.getItem("lcstrg_worskpace")!);
     this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
+
     this.receivingDataCalendar();
   }
 
   ngOnInit(): void {
-    this.validateParamsByPeriod();
+    this._loadSpinnerService.showSpinner();
+    this.validateParamRoute();
   }
 
-  validateParamsByPeriod() {
-      //validate if param route
+  validateParamRoute() {
     this._rutaActiva.params.subscribe(
       (params: Params) => {
-        if(params.idPeriod != undefined) {
-          this.getAllExpensesByWorkspaceAndDateRangePeriod(
-            this.wrkspc.id,
-            this.period.startDate.toString(),
-            this.period.finalDate.toString()
-          );
-        } else {
-          this.catchPeriodAndGetAllListExpenses();
-        }
+          if(params.isPending != undefined && params.isPending == 1) {
+            this.isOnlyPendingCollect = true;
+            this.getAllExpensesByWorkspaceAndDateRangePeriod(
+              this.wrkspc.id,
+              this._utilitariesService.convertDateGMTToString(new Date("2022-01-01"), "start"),
+              this._utilitariesService.convertDateGMTToString(new Date(), "final"),
+              "onlyPendingCollect"
+            );
+          } else {
+            this.catchPeriodAndGetAllListExpenses();
+          }
       }
-    );
+    )
+  }
+
+  catchPeriodAndGetAllListExpenses() {
+    if(this.period != null){
+      this.originComponent = "initial";
+      if(!this.isOnlyPendingCollect) {
+        this.getAllExpensesByPeriodId();
+      } else {
+        this.getAllExpensesByWorkspaceAndDateRangePeriod(
+          this.wrkspc.id,
+          this._utilitariesService.convertDateGMTToString(new Date("2022-01-01"), "start"),
+          this._utilitariesService.convertDateGMTToString(new Date(), "final"),
+          "onlyPendingCollect"
+        );
+      }
+
+    } else {
+      this.getAllExpensesByWorkspaceAndDateRangePeriod(this.wrkspc.id,
+        this._utilitariesService.convertDateToString(new Date()),
+        this._utilitariesService.convertDateToString(new Date()),
+        "");
+    }
   }
 
   receivingDataCalendar() {
-
     this._utilitariesService.receivingdDatesFromCalendarSelected().subscribe(
       response => {
+        console.log("dddd");
+        this._loadSpinnerService.showSpinner();
         this.originComponent = "calendar";
         this.getAllExpensesByWorkspaceAndDateRangePeriod(
           this.wrkspc.id,
-          (response.action=='reset')?response.dateRange.startDate:this._utilitariesService.convertDateGMTToString(response.dateRange.startDate, "start"),
-          (response.action=='reset')?response.dateRange.finalDate:this._utilitariesService.convertDateGMTToString(response.dateRange.finalDate, "final")
+          this._utilitariesService.convertDateGMTToString(response.dateRange.startDate, "start"),
+          this._utilitariesService.convertDateGMTToString(response.dateRange.finalDate, "final"),
+          ""
         );
       }, 
       error => {
         console.log(error.error);
-        this.getAllExpensesByWorkspaceAndDateRangePeriod(
-          this.wrkspc.id,
-          this._utilitariesService.convertDateGMTToString(new Date(), "initial"),
-          this._utilitariesService.convertDateGMTToString(new Date(), "final")
-        );
+        this.getAllExpensesByPeriodId();
       }
     );
   }
 
-  getAllExpensesByWorkspaceAndDateRangePeriod(idWrkspc: number, dateBegin: string, dateEnd: string) {
+  getAllExpensesByPeriodId() {
     this.showBody = false;
-    this._loadSpinnerService.showSpinner();
-    this._expenseService.getAllExpensesByWorkspaceAndDateRangePeriod(idWrkspc, dateBegin, dateEnd).subscribe(
+    this._expenseService.getAllExpensesByPeriodId(this.period.id, this.owner.id).subscribe(
       response => {
-        this._loadSpinnerService.hideSlow();
         this.showBody = true;
         this.sendListExpensesToBody = response;
         this.listExpensesToBody = response;
         this.totalGastadoSend = 0;
         this.sendListExpensesToBody.forEach(element => {
+          element.editable = false;
           if(element.payer == "") {
             element.payer = element.registerPerson.name
           };
@@ -108,6 +140,49 @@ export class SkeletonExpenseComponent implements OnInit {
         });
 
         this.createNewColumnWithDataBySearching();
+
+        this._utilitariesService.sendTotalSpentToHeaderFromExpenseListMessage({"total":this.totalGastadoSend, "from":this.originComponent});
+      },
+      error => {
+        console.log(error);
+        if(error.status == null) {
+          Swal.fire("Error","Se generó un error desconocido, revise su conexión e inténtelo más tarde.","error");
+        }
+      }
+    );
+  }
+
+  getAllExpensesByWorkspaceAndDateRangePeriod(idWrkspc: number, dateBegin: string, dateEnd: string, onlyPendingCollect : string) {
+    this.showBody = false;
+    this._expenseService.getAllExpensesByWorkspaceAndDateRangePeriod(idWrkspc, dateBegin, dateEnd).subscribe(
+      response => {
+        this.showBody = true;
+
+        if(onlyPendingCollect == "onlyPendingCollect") {
+          response = response.filter(item => item.pendingPayment == true);
+        }
+
+        this.sendListExpensesToBody = response;
+        this.listExpensesToBody = response;        
+        this.totalGastadoSend = 0;
+        this.sendListExpensesToBody.forEach(element => {
+          element.editable = false;
+
+          if(element.payer == "") {
+            element.payer = element.registerPerson.name
+          };
+          if(element.pendingPayment == false && element.payer != element.registerPerson.name){
+            element.editable = true;
+          }
+          this.totalGastadoSend = this.totalGastadoSend + parseFloat(element.amount);
+        });
+
+        this.createNewColumnWithDataBySearching();
+
+        if(onlyPendingCollect == "onlyPendingCollect") {
+          this.dataSendToHeader.totalExpense = this.totalGastadoSend;
+          this.dataSendToHeader.showPendingCollect = true;
+        }
 
         this._utilitariesService.sendTotalSpentToHeaderFromExpenseListMessage({"total":this.totalGastadoSend, "from":this.originComponent});
       },
@@ -160,31 +235,11 @@ export class SkeletonExpenseComponent implements OnInit {
         return item.strSearchAllJoin.toUpperCase().includes(strSearch.toUpperCase()) 
       }
     );
-    
     this.getTotalSpentByFilterAndReloadListExpenses();
   }
 
-  catchPeriodAndGetAllListExpenses() {
-    if(this.period != null){
-      this.originComponent = "initial";
-      this.getAllExpensesByWorkspaceAndDateRangePeriod(
-        this.wrkspc.id,
-        this.period.startDate.toString(),
-        this.period.finalDate.toString()
-      );
-    } else {
-      this.getAllExpensesByWorkspaceAndDateRangePeriod(this.wrkspc.id,
-        this._utilitariesService.convertDateToString(new Date()),
-        this._utilitariesService.convertDateToString(new Date()));
-    }
-  }
-
-  listaSelcetedFilter: any[] = [];
-  beforeItem: FilterExpensesModel = new FilterExpensesModel();
-  listShowExpenses: ExpenseModel[] = [];
   receivedItemFilterSeleceted() {
-    
-   
+    this._loadSpinnerService.showSpinner();
     this._utilitariesService.receivingItemResumeSelected().subscribe(
       response => {
         let listActive = response.filter( (itemActive: { active: boolean; }) => itemActive.active === true);

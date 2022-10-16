@@ -71,13 +71,17 @@
                         </div>
                     </div>
                 </div>
-                <div class="st_list_categ_selected" *ngIf="item.account.statusAccount=='CLOSED' && item.account.categories.length>0">
-                    <ng-container *ngFor="let categ of item.account.categories">
-                        <div>
-                            <img src="{{categ.image}}" alt="" srcset="">
-                            <label for="">{{categ.name}}</label>
-                        </div>
-                    </ng-container>
+                <div *ngIf="item.account.categories.length>0">
+                    <p>categorías asociadas</p>
+                    <div  class="st_list_categ_selected">
+                        <ng-container *ngFor="let categ of item.account.categories">
+                            <div>
+                                <img src="{{categ.image}}" alt="" srcset="">
+                                <label for="">{{categ.name}}</label>
+                            </div>
+                        </ng-container>
+                    </div>
+                    
                 </div>
             </div>
         </div>

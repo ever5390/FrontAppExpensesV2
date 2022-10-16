@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, OnDestroy, Output, Renderer2, ViewChild } from '@angular/core';
 import { AccountModel, TypeSatusAccountOPC } from '@data/models/business/account.model';
 import { CategoryModel } from '@data/models/business/category.model';
 import { GroupModel } from '@data/models/business/group.model';
@@ -22,7 +22,7 @@ import Swal from 'sweetalert2';
   templateUrl: './account.component.html',
   styleUrls: ['./account.component.css']
 })
-export class AccountComponent implements OnInit {
+export class AccountComponent implements OnInit, OnDestroy {
 
   subject = new Subject();
   textSearch: string = '';
@@ -85,6 +85,7 @@ export class AccountComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this._loadSpinnerService.hideSpinner();
     this.owner = JSON.parse(localStorage.getItem('lcstrg_owner')!);
     this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
     
@@ -96,6 +97,12 @@ export class AccountComponent implements OnInit {
     this.categoriesChecked = this.dataStructureReceived.object.categories;
     this.setterDataStructureSendToAccouuntList();
   }
+
+  ngOnDestroy() {
+    console.log("Sdios account");
+    this._loadSpinnerService.hideSpinner();
+  }
+
 
   private setterDataStructureSendToAccouuntList() {
     this.dataOptionsSelectExpenseList = [];
@@ -237,7 +244,7 @@ export class AccountComponent implements OnInit {
     this._accountService.saveTransferenceAccount(transferToSave).subscribe(
       (response :any)=> {
         Swal.fire(response.title,response.message,response.status);
-        this._loadSpinnerService.hideSlow();
+        this._loadSpinnerService.hideSpinner();
         this.responseToFatherComponent.emit(response);
       },
       error => {
@@ -259,6 +266,7 @@ export class AccountComponent implements OnInit {
       },
       error => {
         console.log(error);
+        this._loadSpinnerService.hideSpinner();
         Swal.fire(error.error.title,error.error.message,error.error.status);
       }
     );
@@ -269,11 +277,12 @@ export class AccountComponent implements OnInit {
     this._accountService.updateAccount(accountToSave).subscribe(
       (response :any)=> {
         Swal.fire(response.title,response.message, response.status);
-        this._loadSpinnerService.hideSpinner();
+        // this._loadSpinnerService.hideSpinner();
         this.responseToFatherComponent.emit(this.dataStructureReceived);
       },
       error => {
         console.log(error);
+        this._loadSpinnerService.hideSpinner();
         Swal.fire(error.error.title,error.error.message,error.error.status);
       }
     );
@@ -357,7 +366,6 @@ export class AccountComponent implements OnInit {
   }
 
   showListItemsForSelect(itemShow: string) {
-
     if(itemShow == 'categories') {
       this.flagShowListCategories = true;
       this.item = this.lisCategoriesForSelect.nativeElement;
@@ -368,13 +376,15 @@ export class AccountComponent implements OnInit {
   }
 
   getAllCategories() {
+    //this._loadSpinnerService.showSpinner();
     this._categoryService.getAllCategories(this.owner.id).subscribe(
       response => {
+        this._loadSpinnerService.hideSpinner();
         this.listaCategories = response.reverse();
         this.showCategoriesActivesByAccountAndPendings();
-        this._loadSpinnerService.hideSpinner();
       },
       error => {
+        this._loadSpinnerService.hideSpinner();
         console.log(error);
       }
     );
@@ -427,6 +437,7 @@ export class AccountComponent implements OnInit {
   }
 
   createNewCategory() {
+    this._loadSpinnerService.showSpinner();
     this.newCategory.active = false;
     this.newCategory.group = new GroupModel(true,"","",2,"",new OwnerModel());
     this.newCategory.image = CONSTANTES.CONST_IMAGEN_DEFAULT;
@@ -434,7 +445,11 @@ export class AccountComponent implements OnInit {
     this.newCategory.owner = this.owner;
     this._categoryService.create(this.newCategory).subscribe(
       response=> {
-        this.textSaveCategory = "categoría creada!";
+        
+        setTimeout(() => {
+          this.textSaveCategory = "categoría creada!";
+        }, 100);
+        this.textSaveCategory = "";
         this.textSearch = "";
         this.getAllCategories();
       },

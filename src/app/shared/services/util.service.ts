@@ -91,6 +91,5 @@ export class UtilService {
     receivingdDatesFromCalendarSelected():Observable<any> {
         return this.subjectDates$.asObservable();
     }
-
     
 }
