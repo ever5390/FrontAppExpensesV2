@@ -11,7 +11,6 @@ import { interval } from 'rxjs';
 import { SLoaderService } from '@shared/components/loaders/s-loader/service/s-loader.service';
 import { ExpensesService } from '@data/services/expenses/expenses.service';
 
-
 @Component({
   selector: 'app-skeleton',
   templateUrl: './skeleton.component.html',
@@ -132,7 +131,7 @@ export class SkeletonComponent implements OnInit {
 
   validExpensesStatusPayInPeriod(originAction: string) {
     this._loadSpinnerService.showSpinner();
-    this._expenseService.getAllExpensesByPeriodIdAndStatusPay(this.period.id).subscribe(
+    this._expenseService.getAllExpensesWithStatusPayEqualsTrueByPeriodid(this.period.id).subscribe(
       response => {
         if(response.length > 0) {
           this.confirmationExpensePendingPay(originAction);
@@ -193,10 +192,16 @@ export class SkeletonComponent implements OnInit {
       }, 1000);
   }
 
-  ReceivingAsideAction(event: any) {
-    this._router.navigate(['/']);
+  ReceivingAsideAction(objectSendExpenses: any) {
     this.showBody = false;
     this.getAllWorkspaceByOwnerId();
+    this._router.navigate(['/']);
+  }
+
+  ReceivingHeaderAction(objectSendExpenses: any) {
+    this.showBody = false;
+    this.getAllWorkspaceByOwnerId();
+    this._router.navigate(['/']);
   }
 
 }

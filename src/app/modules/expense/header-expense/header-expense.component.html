@@ -1,27 +1,29 @@
 <div #container_header>
-    <ng-container *ngIf="!dataReceivedFromExpenseBody.showPendingCollect; else templateListPendingCollect">
+    <ng-container *ngIf="!dataReceivedToShowHeaderFromExpenseBody.flagIsPendingCollect; else templateListPendingCollect">
         <div class="st_container_header">
             <div class="st_container_title_spent_available">
                 <div class="st_block_subtitle">
                     <label>Total Gastado</label>
-                    <span>S/ {{dataReceivedFromExpenseBody.totalExpense | number: '1.2-2'}}</span>
+                    <span>S/ {{dataReceivedToShowHeaderFromExpenseBody.total | number: '1.2-2'}}</span>
                 </div>
-                <div class="st_block_subtitle" *ngIf="accountMain != null  && accountMain.id != 0">
+                <div class="st_block_subtitle" *ngIf="dataReceivedToShowHeaderFromExpenseBody.flagShowAvailableAmoount">
                     <label>Disponible</label>
-                    <span [ngSwitch]="accountMain.balanceFlow" >
-                        <span *ngSwitchCase="80" style="color:'yellow'">S/ {{availableAmount | number: '1.2-2'}}</span>
-                        <span *ngSwitchCase="40" style="color:'orange'">S/ {{availableAmount | number: '1.2-2'}}</span>
-                        <span *ngSwitchCase="0" style="color:'red'">    S/ {{availableAmount | number: '1.2-2'}}</span>
-                        <span  *ngSwitchDefault style="color:'black'">  S/ {{availableAmount | number: '1.2-2'}}</span>
+                    <span [ngSwitch]="dataReceivedToShowHeaderFromExpenseBody.availableAmount" >
+                        <span *ngSwitchCase="80" style="color:'yellow'">S/ {{dataReceivedToShowHeaderFromExpenseBody.availableAmount | number: '1.2-2'}}</span>
+                        <span *ngSwitchCase="40" style="color:'orange'">S/ {{dataReceivedToShowHeaderFromExpenseBody.availableAmount | number: '1.2-2'}}</span>
+                        <span *ngSwitchCase="0" style="color:'red'">    S/ {{dataReceivedToShowHeaderFromExpenseBody.availableAmount | number: '1.2-2'}}</span>
+                        <span  *ngSwitchDefault style="color:'black'">  S/ {{dataReceivedToShowHeaderFromExpenseBody.availableAmount | number: '1.2-2'}}</span>
                     </span>
                 </div>
             </div>
-            <div (click)="resetExpenseByPeriodSelected('reset')" class="st_fc_header mt-1 d-flex align-items-center justify-content-center w-100">
+            <div (click)="sendOrderToExpenseShow()" class="st_fc_header mt-1 d-flex align-items-center justify-content-center w-100">
                 <img class="mx-2" src="../../../../assets/images/icon calendar.png" alt="" srcset="">
-                <ng-container *ngIf="(period.activate || emisorComponent !='initial'); else elsePeriodActivateEqualsFalse;">
-                <span [ngStyle]="{'color':(period.statusPeriod == false) ? 'red' : '#000'}">Del {{period.startDate | date: 'EEE dd MMM  HH:mm:ss' | uppercase}}
-                    hasta {{period.finalDate | date: 'EEE dd MMM  HH:mm:ss' | uppercase}}
-               </span>
+                <!-- *ngIf="(period.activate || emisorComponent !='initial'); else elsePeriodActivateEqualsFalse;" -->
+                <ng-container>
+                    <span [ngStyle]="{'color':(period.statusPeriod == false) ? 'red' : '#000'}">
+                        Del {{dataReceivedToShowHeaderFromExpenseBody.dateBegin | date: 'EEE dd MMM  HH:mm:ss' | uppercase}}
+                        hasta {{dataReceivedToShowHeaderFromExpenseBody.dateEnd | date: 'EEE dd MMM  HH:mm:ss' | uppercase}}
+                </span>
                 </ng-container>
                 <img class="mx-2"  src="../../../../assets/images/icon calendar.png" alt="" srcset="">
             </div>
@@ -39,7 +41,7 @@
     <div class="st_container_header">
         <div class="st_block_subtitle">
             <label>Gastos por Cobrar</label>
-            <span>S/ {{dataReceivedFromExpenseBody.totalExpense | number: '1.2-2'}}</span>
+            <span>S/ {{dataReceivedToShowHeaderFromExpenseBody.total | number: '1.2-2'}}</span>
         </div>
     </div>
 </ng-template>

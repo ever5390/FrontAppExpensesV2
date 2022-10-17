@@ -1,13 +1,12 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { CONSTANTES } from '@data/constantes';
+import { IExpensesSendParams } from '@data/interfaces/iexpense-params-send.interface';
 import { ExpenseModel } from '@data/models/business/expense.model';
-import { NotificationExpense, TypeStatusNotificationExpense } from '@data/models/business/notificationExpense.model';
 import { OwnerModel } from '@data/models/business/owner.model';
 import { Workspace } from '@data/models/business/workspace.model';
 import { ExpensesService } from '@data/services/expenses/expenses.service';
-import { NotificationExpenseService } from '@data/services/notification/notification-expense.service';
 import { UserService } from '@data/services/user/user.service';
-import { WorkspacesService } from '@data/services/workspace/workspaces.service';
 import { UtilService } from '@shared/services/util.service';
 import { PeriodModel } from 'app/data/models/business/period.model';
 import Swal from 'sweetalert2';
@@ -31,7 +30,7 @@ export class AsideComponent implements OnInit {
   @ViewChild('aside') aside: ElementRef | any;
   @Input("active_menu") active_menu: boolean = false;
   @Output() hiddenMenuNow: EventEmitter<boolean> = new EventEmitter();
-  @Output() redirectToParent: EventEmitter<boolean> = new EventEmitter();
+  @Output() redirectToParentFromAside: EventEmitter<IExpensesSendParams> = new EventEmitter();
     
   constructor(
     private _renderer: Renderer2,
@@ -64,8 +63,8 @@ export class AsideComponent implements OnInit {
 
   }
 
-  getAllExpensesByWorkspaceAndDateRangePeriod(idWrkspc: number, dateBegin: string, dateEnd: string, onlyPendingCollect : string) {
-    this._expenseService.getAllExpensesByWorkspaceAndDateRangePeriod(idWrkspc, dateBegin, dateEnd).subscribe(
+  getAllExpensesByWorkspaceAndDateRangePeriod(idWorkspace: number, dateBegin: string, dateEnd: string, onlyPendingCollect : string) {
+    this._expenseService.getAllExpensesByWorkspaceAndDateRange(idWorkspace, dateBegin, dateEnd).subscribe(
       response => {
         response = response.filter(item => item.pendingPayment == true);
         this.totalExpensesPengingCollect = response.length;
@@ -88,10 +87,10 @@ export class AsideComponent implements OnInit {
 
     switch (destiny) {
       case 'workspace':
-        this.redirectToParent.emit();
+        this.sendOrderToExpenseShow(CONSTANTES.CONST_TYPE_REQUEST_EXPENSES_SHOW_EXPENSES_ACTUAL_PERIOD, this.period.id);
         break;
       case 'expensesCollect':
-        this._routes.navigate(['/expenses/pending-to-collect/1']);
+        this.sendOrderToExpenseShow(CONSTANTES.CONST_TYPE_REQUEST_EXPENSES_SHOW_PENDING_COLLECT, 0);
         break;
       case 'according':
         this._routes.navigate(['/according']);
@@ -110,6 +109,17 @@ export class AsideComponent implements OnInit {
     }
 
     this.hiddenMenu();
+  }
+
+  sendOrderToExpenseShow(optionSend: string, idPeriod : number) { 
+    let iExpensesSendParams :IExpensesSendParams = { 
+      idPeriod : idPeriod,
+      dateBegin : "2022-01-01",
+      dateEnd : "",
+      optionOrigin : optionSend
+    };
+    this._expenseService.saveObjectParamsToSendExpensesShowByOptions(iExpensesSendParams);
+    this.redirectToParentFromAside.emit(iExpensesSendParams);
   }
 
   hiddenMenu() {

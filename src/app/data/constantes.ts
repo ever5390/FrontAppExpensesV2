@@ -12,6 +12,12 @@ export class CONSTANTES {
     public static CONST_COMPONENT_USER = 'User';
     public static CONST_COMPONENT_NOTIFICATION: 'Calendar';
 
+    public static CONST_TYPE_REQUEST_EXPENSES_SHOW_EXPENSES_ACTUAL_PERIOD = "expenses-all";
+    public static CONST_TYPE_REQUEST_EXPENSES_SHOW_PENDING_COLLECT = "pendingCollect";
+    public static CONST_TYPE_REQUEST_EXPENSES_SHOW_CALENDAR = "calendar-range";
+    public static CONST_TYPE_REQUEST_EXPENSES_SHOW_LAST_PERIODS = "last-periods";
+    public static CONST_TYPE_REQUEST_EXPENSES_SHOW_PERIOD_ACTUAL_RESET = "actual-reset";
+
     public static CONST_TRANSFERENCIA_INTERNA = 'Transferencia interna';
     public static CONST_TRANSFERENCIA_EXTERNA = 'Transferencia externa';
     public static CONST_CUENTAS = 'Cuentas';

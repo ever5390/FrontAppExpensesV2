@@ -1,5 +1,8 @@
 import { Component, OnInit, Output, EventEmitter, Renderer2, ViewChild, ElementRef, Input } from '@angular/core';
+import { Router } from '@angular/router';
+import { IExpensesSendParams } from '@data/interfaces/iexpense-params-send.interface';
 import { PeriodModel } from '@data/models/business/period.model';
+import { UtilService } from '@shared/services/util.service';
 import { CONSTANTES } from 'app/data/constantes';
 import { Calendar } from 'app/data/models/calendar.model';
 import Swal from 'sweetalert2';
@@ -77,7 +80,7 @@ export class CalendarComponent implements OnInit {
   @ViewChild("containerAll") 
   containerAll: ElementRef | any;
 
-  constructor(private _renderer: Renderer2,) {
+  constructor(private _renderer: Renderer2, private _router: Router, private _utilitariesService: UtilService) {
     this._renderer.listen('window','click',(e: Event)=> {
         if(this.containerAll && e.target === this.containerAll.nativeElement) {
           this.hiddenCalendar();
@@ -544,13 +547,13 @@ export class CalendarComponent implements OnInit {
   }
 
   private sendResponse(dataSend: any) {    
-    this.sendResponseFromCalendarToParent.emit({
-      "component": CONSTANTES.CONST_COMPONENT_CALENDAR,
-      "dateRange": dataSend
-    });
-  }
-
-  addHourAndMinutes(order: string) {
+    let iExpensesSendParams :IExpensesSendParams = { 
+      idPeriod : 0,
+      dateBegin : dataSend.startDate,
+      dateEnd : dataSend.finalDate,
+      optionOrigin : CONSTANTES.CONST_TYPE_REQUEST_EXPENSES_SHOW_CALENDAR
+    };
+    this.sendResponseFromCalendarToParent.emit(iExpensesSendParams);
   }
 
   getDateWithMinusDay(monthDiscount: number, dayDiscount: number ): Date {

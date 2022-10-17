@@ -1,5 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
+import { IExpensesSendParams } from '@data/interfaces/iexpense-params-send.interface';
 import { NotificationExpense, TypeStatusNotificationExpense } from '@data/models/business/notificationExpense.model';
 import { OwnerModel } from '@data/models/business/owner.model';
 import { PeriodModel } from '@data/models/business/period.model';
@@ -52,7 +53,7 @@ export class HeaderComponent implements OnInit {
             subscribe.unsubscribe()
             this._router.navigate(["/login"]);
           }
-          this.getNotificationRequest(false);
+          //this.getNotificationRequest(false);
       }
     );
   
@@ -163,12 +164,9 @@ export class HeaderComponent implements OnInit {
     this.flagNotificationpPopUp = false;
   }
 
-  receiveResponseFromCalendarToParent(data: any) {
+  receiveResponseFromCalendarToParent(iExpensesSendParams: any) {
     this.flagCalendarpPopUp = false;
-    if(data.dateRange == undefined) return;
-    console.log(data);
-    this._utilService.sendDatesFromCalendarSelected(data);
-
+    this._utilService.sendDatesFromCalendarSelected(iExpensesSendParams);
   }
  
 

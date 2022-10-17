@@ -1,5 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { IExpensesSendParams } from '@data/interfaces/iexpense-params-send.interface';
 import { URL_BASE_API_V1 } from 'app/config/global.url';
 import { ExpenseModel, Tag } from 'app/data/models/business/expense.model';
 import { Observable } from 'rxjs';
@@ -14,7 +15,12 @@ export class ExpensesService {
   private httpHeaders =  new HttpHeaders({'Content-type':'application/json'});
 
   private _expenseToEdit: ExpenseModel | undefined;
-  private _expensePendingCollect: ExpenseModel[] = [];
+  private _expenseReciveAndSend : IExpensesSendParams = { 
+    idPeriod :0, 
+    dateBegin : "",
+    dateEnd : "",
+    optionOrigin : ""
+  };
 
   public get expenseToEdit(): ExpenseModel {
     if(this._expenseToEdit != null && this._expenseToEdit != undefined ) {
@@ -23,10 +29,10 @@ export class ExpensesService {
     return new ExpenseModel();
   }
 
-  public get expensePendingCollect(): ExpenseModel[] {
-      return this._expensePendingCollect;
+  public get expenseReciveAndSend(): IExpensesSendParams {
+      return this._expenseReciveAndSend;
   }
-  
+
   constructor(
     private _http: HttpClient
     ) { }
@@ -35,26 +41,12 @@ export class ExpensesService {
       this._expenseToEdit = expenseReqToEdit;
   }
 
-  guardarListExpensePendingCollect(expenseList: ExpenseModel[]) : void {
-    this._expensePendingCollect = expenseList;
-  }
-    
-  getAllExpensesByWorkspaceAndDateRangePeriod(idWorkspace: number, dateBegin: string, dateEnd: string): Observable<ExpenseModel[]>  {
-    return this._http.get(`${this.URLCOMPL}/expense-workspace?idWorkspace=${idWorkspace}&dateBegin=${dateBegin}&dateEnd=${dateEnd}`)
-      .pipe(
-        map(response => response as ExpenseModel[])
-        );
+  saveObjectParamsToSendExpensesShowByOptions(objectParamsToSend: IExpensesSendParams) : void {
+    this._expenseReciveAndSend = objectParamsToSend;
   }
 
-  getAllExpensesByPeriodId(idPeriod: number, idOwner: number): Observable<ExpenseModel[]>  {
-    return this._http.get(`${this.URLCOMPL}/owner/${idOwner}/period/${idPeriod}/expenses`)
-      .pipe(
-        map(response => response as ExpenseModel[])
-        );
-  }
-
-  getAllExpensesByPeriodIdAndStatusPay(idPeriod: number): Observable<ExpenseModel[]>  {
-    return this._http.get(`${this.URLCOMPL}/period/${idPeriod}/expenses/statuspay/1`)
+  getAllExpensesWithStatusPayEqualsTrueByPeriodid(idPeriod: number): Observable<ExpenseModel[]>  {
+    return this._http.get(`${this.URLCOMPL}/period/${idPeriod}/expenses/by-statuspay/1`)
       .pipe(
         map(response => response as ExpenseModel[])
         );
@@ -65,7 +57,7 @@ export class ExpensesService {
   }
 
   updateVouchersToExpense(expenseObject: ExpenseModel) : Observable<any> {
-    return this._http.put<ExpenseModel>(`${this.URLCOMPL}/expense/vouchers`,expenseObject,{ headers: this.httpHeaders})
+    return this._http.put<ExpenseModel>(`${this.URLCOMPL}/expense/update-vouchers`,expenseObject,{ headers: this.httpHeaders})
   }
 
   updateObjectExpense(expenseObject: ExpenseModel) : Observable<any> {
@@ -73,11 +65,11 @@ export class ExpensesService {
   }
   
   getAllTagsByOwnerId(idOwner: number) : Observable<Tag[]> {
-    return this._http.get<Tag[]>(`${this.URLCOMPL}/owner/${idOwner}/tag-list`);
+    return this._http.get<Tag[]>(`${this.URLCOMPL}/owner/${idOwner}/tags`);
   }
   
   updateStatusPayedExpense(idExpense: number): Observable<any> {
-    return this._http.get<any>(`${this.URLCOMPL}/expense/check-pay/${idExpense}`);
+    return this._http.get<any>(`${this.URLCOMPL}/expense/update-statuspay/${idExpense}`);
   }
   
   deleteExpenseById(idExpense: number): Observable<any> {
@@ -120,6 +112,19 @@ export class ExpensesService {
     }
 
     localStorage.setItem("expenseToRegisterPending",JSON.stringify(expenseToSaveLocalStorage));
+  }
+
+  getAllExpensesByWorkspaceAndDateRange(idWorkspace: number, dateBegin: string, dateEnd: string): Observable<ExpenseModel[]>  {
+    return this._http.get(`${this.URLCOMPL}/workspace/${idWorkspace}/expenses/date-range?dateBegin=${dateBegin}&dateEnd=${dateEnd}`)
+      .pipe(
+        map(response => response as ExpenseModel[])
+        );
+  }
+  getAllExpensesByWorkspaceAndByPeriodId(idWorkspace: number, idPeriod: number): Observable<ExpenseModel[]>  {
+    return this._http.get(`${this.URLCOMPL}/workspace/${idWorkspace}/period/${idPeriod}/expenses`)
+      .pipe(
+        map(response => response as ExpenseModel[])
+        );
   }
   
 }

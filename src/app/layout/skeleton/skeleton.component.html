@@ -1,5 +1,6 @@
 <app-header 
-    (showMenuNow)="ReceivedshowMenuNow($event)">
+    (showMenuNow)="ReceivedshowMenuNow($event)"
+    (redirectToParentFromHeader)="ReceivingHeaderAction($event)" >
 </app-header>
 
 <div class="container-fluid" *ngIf="showBody" >
@@ -8,6 +9,6 @@
 
 <app-aside *ngIf="showAside" 
     (hiddenMenuNow)="ReceivedgHiddenMenuNow($event)"
-    (redirectToParent)="ReceivingAsideAction($event)" 
+    (redirectToParentFromAside)="ReceivingAsideAction($event)" 
     [active_menu]="active_menu_click">
 </app-aside>

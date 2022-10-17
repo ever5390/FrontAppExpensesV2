@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CONSTANTES } from '@data/constantes';
+import { IExpensesSendParams } from '@data/interfaces/iexpense-params-send.interface';
 import { PeriodModel } from '@data/models/business/period.model';
 import { ExpensesService } from '@data/services/expenses/expenses.service';
 import { PeriodService } from '@data/services/period/period.service';
@@ -35,8 +36,14 @@ export class DetailHeaderPeriodComponent implements OnInit {
   }
 
   viewExpenseByPeriod() {
-    this._periodService.saveToLocalStorage(this.periodShow);
-    this._router.navigate(['/period/'+this.periodShow.id+"/expense"]);
+      let objectSendExpenses :IExpensesSendParams = { 
+        idPeriod : this.periodShow.id,
+        dateBegin : this.periodShow.startDate.toString(),
+        dateEnd : this.periodShow.finalDate.toString(),
+        optionOrigin : CONSTANTES.CONST_TYPE_REQUEST_EXPENSES_SHOW_LAST_PERIODS
+      };
+      this._expenseService.saveObjectParamsToSendExpensesShowByOptions(objectSendExpenses);
+      this._router.navigate(["/"]);
   }
 
   validExpensesStatusPayInPeriod(originAction: string) {
@@ -44,10 +51,10 @@ export class DetailHeaderPeriodComponent implements OnInit {
     if(originAction == 'manual')
       this.periodDetailHeaderReceived.period.finalDate = new Date();
 
-    this._expenseService.getAllExpensesByPeriodIdAndStatusPay(this.periodDetailHeaderReceived.period.id).subscribe(
+    this._expenseService.getAllExpensesWithStatusPayEqualsTrueByPeriodid(this.periodDetailHeaderReceived.period.id).subscribe(
       response => {
         if(response.length > 0) {
-          this.confirmationExpensePendingPay(originAction);
+          this.confirmationExpensePendingPay();
           return;
         }
         this.closePeriod();
@@ -76,7 +83,7 @@ export class DetailHeaderPeriodComponent implements OnInit {
     this.flagCalendarpPopUp = true;
   }
 
-  confirmationExpensePendingPay(originAction: string){
+  confirmationExpensePendingPay(){
     Swal.fire({
       title: '',
       text: " Se encontraron gasto pendientes de pago en este periodo ¿Desea continuar con el cierre?",
@@ -107,7 +114,6 @@ export class DetailHeaderPeriodComponent implements OnInit {
       if (result.isConfirmed) {
         this.validExpensesStatusPayInPeriod(originAction);
       }
-      
     })
     
   }

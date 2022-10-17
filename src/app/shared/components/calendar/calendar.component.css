@@ -1,11 +1,11 @@
 .st_container_calendar {
   position: absolute;
   width: 100%;
-  height: 100vh;
+  height: 100%;
   top: 0;
   right: 0;
   z-index: 2;
-  background-color: #3a5e5618;
+  box-shadow: 0px 0px 8px 6px rgba(0,0,0,0.1);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -20,18 +20,16 @@
   color: #4c796f;
 }
 
-.calendar {  
-    /* margin-top: 45px; */
-    /* float: right; */
+.calendar {
     margin: auto;
     width: 290px;
     max-width: 290px;
     background-color: #fff;
-    box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;    
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
     font-size: .9rem;
     z-index: 1;
 }
-  
+
   .month {
     width: 100%;
     display: flex;
@@ -41,11 +39,11 @@
     color: rgb(44, 43, 43);
     justify-content: space-between;
   }
-  
+
       .month i {
         cursor: pointer;
       }
-      
+
       .month h1 {
         font-weight: bold;
         text-transform: uppercase;
@@ -53,7 +51,7 @@
         font-size: 1rem;
       }
 
-  
+
   .weekdays {
     width: 100%;
     padding: 10px;
@@ -68,7 +66,7 @@
       .weekdays div {
         text-align: center;
       }
-  
+
   .days {
     width: 100%;
     padding: 10px;
@@ -76,7 +74,7 @@
     grid-template-columns: repeat(7, calc(100%/7));
     grid-template-rows: repeat(6, 38px);
   }
-  
+
       .days div {
         position: relative;
         display: flex;
@@ -84,12 +82,12 @@
         justify-content: center;
         margin-bottom: 4px;
       }
-        
+
         .days div:hover {
           cursor: pointer;
         }
 
-  
+
   /* .days div:hover:not(.todayS) {
     background-color: #88beb2;
     border: 0.2rem solid #777;
@@ -97,17 +95,17 @@
     cursor: pointer;
     z-index: 3;
   } */
-  
+
   .prev-date,
   .next-date {
     opacity: 0.5;
   }
-  
+
   .todayS {
     border: 2px solid #88beb2;
     border-radius: 50%;
   }
-  
+
 
   .st_content_days_weeks {
     position: relative;
@@ -217,7 +215,7 @@ input[type="number"] {
   border: none;
   width: 70px;
 }
-/* 
+/*
 ::-webkit-inner-spin-button {
   -webkit-appearance: none;
 } */

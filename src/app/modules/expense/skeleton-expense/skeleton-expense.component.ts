@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CONSTANTES } from '@data/constantes';
+import { IExpenseReceivedShowHeaderExpense } from '@data/interfaces/iexpense-params-receive-header.interface';
+import { IExpensesSendParams } from '@data/interfaces/iexpense-params-send.interface';
+import { TypeSatusAccountOPC } from '@data/models/business/account.model';
 import { OwnerModel } from '@data/models/business/owner.model';
 import { Workspace } from '@data/models/business/workspace.model';
 import { FilterExpensesModel } from '@data/models/Structures/data-object-filtering.model';
-import { NotificationExpenseService } from '@data/services/notification/notification-expense.service';
+import { AccountService } from '@data/services/account/account.service';
 import { SLoaderService } from '@shared/components/loaders/s-loader/service/s-loader.service';
 import { UtilService } from '@shared/services/util.service';
 import { ExpenseModel, Tag } from 'app/data/models/business/expense.model';
@@ -17,23 +19,34 @@ import Swal from 'sweetalert2';
   templateUrl: './skeleton-expense.component.html',
   styleUrls: ['./skeleton-expense.component.css']
 })
-export class SkeletonExpenseComponent implements OnInit {
+export class SkeletonExpenseComponent implements OnInit, OnDestroy {
 
   sendHeightHeaderToBody: string = '';
   showBody: boolean = false;
-  isOnlyPendingCollect: boolean = false;
 
-  // expense: Expense
-  listExpensesToBody: ExpenseModel[] = [];
+  backUpListExpensesToBody: ExpenseModel[] = [];
   sendListExpensesToBody: ExpenseModel[] = [];
   totalGastadoSend: number = 0;
-  dataSendToHeader =  {
-    totalExpense : 0,
-    showPendingCollect: false
+
+  dataSendToShowHeaderExpenses : IExpenseReceivedShowHeaderExpense = {
+    total : 0,
+    availableAmount : 0,
+    dateBegin : "", 
+    dateEnd : "",
+    optionOrigin : "",
+    flagIsPendingCollect : false,
+    flagShowAvailableAmoount : false
   }
 
+  orderReceivedToShowExpenses : IExpensesSendParams = { 
+    idPeriod :-1, 
+    dateBegin: "",
+    dateEnd: "",
+    optionOrigin : ""
+  };
+
   owner : OwnerModel = new OwnerModel();
-  wrkspc: Workspace = new Workspace();
+  workspace: Workspace = new Workspace();
   period : PeriodModel = new PeriodModel();
 
   originComponent : string = "initial";
@@ -42,106 +55,122 @@ export class SkeletonExpenseComponent implements OnInit {
   beforeItem: FilterExpensesModel = new FilterExpensesModel();
   listShowExpenses: ExpenseModel[] = [];
 
+  amountPrincipalAccount : number = 0;
+
   constructor(
     private _expenseService: ExpensesService,
     private _loadSpinnerService: SLoaderService,
     private _utilitariesService: UtilService,
-    private _rutaActiva: ActivatedRoute
+    private _accountService: AccountService
   ) {
     this.owner = JSON.parse(localStorage.getItem('lcstrg_owner')!);
-    this.wrkspc = JSON.parse(localStorage.getItem("lcstrg_worskpace")!);
+    this.workspace = JSON.parse(localStorage.getItem("lcstrg_worskpace")!);
     this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
-
-    this.receivingDataCalendar();
+  }
+  
+  ngOnDestroy(): void {
   }
 
   ngOnInit(): void {
     this._loadSpinnerService.showSpinner();
-    this.validateParamRoute();
-  }
-
-  validateParamRoute() {
-    this._rutaActiva.params.subscribe(
-      (params: Params) => {
-          if(params.isPending != undefined && params.isPending == 1) {
-            this.isOnlyPendingCollect = true;
-            this.getAllExpensesByWorkspaceAndDateRangePeriod(
-              this.wrkspc.id,
-              this._utilitariesService.convertDateGMTToString(new Date("2022-01-01"), "start"),
-              this._utilitariesService.convertDateGMTToString(new Date(), "final"),
-              "onlyPendingCollect"
-            );
-          } else {
-            this.catchPeriodAndGetAllListExpenses();
-          }
-      }
-    )
-  }
-
-  catchPeriodAndGetAllListExpenses() {
-    if(this.period != null){
-      this.originComponent = "initial";
-      if(!this.isOnlyPendingCollect) {
-        this.getAllExpensesByPeriodId();
-      } else {
-        this.getAllExpensesByWorkspaceAndDateRangePeriod(
-          this.wrkspc.id,
-          this._utilitariesService.convertDateGMTToString(new Date("2022-01-01"), "start"),
-          this._utilitariesService.convertDateGMTToString(new Date(), "final"),
-          "onlyPendingCollect"
-        );
-      }
-
-    } else {
-      this.getAllExpensesByWorkspaceAndDateRangePeriod(this.wrkspc.id,
-        this._utilitariesService.convertDateToString(new Date()),
-        this._utilitariesService.convertDateToString(new Date()),
-        "");
-    }
+    this.receivingDataCalendar();
+    this.getDataObjectExpenseToShowFromServiceExpenses();
   }
 
   receivingDataCalendar() {
     this._utilitariesService.receivingdDatesFromCalendarSelected().subscribe(
       response => {
-        console.log("dddd");
-        this._loadSpinnerService.showSpinner();
-        this.originComponent = "calendar";
-        this.getAllExpensesByWorkspaceAndDateRangePeriod(
-          this.wrkspc.id,
-          this._utilitariesService.convertDateGMTToString(response.dateRange.startDate, "start"),
-          this._utilitariesService.convertDateGMTToString(response.dateRange.finalDate, "final"),
-          ""
-        );
-      }, 
-      error => {
-        console.log(error.error);
-        this.getAllExpensesByPeriodId();
-      }
-    );
+        this.filterToSendExpenses(response.idPeriod, response.dateBegin, response.dateEnd, response.optionOrigin);
+      });
   }
 
-  getAllExpensesByPeriodId() {
+  getDataObjectExpenseToShowFromServiceExpenses() {
+    this.orderReceivedToShowExpenses = this._expenseService.expenseReciveAndSend;
+    this.filterToSendExpenses(this.orderReceivedToShowExpenses.idPeriod, this.orderReceivedToShowExpenses.dateBegin, 
+                                  this.orderReceivedToShowExpenses.dateEnd, this.orderReceivedToShowExpenses.optionOrigin );
+  }
+
+  filterToSendExpenses(idPeriod : number, dateBegin: string, dateEnd: string, optionOrigin: string) {
     this.showBody = false;
-    this._expenseService.getAllExpensesByPeriodId(this.period.id, this.owner.id).subscribe(
+    let accountIsNecessary =  false;
+    switch (optionOrigin) {
+      case CONSTANTES.CONST_TYPE_REQUEST_EXPENSES_SHOW_EXPENSES_ACTUAL_PERIOD:
+        accountIsNecessary = true;
+        this.dataSendToShowHeaderExpenses.flagShowAvailableAmoount = true;
+        break;
+      case CONSTANTES.CONST_TYPE_REQUEST_EXPENSES_SHOW_CALENDAR:
+        this.dataSendToShowHeaderExpenses.flagShowAvailableAmoount = false;
+        this.dataSendToShowHeaderExpenses.flagIsPendingCollect = false;
+        dateBegin = this._utilitariesService.convertDateGMTToString(new Date(dateBegin), "start");
+        dateEnd = this._utilitariesService.convertDateGMTToString(new Date(dateEnd), "final");
+        break;
+      case CONSTANTES.CONST_TYPE_REQUEST_EXPENSES_SHOW_PENDING_COLLECT:
+        this.dataSendToShowHeaderExpenses.flagIsPendingCollect = true;
+        dateBegin = this._utilitariesService.convertDateGMTToString(new Date(dateBegin), "start");
+        dateEnd = this._utilitariesService.convertDateGMTToString(new Date(), "final");
+        break;
+      case CONSTANTES.CONST_TYPE_REQUEST_EXPENSES_SHOW_LAST_PERIODS:
+        //El periodo pasado por parámetro.
+        break;
+      default:
+        //carga inicial
+        idPeriod = this.period.id;
+        accountIsNecessary = true;
+        this.dataSendToShowHeaderExpenses.flagShowAvailableAmoount = true;
+        break;
+    }
+
+    if(accountIsNecessary) {
+      this.getAmountPrincipalAccountIfExist();
+    } else if(idPeriod == 0) {
+      this.getAllExpensesByWorkspaceAndDateRangePeriod(this.workspace.id, dateBegin, dateEnd, optionOrigin);
+    } else {
+      this.getAllExpensesByWorkspaceAndPeriodId(idPeriod, dateBegin, dateEnd, optionOrigin);
+    }
+  }
+
+  //Obtiene el monto de la cuenta principal en estado PROCESS para luego usarlo con el 
+  //total gastado y devolver el monto disponible que se enviará al Header Expense
+  getAmountPrincipalAccountIfExist() {
+    this._accountService.findAccountByTypeAccountAndStatusAccountAndPeriodId(1, TypeSatusAccountOPC.PROCESS, this.period.id)
+      .subscribe(
+        accountResponse => {
+          if(accountResponse != null) this.amountPrincipalAccount = Number(accountResponse.balance);
+          this.getAllExpensesByWorkspaceAndPeriodId(this.period.id, 
+                                                  this.period.startDate.toString(), 
+                                                  this.period.finalDate.toString(), 
+                                                  CONSTANTES.CONST_TYPE_REQUEST_EXPENSES_SHOW_EXPENSES_ACTUAL_PERIOD );
+        },
+        error => {
+          this.getAllExpensesByWorkspaceAndPeriodId(this.period.id, 
+            this.period.startDate.toString(), 
+            this.period.finalDate.toString(), 
+            CONSTANTES.CONST_TYPE_REQUEST_EXPENSES_SHOW_EXPENSES_ACTUAL_PERIOD );
+        }
+      );
+  }
+
+  getAllExpensesByWorkspaceAndPeriodId(idPeriod: number, dateBegin: string, dateEnd: string, optionOrigin : string) {
+    this._expenseService.getAllExpensesByWorkspaceAndByPeriodId(this.workspace.id, idPeriod).subscribe(
       response => {
         this.showBody = true;
-        this.sendListExpensesToBody = response;
-        this.listExpensesToBody = response;
         this.totalGastadoSend = 0;
+        this.sendListExpensesToBody = response;
+        this.backUpListExpensesToBody = response;    
         this.sendListExpensesToBody.forEach(element => {
           element.editable = false;
-          if(element.payer == "") {
-            element.payer = element.registerPerson.name
-          };
-          if(element.pendingPayment == false && element.payer != element.registerPerson.name){
-            element.editable = true;
-          }
+          if(element.payer == "") element.payer = element.registerPerson.name
+          if(element.pendingPayment == false && element.payer != element.registerPerson.name) element.editable = true;
           this.totalGastadoSend = this.totalGastadoSend + parseFloat(element.amount);
         });
 
+        //By options ::
+        this.dataSendToShowHeaderExpenses.total = this.totalGastadoSend;
+        this.dataSendToShowHeaderExpenses.availableAmount = this.amountPrincipalAccount - this.totalGastadoSend;
+        this.dataSendToShowHeaderExpenses.dateBegin = dateBegin;
+        this.dataSendToShowHeaderExpenses.dateEnd = dateEnd;
+        this.dataSendToShowHeaderExpenses.optionOrigin = optionOrigin;
         this.createNewColumnWithDataBySearching();
-
-        this._utilitariesService.sendTotalSpentToHeaderFromExpenseListMessage({"total":this.totalGastadoSend, "from":this.originComponent});
       },
       error => {
         console.log(error);
@@ -152,39 +181,30 @@ export class SkeletonExpenseComponent implements OnInit {
     );
   }
 
-  getAllExpensesByWorkspaceAndDateRangePeriod(idWrkspc: number, dateBegin: string, dateEnd: string, onlyPendingCollect : string) {
-    this.showBody = false;
-    this._expenseService.getAllExpensesByWorkspaceAndDateRangePeriod(idWrkspc, dateBegin, dateEnd).subscribe(
+  getAllExpensesByWorkspaceAndDateRangePeriod(idworkspace: number, dateBegin: string, dateEnd: string, optionOrigin : string) {
+    
+    this._expenseService.getAllExpensesByWorkspaceAndDateRange(idworkspace, dateBegin, dateEnd).subscribe(
       response => {
         this.showBody = true;
+        if(optionOrigin == CONSTANTES.CONST_TYPE_REQUEST_EXPENSES_SHOW_PENDING_COLLECT) response = response.filter(item => item.pendingPayment == true);
 
-        if(onlyPendingCollect == "onlyPendingCollect") {
-          response = response.filter(item => item.pendingPayment == true);
-        }
-
-        this.sendListExpensesToBody = response;
-        this.listExpensesToBody = response;        
         this.totalGastadoSend = 0;
+        this.sendListExpensesToBody = response;
+        this.backUpListExpensesToBody = response;    
         this.sendListExpensesToBody.forEach(element => {
           element.editable = false;
-
-          if(element.payer == "") {
-            element.payer = element.registerPerson.name
-          };
-          if(element.pendingPayment == false && element.payer != element.registerPerson.name){
-            element.editable = true;
-          }
+          if(element.payer == "") element.payer = element.registerPerson.name
+          if(element.pendingPayment == false && element.payer != element.registerPerson.name) element.editable = true;
           this.totalGastadoSend = this.totalGastadoSend + parseFloat(element.amount);
         });
 
+        //By options ::
+        this.dataSendToShowHeaderExpenses.total = this.totalGastadoSend;
+        this.dataSendToShowHeaderExpenses.availableAmount = 0;
+        this.dataSendToShowHeaderExpenses.dateBegin = dateBegin;
+        this.dataSendToShowHeaderExpenses.dateEnd = dateEnd;
+        this.dataSendToShowHeaderExpenses.optionOrigin = optionOrigin;
         this.createNewColumnWithDataBySearching();
-
-        if(onlyPendingCollect == "onlyPendingCollect") {
-          this.dataSendToHeader.totalExpense = this.totalGastadoSend;
-          this.dataSendToHeader.showPendingCollect = true;
-        }
-
-        this._utilitariesService.sendTotalSpentToHeaderFromExpenseListMessage({"total":this.totalGastadoSend, "from":this.originComponent});
       },
       error => {
         console.log(error);
@@ -194,7 +214,6 @@ export class SkeletonExpenseComponent implements OnInit {
       }
     );
   }
-
 
   private createNewColumnWithDataBySearching() {
     this.sendListExpensesToBody.map(element => {
@@ -222,83 +241,6 @@ export class SkeletonExpenseComponent implements OnInit {
     return strTagsAllJoin;
   }
 
-  receivedHeightHeader(e:number) {
-    this.sendHeightHeaderToBody = e.toString();
-    setTimeout(()=> {
-    },50);
-  }
-
-  receivedSearchingEmitFromHeader(strSearch: string) {
-    this.showBody = false;
-    this.sendListExpensesToBody = this.listExpensesToBody;
-    this.sendListExpensesToBody = this.sendListExpensesToBody.filter(item => {
-        return item.strSearchAllJoin.toUpperCase().includes(strSearch.toUpperCase()) 
-      }
-    );
-    this.getTotalSpentByFilterAndReloadListExpenses();
-  }
-
-  receivedItemFilterSeleceted() {
-    this._loadSpinnerService.showSpinner();
-    this._utilitariesService.receivingItemResumeSelected().subscribe(
-      response => {
-        let listActive = response.filter( (itemActive: { active: boolean; }) => itemActive.active === true);
-      
-        this.showBody = false;
-        let cont = 0;
-        this.sendListExpensesToBody = this.listExpensesToBody;
-        if(listActive.length == 0) this.listShowExpenses = this.sendListExpensesToBody;
-
-        listActive.forEach( (itemActive: FilterExpensesModel) => {
-          cont++;
-          if(cont == 1) {
-            this.listShowExpenses = this.sendListExpensesToBody.filter( item => {
-              return item.strFilterParamsJoin.includes(itemActive.name);
-            });
-          } else {
-            let listaNew = this.sendListExpensesToBody.filter( item => {
-              return item.strFilterParamsJoin.includes(itemActive.name);
-            });
-            this.listShowExpenses = this.listShowExpenses.concat(listaNew);
-          }
-          
-        });
-
-        this.sendListExpensesToBody =  this.listShowExpenses;
-
-        this.getTotalSpentByFilterAndReloadListExpenses();
-
-      }, 
-      error =>{
-        console.log(error.error);
-      });
-
-      
-  }
-
-  newListFiltered: ExpenseModel[] = [];
-
-  filterByListParams(paramList : ExpenseModel[], paramFilter : FilterExpensesModel): ExpenseModel[] {
-      let listReturn : ExpenseModel[] = [];
-      listReturn =  paramList.filter( (row)=> {
-          if(paramFilter.component == CONSTANTES.CONST_COMPONENT_CATEGORIAS)  {
-            return row.category.name == paramFilter.name
-          }
-
-          if(paramFilter.component == CONSTANTES.CONST_COMPONENT_ACUERDOS)  {
-            return row.accordingType.name == paramFilter.name;
-          }
-
-          if(paramFilter.component == CONSTANTES.CONST_COMPONENT_MEDIOSDEPAGO)  {
-            return row.paymentMethod.name == paramFilter.name;
-          }
-
-          return row;
-      });
-
-      return listReturn;
-  }
-
   receivedExpenseToUpdateStatausPay(objectReceived: any){
     this.showBody = false;
     this._loadSpinnerService.showSpinner();
@@ -315,7 +257,7 @@ export class SkeletonExpenseComponent implements OnInit {
         Swal.fire(response.title, response.message, response.status);
         this.showBody = true;
         if(response.status == "success"){
-          this.catchPeriodAndGetAllListExpenses();
+          this.getDataObjectExpenseToShowFromServiceExpenses();
         }
       },
       error => {
@@ -325,7 +267,7 @@ export class SkeletonExpenseComponent implements OnInit {
         }
         console.log(error.error);
         Swal.fire(error.error.title, error.error.message, error.error.status);
-        this.catchPeriodAndGetAllListExpenses();
+        this.getDataObjectExpenseToShowFromServiceExpenses();
       }
     );
   }
@@ -335,35 +277,42 @@ export class SkeletonExpenseComponent implements OnInit {
       response => {
         Swal.fire(response.title, response.message, response.status);
         this.showBody = true;
-         
         if(response.status == "success"){
-          this.catchPeriodAndGetAllListExpenses();
+          this.getDataObjectExpenseToShowFromServiceExpenses();
         }
       },
       error => {
         console.log(error.error);
         Swal.fire(error.error.title, error.error.message, error.error.status);
-        this.catchPeriodAndGetAllListExpenses();
+        this.getDataObjectExpenseToShowFromServiceExpenses();
       }
     );
   }
 
-  private getTotalSpentByFilterAndReloadListExpenses() {
-    this.getTotalSpentBySearching();
+  receivedSearchingEmitFromHeader(strSearch: string) {
+    console.log();
+    this.showBody = false;
+    this.sendListExpensesToBody = this.backUpListExpensesToBody.filter(item =>  item.strSearchAllJoin.toUpperCase().includes(strSearch.toUpperCase()) );
+    this.getTotalAndSendHeaderExpense();
+  }
+
+  private getTotalAndSendHeaderExpense() {
     setTimeout(() => {
+      let totalGastadoSend = 0;
       this.showBody = true;
+      this.sendListExpensesToBody.forEach(element => {
+        totalGastadoSend = totalGastadoSend + parseFloat(element.amount);
+      });
+      //Este objeto ya tiene el resto de parámetros llenado al momento de cada carga.
+      this.dataSendToShowHeaderExpenses.total = totalGastadoSend;
     }, 100);
   }
 
-  getTotalSpentBySearching() {
-    this.originComponent = "byFilterExpenses";
-    let totalGastadoSend = 0;
-    this.sendListExpensesToBody.forEach(element => {                           
-      totalGastadoSend = totalGastadoSend + parseFloat(element.amount);
-    });
-    this._utilitariesService.sendTotalSpentToHeaderFromExpenseListMessage({"total":totalGastadoSend, "from":this.originComponent});
+  receivedHeightHeader(e:number) {
+    this.sendHeightHeaderToBody = e.toString();
+    setTimeout(()=> {
+    },50);
   }
-
 }
 
 
