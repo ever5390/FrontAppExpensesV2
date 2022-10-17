@@ -417,9 +417,7 @@ export class ManageExpenseComponent implements OnInit, OnDestroy {
   }
 
   removeVoucherFromList(index: number) {
-    // this.vouchersListToShow.splice(index, 1);
     this.expense.vouchers.splice(index, 1);
-    //this.voucherSelectedFileToStorageSave.splice(index, 1);
     this.validateResizeHeightForm();
   }
 
@@ -454,9 +452,10 @@ export class ManageExpenseComponent implements OnInit, OnDestroy {
         this._loadSpinnerService.hideSpinner();
         this.validateResizeHeightForm();
         break;
-      case CONSTANTES.CONST_COMPONENT_CALENDAR:
-        this.dateRangeCalendarSelected = element.dateRange.finalDate;
-        break;
+      // case CONSTANTES.CONST_COMPONENT_CALENDAR:
+      //   this._loadSpinnerService.hideSpinner();
+      //   this.dateRangeCalendarSelected = element.dateBegin;
+      //   break;
       case CONSTANTES.CONST_COMPONENT_CUENTAS:
         this._loadSpinnerService.hideSpinner();
         if(element.itemSelected.name == "redirectToAccount"){
@@ -501,7 +500,12 @@ export class ManageExpenseComponent implements OnInit, OnDestroy {
         this.payerSelected = element.itemSelected.name;
         break;
       default:
-        //received ONLY close order, not object
+        if(element.optionOrigin == CONSTANTES.CONST_TYPE_REQUEST_EXPENSES_SHOW_CALENDAR) {
+          this._loadSpinnerService.hideSpinner();
+          this.dateRangeCalendarSelected = element.dateEnd;
+        }
+
+        //Received ONLY close order, not object
         this.show__list__items = false;
         break;
     }

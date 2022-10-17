@@ -52,13 +52,13 @@
 </ng-template>
 
 <ng-template #elsePeriodActivateEqualsTrue let-dataHeader='dataHeader'>
-    <span style="text-align: center;">Del {{dataHeader.period.startDate | date: 'dd MMM YYY  HH:mm:ss' | uppercase}}
+    <span class="st_range_dates" style="text-align: center;">Del {{dataHeader.period.startDate | date: 'dd MMM YYY  HH:mm:ss' | uppercase}}
         hasta {{dataHeader.period.finalDate | date: 'dd MMM YYY  HH:mm:ss' | uppercase}}
    </span>
 </ng-template>
 
 <ng-template #elsePeriodActivateEqualsFalse let-dataHeader='dataHeader'>
-    <span style="text-align: center;">Del {{dataHeader.period.startDate | date: 'dd MMM YYY  HH:mm:ss' | uppercase}}
+    <span class="st_range_dates" style="text-align: center;">Del {{dataHeader.period.startDate | date: 'dd MMM YYY  HH:mm:ss' | uppercase}}
         hasta Actualidad
    </span>
 </ng-template>

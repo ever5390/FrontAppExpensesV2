@@ -28,6 +28,8 @@
             color: #a12626;
             font-weight: 600;
             text-align: center;
+            font-size: .9rem;
+            margin-top: 5px;
         }
 
         .st_fc_subheader :hover {
@@ -157,7 +159,7 @@ label {
     }
 
     .form_control h1{
-        font-size: .9rem;
+        font-size: 1rem;
     }
         .st_fc_header span {
             font-size: .8rem;
@@ -170,11 +172,11 @@ label {
         }
 
         .st_resume_data label {
-            font-size: .7rem;
+            font-size: .9rem;
         }
 
         .st_resume_data span {
-            font-size: .6rem;
+            font-size: .7rem;
         }
 
         .form_control:nth-child(1) {

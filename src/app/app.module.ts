@@ -1,8 +1,9 @@
 import { CommonModule, LocationStrategy, PathLocationStrategy } from '@angular/common';
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
+import localEs from '@angular/common/locales/es';
+import { registerLocaleData } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { ListNotificationComponent } from '@modules/notification/list-notification/list-notification.component';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AsideComponent } from './layout/aside/aside.component';
@@ -12,6 +13,8 @@ import { SharedModule } from './shared/shared.module';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TokenInterceptor } from '@core/interceptor/token-interceptor';
 
+registerLocaleData(localEs, 'es');
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -20,6 +23,7 @@ import { TokenInterceptor } from '@core/interceptor/token-interceptor';
     SkeletonComponent,
     AsideComponent,
     HeaderComponent,
+
     
     // ManageExpenseComponent,
     ListNotificationComponent
@@ -34,11 +38,12 @@ import { TokenInterceptor } from '@core/interceptor/token-interceptor';
   ],
   providers: [
     //Para quitar los # en los PATH's que coloca por defecto angular
+    {provide: LOCALE_ID, useValue: 'es'},
     {
       provide: LocationStrategy,
       useClass: PathLocationStrategy
     },
-    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
   ],
   bootstrap: [AppComponent]
 })

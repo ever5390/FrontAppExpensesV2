@@ -11,6 +11,7 @@ import { CalendarComponent } from './components/calendar/calendar.component';
 import { ListCategoryComponent } from '@modules/category/list-category/list-category.component';
 import { ListAccountsSharedComponent } from './components/list-accounts-shared/list-accounts-shared.component';
 import { VisualizadorVoucherComponent } from './components/visualizador-voucher/visualizador-voucher.component';
+import { NumberDirective } from './directives/numbers-only.directive';
 
 @NgModule({
   imports: [
@@ -20,6 +21,7 @@ import { VisualizadorVoucherComponent } from './components/visualizador-voucher/
     CommonModule
   ],
   declarations: [
+    NumberDirective,
     FormularioSharedComponent,
     ListaSharedComponent,
     FilterByItemSharedComponent,
@@ -27,7 +29,7 @@ import { VisualizadorVoucherComponent } from './components/visualizador-voucher/
     CalendarComponent,
     ListCategoryComponent,
     ListAccountsSharedComponent,
-    VisualizadorVoucherComponent
+    VisualizadorVoucherComponent,
     
        // ...fromComponents.components, FormularioSharedComponent
   ],

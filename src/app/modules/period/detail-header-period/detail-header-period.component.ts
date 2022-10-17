@@ -8,6 +8,7 @@ import { PeriodService } from '@data/services/period/period.service';
 import { SLoaderService } from '@shared/components/loaders/s-loader/service/s-loader.service';
 import { PeriodDetailHeader } from 'app/data/models/business/periodDetailHeader.model';
 import Swal from 'sweetalert2';
+import {formatDate} from '@angular/common';
 
 @Component({
   selector: 'app-detail-header-period',
@@ -112,33 +113,33 @@ export class DetailHeaderPeriodComponent implements OnInit {
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Confirmar!'
+      confirmButtonText: 'Confirmar'
     }).then((result) => {
       if (result.isConfirmed) {
         this.validExpensesStatusPayInPeriod(originAction);
       }
     })
-    
   }
 
   receiveResponseFromCalendarToParent(data: any) {
     this.flagCalendarpPopUp = false;
-    if(data.dateRange == undefined) return;
+    if(data.dateEnd == undefined) return;
 
     let dateSelectSingleOption = new Date();
-    let timeMilisDateSelected = (new Date(data.dateRange.finalDate)).getTime();
+    let timeMilisDateSelected = (new Date(data.dateEnd)).getTime();
     let timeMilisDateInitialPeriod = (new Date(this.periodDetailHeaderReceived.period.startDate)).getTime();
     
     if(timeMilisDateInitialPeriod >= timeMilisDateSelected) {
       if(data.action == null) {
+        this._loaderService.hideSpinner();
         Swal.fire("","La fecha seleccionada debe ser mayor a la fecha inicial del periodo actual","info");
         return;
       }
 
       if(data.action == "quincenal") {
         dateSelectSingleOption = new Date(
-          (data.dateRange.finalDate).getFullYear(),
-          (data.dateRange.finalDate).getMonth()+1,
+          (data.dateEnd).getFullYear(),
+          (data.dateEnd).getMonth()+1,
           15
         )
       }
@@ -146,29 +147,30 @@ export class DetailHeaderPeriodComponent implements OnInit {
       timeMilisDateSelected = (dateSelectSingleOption).getTime();
     }
 
-    if(data.action == null && data.dateRange.finalDate.getDate() >= 29) {
-        Swal.fire({
-          title: '',
-          text: "Recuerde que no todas los meses tienen esta cantidad de días, para estos casos se tomará los fines de mes.",
-          icon: 'info',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'OK!'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            // let dateFinalSend = timeMilisDateSelected + 3600000*23 + 60000*59 + 59*1000; 
-            let dateFinalSend = timeMilisDateSelected;        
-            this.updateFinalDatePeriod(new Date(dateFinalSend));
-          }
-        })
-      return;
+    let dateShowConfirm = formatDate(data.dateEnd, 'dd MMM YYYY HH:mm:ss', 'es');
+
+    let confirmationMessage = "La fecha se cambiará a " + dateShowConfirm + ", presione confirmar para ejecutar la orden de modificación.";
+    if(data.action == null && data.dateEnd.getDate() >= 29) {
+        confirmationMessage = "Recuerde que no todas los meses tienen esta cantidad de días, para estos casos se tomará los fines de mes.";
     }
 
-    // let dateFinalSend = timeMilisDateSelected + 3600000*23 + 60000*59 + 59*1000;
-    let dateFinalSend = timeMilisDateSelected;
+    Swal.fire({
+      title: '',
+      text: confirmationMessage,
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Confirmar!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        let dateFinalSend = timeMilisDateSelected;        
+        this.updateFinalDatePeriod(new Date(dateFinalSend));
+      } else {
+        this._loaderService.hideSpinner();
+      }
+    })
 
-    this.updateFinalDatePeriod(new Date(dateFinalSend));
   }
 
   updateFinalDatePeriod(newFinalDate: Date) {
@@ -180,14 +182,15 @@ export class DetailHeaderPeriodComponent implements OnInit {
     this._periodService.updatePeriod(this.periodShow, 
         this.periodDetailHeaderReceived.period.id).subscribe(
       response => {
-        this._loaderService.hideSlow();
-        Swal.fire("","Se realizó con éxito la modificación de la fecha de cierre.","info");
+        this._loaderService.hideSpinner();
+        Swal.fire("","Se realizó con éxito la modificación de la fecha de cierre.","success");
         if(response.object == null) return;
 
         this.periodShow = response.object;
         this._periodService.saveToLocalStorage(response.object);
       }, 
       error => {
+        Swal.fire("","Ocurrió un error mientras se actualizaba la fecha de cierre, recargue la página e inténtelo nuevamente.","error");
         this._loaderService.hideSpinner();
         console.log(error.error);
       }

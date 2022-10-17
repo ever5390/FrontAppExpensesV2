@@ -1,12 +1,10 @@
 import { Component, OnInit, Output, EventEmitter, Renderer2, ViewChild, ElementRef, Input } from '@angular/core';
-import { Router } from '@angular/router';
 import { IExpensesSendParams } from '@data/interfaces/iexpense-params-send.interface';
 import { PeriodModel } from '@data/models/business/period.model';
-import { UtilService } from '@shared/services/util.service';
 import { CONSTANTES } from 'app/data/constantes';
 import { Calendar } from 'app/data/models/calendar.model';
-import Swal from 'sweetalert2';
 import { SLoaderService } from '../loaders/s-loader/service/s-loader.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-calendar',
@@ -195,6 +193,7 @@ export class CalendarComponent implements OnInit {
         daySelected);
 
     if(this.receivedComponentParent != CONSTANTES.CONST_COMPONENT_HEADER) {
+      console.log("calendar reg");
       //Emite dates to Parent
       this.sendDateRangeToFather("only");
       return;
@@ -475,13 +474,11 @@ export class CalendarComponent implements OnInit {
     for (let i = 1; i <= nextDays; i++) {
       this.daysMonthNext.push(i);      
     }
-
   };
 
   sendDateRangeToFather(order: string) { //CLICK EN DÍAS
     this.dateSend.startDate = this.dateSelectedInitial.dateSelected;
     this.dateSend.finalDate = this.dateSelectedFinal.dateSelected;
-    // this.dateSend.finalDate = (order == "only")?this.dateSelectedInitial.dateSelected:this.dateSelectedFinal.dateSelected;
     if(order == "only") {
       this.dateSend.finalDate = this.dateSelectedInitial.dateSelected;
       this.dateSend.finalDate = new Date( this.dateSend.finalDate.getFullYear(), this.dateSend.finalDate.getMonth(),  this.dateSend.finalDate.getDate(),this.hour,this.minute,0);
@@ -490,12 +487,31 @@ export class CalendarComponent implements OnInit {
         //Validar que la fecha se encuentre en el rango del inicio y fin del periodo actual seleccionado
         if(new Date(this.dateSend.finalDate).getTime() < new Date(this.period.startDate).getTime() 
           || new Date(this.dateSend.finalDate).getTime() > new Date().getTime()) {
+            this.countClick = 0;
           Swal.fire("","La fecha seleccionada debe encontrarse dentro del rango del periodo y no puede ser posterior a hoy.","info");
+          return;
         }
       }
     }
  
     this.sendResponse(this.dateSend);
+  }
+
+  detectedPressKey(event : any): boolean {
+    if(Number(this.hour) > 23 || Number(this.hour) < 0) {
+      this.hour = Number(this.hour.toString().slice(0, -1));
+      return false;
+    }
+
+    if(Number(this.minute) > 59 || Number(this.minute) < 0) {
+      this.minute = Number(this.minute.toString().slice(0, -1));
+      return false;
+    }
+
+    const charCode = (event.which) ? event.which : event.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) return false;
+    
+    return true;
   }
 
   catchDateSingleSelectPeriod(type: string) {//MODIFICAR FINAL DATE DE PERIODO

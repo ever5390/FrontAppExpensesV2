@@ -15,8 +15,8 @@
                     Ver gastos realizados a este periodo
             </div>
             <div class="st_fc_subheader" *ngIf="periodShow.statusPeriod">
-                <a (click)="editingFinalDate()">modificar fecha cierre</a>
-                <a *ngIf="periodDetailHeaderReceived.totalSpent != 0" (click)="confirmationClosePeriod('manual')"> | ejecutar cierre manual</a>
+                <a (click)="editingFinalDate()">Modificar fecha cierre</a>
+                <a *ngIf="periodDetailHeaderReceived.totalSpent != 0" (click)="confirmationClosePeriod('manual')"> | Cierre manual</a>
             </div>
         </div>
         <div class="form_control d-flex justify-content-between align-items-center" >

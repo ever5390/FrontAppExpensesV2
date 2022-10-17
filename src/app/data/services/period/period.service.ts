@@ -16,13 +16,7 @@ export class PeriodService {
   private URLCOMPL: string =  URL_BASE_API_V1;
   private httpHeaders = new HttpHeaders({'Content-type':'application/json'});
 
-  constructor(private _http: HttpClient, private _utilitariesService: UtilService) { }
-
-  getPeriodByWorkspaceIdAndSatusTrue(workspaceId: number): Observable<PeriodModel>  {
-    return this._http.get(`${this.URLCOMPL}/period/workspace/${workspaceId}`).pipe(
-      map(response => response as PeriodModel)
-    );
-  }
+  constructor(private _http: HttpClient) { }
 
   getAllPeriodaByWorkspace(workspaceId: number): Observable<PeriodModel[]>  {
     return this._http.get(`${this.URLCOMPL}/list-period/workspace/${workspaceId}`).pipe(

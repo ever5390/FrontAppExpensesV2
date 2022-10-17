@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { Router } from '@angular/router';
+import { Event, NavigationEnd, Router } from '@angular/router';
 import { IExpensesSendParams } from '@data/interfaces/iexpense-params-send.interface';
 import { NotificationExpense, TypeStatusNotificationExpense } from '@data/models/business/notificationExpense.model';
 import { OwnerModel } from '@data/models/business/owner.model';
@@ -26,11 +26,12 @@ export class HeaderComponent implements OnInit {
   sendComponentParentToCalendar: string = CONSTANTES.CONST_COMPONENT_HEADER;
   flagNotificationpPopUp: boolean= false;
   flagCalendarpPopUp: boolean = false;
-  // showFormRgister: boolean = false;
-  showInfoByTypeUser: boolean = false; //FALSE: EMISOR, TRUE = RECEPTOR
+  flagShowCalendarIcon : boolean = true;
   
   @Output() showMenuNow: EventEmitter<boolean> = new EventEmitter();
   period: PeriodModel = new PeriodModel();
+
+  currentRoute: string = "";
   constructor(
     private _router: Router,
     private _utilService: UtilService,
@@ -38,6 +39,20 @@ export class HeaderComponent implements OnInit {
     private _notificationExpenseService: NotificationExpenseService
   ) {
     this.owner = JSON.parse(localStorage.getItem("lcstrg_owner")!);
+    this.routeUrlDetected();
+  }
+
+  routeUrlDetected() {
+      this._router.events.subscribe((event: Event) => {
+        if (event instanceof NavigationEnd) {
+            this.currentRoute = event.url;
+            if(this.currentRoute != "/") {
+              this.flagShowCalendarIcon = false;
+            } else {
+              this.flagShowCalendarIcon = true;
+            }
+        }
+      });
   }
 
   ngOnInit(): void {
@@ -53,7 +68,7 @@ export class HeaderComponent implements OnInit {
             subscribe.unsubscribe()
             this._router.navigate(["/login"]);
           }
-          //this.getNotificationRequest(false);
+          this.getNotificationRequest(false);
       }
     );
   

@@ -66,8 +66,12 @@
 }
 
 .st_resume_data label {
-    font-size: .8rem;
+    font-size: .95rem;
     display: block;
+}
+
+.st_range_dates {
+    font-size: .8rem;
 }
 
     .fa-plus {

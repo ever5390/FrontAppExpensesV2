@@ -208,7 +208,7 @@
   justify-content: center;
 }
 
-input[type="number"] {
+input[type="text"] {
   text-align: center;
   border-color: #88beb2;
   outline: none;
