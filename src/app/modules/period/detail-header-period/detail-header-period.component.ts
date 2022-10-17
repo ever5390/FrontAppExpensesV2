@@ -31,6 +31,7 @@ export class DetailHeaderPeriodComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
+    console.log("Hol header peridos");
     this._loaderService.showSpinner();
     this.periodShow = this.periodDetailHeaderReceived.period;
   }

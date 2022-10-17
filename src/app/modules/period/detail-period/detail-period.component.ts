@@ -46,7 +46,6 @@ export class DetailPeriodComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this._loadSevice.showSpinner();
     this._rutaActiva.params.subscribe(
       (params: Params) => {
         if(params.idPeriod != undefined) {

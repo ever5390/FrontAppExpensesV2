@@ -1,4 +1,3 @@
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { AccountClosedStructure } from '@data/models/Structures/data-account.model';
@@ -55,11 +54,11 @@ export class DetailBodyPeriodComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this._loadSpinnerService.hideSpinner();
     this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
     this.catchAccountParent();
     this.catchAccountChilds();
     this.validateShowBlockAccounts();
+    this._loadSpinnerService.hideSpinner();
   }
 
   validateShowBlockAccounts() {
@@ -152,14 +151,15 @@ export class DetailBodyPeriodComponent implements OnInit {
     }
   }
 
-  getAllAccountByPeriodSelected(idPeriodReceived: number) {
-    this._loadSpinnerService.showSpinner();
+  getAllAccountByPeriodSelected(idPeriodReceived: number, actionResponse : any) {
     this._accountService.getListAccountByIdPeriod(idPeriodReceived).subscribe(
       response => {
+        this.flagFormulario = false;
         this._loadSpinnerService.hideSpinner();
         this.accountListReceived = response;
         this.catchAccountParent();
         this.catchAccountChilds();
+        Swal.fire("",actionResponse.message,actionResponse.status);
       },
       error => {
         console.log(error);
@@ -172,8 +172,8 @@ export class DetailBodyPeriodComponent implements OnInit {
   confirmAccount() {
     this._accountService.confirmAccountStatus(this.period.id).subscribe(
       response => {
-        Swal.fire("",response.message,response.status);
-        this.getAllAccountByPeriodSelected(this.period.id);
+        // Swal.fire("",response.message,response.status);
+        this.getAllAccountByPeriodSelected(this.period.id, response);
       },
       error => {
         this._loadSpinnerService.hideSpinner();
@@ -207,18 +207,17 @@ export class DetailBodyPeriodComponent implements OnInit {
   }
 
   deleteAccount(account: AccountModel) {
-    
     this._loadSpinnerService.showSpinner();
     this._accountService.deleteAccount(account.id).subscribe(
       response => {
-        Swal.fire(response.title, response.message, response.status);
+        // Swal.fire(response.title, response.message, response.status);
         this._periodService.saveToLocalStorage(response.object);
-        this.getAllAccountByPeriodSelected(this.period.id);
+        this.getAllAccountByPeriodSelected(this.period.id, response);
       },
       error => {
         console.log(error);
         Swal.fire(error.error.title, error.error.message, error.error.status);
-        this.getAllAccountByPeriodSelected(this.period.id);
+        //this.getAllAccountByPeriodSelected(this.period.id);
       }
     );
   }
@@ -276,10 +275,7 @@ export class DetailBodyPeriodComponent implements OnInit {
   }
 
   receiveToSonComponent(response:any) {
-    console.log("eee");
-    this._loadSpinnerService.hideSpinner();
-    this.flagFormulario = false;
-    this.getAllAccountByPeriodSelected(this.period.id);
+    this.getAllAccountByPeriodSelected(this.period.id, response);
     if(response == null)  return;
     this.sendUpdateAmountInitialHeader.emit();
   }

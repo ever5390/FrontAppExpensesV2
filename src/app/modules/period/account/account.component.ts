@@ -100,7 +100,7 @@ export class AccountComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     console.log("Sdios account");
-    this._loadSpinnerService.hideSpinner();
+    //this._loadSpinnerService.hideSpinner();
   }
 
 
@@ -243,7 +243,7 @@ export class AccountComponent implements OnInit, OnDestroy {
     this._loadSpinnerService.showSpinner();
     this._accountService.saveTransferenceAccount(transferToSave).subscribe(
       (response :any)=> {
-        Swal.fire(response.title,response.message,response.status);
+        // Swal.fire(response.title,response.message,response.status);
         this._loadSpinnerService.hideSpinner();
         this.responseToFatherComponent.emit(response);
       },
@@ -259,9 +259,9 @@ export class AccountComponent implements OnInit, OnDestroy {
     accountToSave.period = this.period;
     this._accountService.createAccount(accountToSave).subscribe(
       (response :any)=> {
-        Swal.fire("","Cuenta registrada con éxito","success");
+        // Swal.fire("","Cuenta registrada con éxito","success");
         this._periodService.saveToLocalStorage(response.object.period);
-        this._loadSpinnerService.hideSpinner();
+        // this._loadSpinnerService.hideSpinner();
         this.responseToFatherComponent.emit(response);
       },
       error => {
@@ -276,9 +276,9 @@ export class AccountComponent implements OnInit, OnDestroy {
     this._loadSpinnerService.showSpinner();
     this._accountService.updateAccount(accountToSave).subscribe(
       (response :any)=> {
-        Swal.fire(response.title,response.message, response.status);
+        // Swal.fire(response.title,response.message, response.status);
         // this._loadSpinnerService.hideSpinner();
-        this.responseToFatherComponent.emit(this.dataStructureReceived);
+        this.responseToFatherComponent.emit(response);
       },
       error => {
         console.log(error);
@@ -303,22 +303,6 @@ export class AccountComponent implements OnInit, OnDestroy {
       return category.active === true
     });
 
-  }
-
-  delete() {
-    Swal.fire({
-      title: 'Estás seguro?',
-      text: "Este proceso no podrá revertirse!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Si, eliminar de todas formas!'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.responseToFatherComponent.emit({'action':'delete','object':this.dataStructureReceived.object});
-      }
-    })
   }
 
   validationForm():boolean {
