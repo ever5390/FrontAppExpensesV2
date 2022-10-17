@@ -6,6 +6,7 @@ import { UtilService } from '@shared/services/util.service';
 import { CONSTANTES } from 'app/data/constantes';
 import { Calendar } from 'app/data/models/calendar.model';
 import Swal from 'sweetalert2';
+import { SLoaderService } from '../loaders/s-loader/service/s-loader.service';
 
 @Component({
   selector: 'app-calendar',
@@ -80,7 +81,8 @@ export class CalendarComponent implements OnInit {
   @ViewChild("containerAll") 
   containerAll: ElementRef | any;
 
-  constructor(private _renderer: Renderer2, private _router: Router, private _utilitariesService: UtilService) {
+  constructor(private _renderer: Renderer2, 
+             private _loaderService : SLoaderService) {
     this._renderer.listen('window','click',(e: Event)=> {
         if(this.containerAll && e.target === this.containerAll.nativeElement) {
           this.hiddenCalendar();
@@ -547,6 +549,7 @@ export class CalendarComponent implements OnInit {
   }
 
   private sendResponse(dataSend: any) {    
+    this._loaderService.showSpinner();
     let iExpensesSendParams :IExpensesSendParams = { 
       idPeriod : 0,
       dateBegin : dataSend.startDate,

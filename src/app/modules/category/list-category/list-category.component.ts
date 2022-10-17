@@ -114,6 +114,8 @@ export class ListCategoryComponent implements OnInit {
   }
 
   receiveFromFormShared(objectFromLFormToTransaction: any) {
+
+    console.log(objectFromLFormToTransaction);
     this.flagFormulario = false;
     if(objectFromLFormToTransaction === null) return;
 
@@ -136,6 +138,7 @@ export class ListCategoryComponent implements OnInit {
   }
 
   delete(element: any) {
+    this._loadSpinnerService.showSpinner();
     this._categoryService.delete(this.period.id, element.id).subscribe(
       response => {
         Swal.fire(
@@ -158,6 +161,7 @@ export class ListCategoryComponent implements OnInit {
   }
 
   updateElement(element: CategoryModel) {
+    this._loadSpinnerService.showSpinner();
     this._categoryService.update(element, element.id).subscribe(
       response => {
         Swal.fire(
@@ -181,6 +185,7 @@ export class ListCategoryComponent implements OnInit {
   }
 
   createNewElement(element: CategoryModel) {
+    this._loadSpinnerService.showSpinner();
     this._categoryService.create(element).subscribe(
       response => {
         Swal.fire(

@@ -83,8 +83,7 @@
                     <div class="form_control st_frm_search" >
                         <div class="st_block_search d-flex align-items-center justify-content-start">
                             <i class="far fa-search" ></i>
-                            <input (keyup)="searchMethod($event)" type="text"
-                            spellcheck="false" autocomplete="none" placeholder="Search">
+                            <input (keyup)="searchMethod($event)" type="text"  spellcheck="false" autocomplete="none" placeholder="Search">
                             <i  (click)="createNewCategory()" *ngIf="showBtnAddItem" class="fas fa-check-circle"></i>
                         </div>
                         <span style="font-size: .8rem; text-align: center; font-weight:bold; color: rgb(82, 207, 82);">{{textSaveCategory}}</span>

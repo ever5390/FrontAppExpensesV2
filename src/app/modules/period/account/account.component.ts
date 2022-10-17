@@ -37,7 +37,7 @@ export class AccountComponent implements OnInit, OnDestroy {
   heightForm: number = 0;
   item: ElementRef | any;
   heightListContent: number = 0;
-  listaCategoriesFixed: CategoryModel[] = [];
+  listaCategoriesAvailables: CategoryModel[] = [];
   listaCategories: CategoryModel[] = [];
   flagShowListOptionsSelect: boolean = false;
 
@@ -92,16 +92,11 @@ export class AccountComponent implements OnInit, OnDestroy {
     this.searchActivateFunction();
     this.switchDecideFormByComponent();
     this.seteoByComponentParent();
-    console.log("catecCheck");
-    console.log(this.categoriesChecked);
     this.categoriesChecked = this.dataStructureReceived.object.categories;
     this.setterDataStructureSendToAccouuntList();
   }
 
-  ngOnDestroy() {
-    console.log("Sdios account");
-    //this._loadSpinnerService.hideSpinner();
-  }
+  ngOnDestroy() {}
 
 
   private setterDataStructureSendToAccouuntList() {
@@ -118,8 +113,6 @@ export class AccountComponent implements OnInit, OnDestroy {
   }
 
   switchDecideFormByComponent() {
-    // if(this.dataStructureReceived.component != CONSTANTES.CONST_TEXT_VACIO)
-    //     this.show__popup = true;
 
     switch (this.dataStructureReceived.component) {
       case CONSTANTES.CONST_TRANSFERENCIA_INTERNA:
@@ -243,8 +236,6 @@ export class AccountComponent implements OnInit, OnDestroy {
     this._loadSpinnerService.showSpinner();
     this._accountService.saveTransferenceAccount(transferToSave).subscribe(
       (response :any)=> {
-        // Swal.fire(response.title,response.message,response.status);
-        this._loadSpinnerService.hideSpinner();
         this.responseToFatherComponent.emit(response);
       },
       error => {
@@ -259,9 +250,7 @@ export class AccountComponent implements OnInit, OnDestroy {
     accountToSave.period = this.period;
     this._accountService.createAccount(accountToSave).subscribe(
       (response :any)=> {
-        // Swal.fire("","Cuenta registrada con éxito","success");
         this._periodService.saveToLocalStorage(response.object.period);
-        // this._loadSpinnerService.hideSpinner();
         this.responseToFatherComponent.emit(response);
       },
       error => {
@@ -276,8 +265,6 @@ export class AccountComponent implements OnInit, OnDestroy {
     this._loadSpinnerService.showSpinner();
     this._accountService.updateAccount(accountToSave).subscribe(
       (response :any)=> {
-        // Swal.fire(response.title,response.message, response.status);
-        // this._loadSpinnerService.hideSpinner();
         this.responseToFatherComponent.emit(response);
       },
       error => {
@@ -360,7 +347,6 @@ export class AccountComponent implements OnInit, OnDestroy {
   }
 
   getAllCategories() {
-    //this._loadSpinnerService.showSpinner();
     this._categoryService.getAllCategories(this.owner.id).subscribe(
       response => {
         this._loadSpinnerService.hideSpinner();
@@ -374,18 +360,20 @@ export class AccountComponent implements OnInit, OnDestroy {
     );
   }
 
-  showCategoriesActivesByAccountAndPendings() {
-    this.listaCategories = this.listaCategories.filter((categ)=>{
-      return categ.active == false;
-    });
+  /************************************************************************************
+    NOTA: Las categorías activadas son las que estan asociadas a una cuenta.
+    El método captura las categorías que no pertenecen a ninguna cuenta (descativadas)
+    y las junta con las que si pertencen a la cuenta seleccionada.
+    Así muestra las que le pertenecen más las que puede seguir asociando.
 
-    this.dataStructureReceived.object.categories.forEach((categAccount: CategoryModel)=>{
+  *************************************************************************************/
+  showCategoriesActivesByAccountAndPendings() {
+    this.listaCategories = this.listaCategories.filter(categ => categ.active == false);
+    this.dataStructureReceived.object.categories.forEach((categAccount: CategoryModel) => {
       if(this.dataStructureReceived.object.statusAccount.toString() == "PROCESS") categAccount.isDisabled = true;
       this.listaCategories.unshift(categAccount);
     });
-
-    this.listaCategoriesFixed = this.listaCategories;
-
+    this.listaCategoriesAvailables = this.listaCategories;
   }
 
   showPopUp() {
@@ -402,7 +390,7 @@ export class AccountComponent implements OnInit, OnDestroy {
       debounceTime(100)
     ).subscribe((searchText:any) => {
       this.showBtnAddItem = false;
-      this.listaCategories = this.listaCategoriesFixed.filter(item => {
+      this.listaCategories = this.listaCategoriesAvailables.filter(item => {
         return item.name.toUpperCase().includes(searchText.toUpperCase()) 
           }
         );
@@ -426,21 +414,26 @@ export class AccountComponent implements OnInit, OnDestroy {
     this.newCategory.group = new GroupModel(true,"","",2,"",new OwnerModel());
     this.newCategory.image = CONSTANTES.CONST_IMAGEN_DEFAULT;
     this.newCategory.name = this.textSearch;
+    console.log(this.textSearch);
     this.newCategory.owner = this.owner;
     this._categoryService.create(this.newCategory).subscribe(
       response=> {
-        
-        setTimeout(() => {
-          this.textSaveCategory = "categoría creada!";
-        }, 100);
-        this.textSaveCategory = "";
-        this.textSearch = "";
-        this.getAllCategories();
+        this.textSaveCategory = "categoría creada!";
+        this.hiddenMessageCategory();
       },
       error => {
+        this.textSaveCategory = "La categoría ya existe";
+        this.hiddenMessageCategory();
         console.log("Error al crear la categoria nueva");
       }
     );
+  }
+
+  hiddenMessageCategory() {
+    setTimeout(() => {
+      this.textSaveCategory = "";
+    }, 1000);
+    this.getAllCategories();
   }
 
   receivedItemSelectedaFromPopUp(itemReceived: any) {
@@ -476,19 +469,23 @@ export class AccountComponent implements OnInit, OnDestroy {
   }
 
   onChangeCategory(event: any) {
+    console.log("clickkk");
     this.activeOnChange = true;
     const idCateSelected = event.target.value;
     const isChecked = event.target.checked;
 
-    this.categoriesSelected = this.listaCategories.map((cat) => {
+    this.categoriesSelected = this.listaCategoriesAvailables.map((cat) => {
         if(cat.id == idCateSelected) {
           cat.active = isChecked;
-          //this.parentSelector = false;
           return cat;
         }
        return cat;
     });
 
+    setTimeout(() => {
+      this.listaCategories = this.listaCategoriesAvailables;
+    }, 500);
+    
   }
 
 }

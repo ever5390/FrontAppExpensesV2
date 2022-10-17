@@ -1,6 +1,9 @@
 <div #container_header>
     <ng-container *ngIf="!dataReceivedToShowHeaderFromExpenseBody.flagIsPendingCollect; else templateListPendingCollect">
         <div class="st_container_header">
+            <div style="color:rgb(104, 17, 17);" *ngIf = "dataReceivedToShowHeaderFromExpenseBody.flagIsPeriodFinalized">
+                PERIODO FINALIZADO
+            </div>
             <div class="st_container_title_spent_available">
                 <div class="st_block_subtitle">
                     <label>Total Gastado</label>

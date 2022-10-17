@@ -31,9 +31,11 @@ export class DetailHeaderPeriodComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
-    console.log("Hol header peridos");
     this._loaderService.showSpinner();
-    this.periodShow = this.periodDetailHeaderReceived.period;
+    setTimeout(() => {
+      this.periodShow = this.periodDetailHeaderReceived.period;
+    }, 100);
+    
   }
 
   viewExpenseByPeriod() {
@@ -174,7 +176,6 @@ export class DetailHeaderPeriodComponent implements OnInit {
     //Seteo de fecha final y activación
     this.periodShow = this.periodDetailHeaderReceived.period;
     this.periodShow.activate = true;
-    //this.periodShow.finalDate = this._utilitariesService.convertDateGMTToString(newFinalDate, "final");
     this.periodShow.finalDate = newFinalDate;
     this._periodService.updatePeriod(this.periodShow, 
         this.periodDetailHeaderReceived.period.id).subscribe(

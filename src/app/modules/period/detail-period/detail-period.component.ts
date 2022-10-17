@@ -1,4 +1,3 @@
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { OwnerDaoModel } from '@data/models/business/owner.model';
@@ -33,19 +32,15 @@ export class DetailPeriodComponent implements OnInit {
   constructor(
     private _accountService: AccountService,
     private _rutaActiva: ActivatedRoute,
-    private _renderer: Renderer2,
     private _router: Router,
-    private _loadSevice: SLoaderService,
+    private _loadSpinnerService: SLoaderService,
     private _periodService: PeriodService  ) {
       this.owner = JSON.parse(localStorage.getItem("lcstrg_owner")!);
       this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
   }
 
-  ngAfterViewInit() {
-    //this.getSizeBloclListPeriod();
-  }
-
   ngOnInit(): void {
+    this._loadSpinnerService.showSpinner();
     this._rutaActiva.params.subscribe(
       (params: Params) => {
         if(params.idPeriod != undefined) {
@@ -54,7 +49,6 @@ export class DetailPeriodComponent implements OnInit {
         }
       }
     );
-
   }
   
   validateShowBlockAccounts() {
@@ -67,7 +61,6 @@ export class DetailPeriodComponent implements OnInit {
 
   getAllDataCardPeriod(idPeriodReceived: number) {
     //Obtiene lista de periodos.
-    this.flagShowHeader = false;
     this._periodService.getPeriodDetailHeaderByPeriodId(idPeriodReceived, this.owner.id).subscribe(
       response => {
         this.periodDetailHeaderSend = response;
@@ -75,13 +68,12 @@ export class DetailPeriodComponent implements OnInit {
         this.getAllAccountByPeriodSelected(this.periodDetailHeaderSend.period.id);
       },
       error => {
-          this._loadSevice.hideSpinner();
+          this._loadSpinnerService.hideSpinner();
           Swal.fire("","No se obtuvo datos del periodo buscado","error");
           this._router.navigate(['/period']);
       }
     );
   }
-
 
   getAllAccountByPeriodSelected(idPeriodReceived: number) {
     this._accountService.getListAccountByIdPeriod(idPeriodReceived).subscribe(
@@ -92,7 +84,7 @@ export class DetailPeriodComponent implements OnInit {
       },
       error => {
         console.log(error);
-        this._loadSevice.hideSpinner();
+        this._loadSpinnerService.hideSpinner();
       }
     );
   }
@@ -101,12 +93,4 @@ export class DetailPeriodComponent implements OnInit {
     this.getAllDataCardPeriod(this.period.id);
   }
 
-  getSizeBloclListPeriod() {
-    let windowHeight = window.innerHeight;
-    let heightidPeriod = this.idPeriod.nativeElement.clientHeight;
-    if(heightidPeriod > (windowHeight-100)){
-      this._renderer.setStyle(this.idPeriod.nativeElement,"height",(windowHeight-50)+"px");
-      this._renderer.setStyle(this.idPeriod.nativeElement,"overflow-y","scroll");
-    }
-  }
 }

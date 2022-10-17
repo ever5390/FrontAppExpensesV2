@@ -2,6 +2,7 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild }
 import { CONSTANTES } from '@data/constantes';
 import { IExpenseReceivedShowHeaderExpense } from '@data/interfaces/iexpense-params-receive-header.interface';
 import { IExpensesSendParams } from '@data/interfaces/iexpense-params-send.interface';
+import { SLoaderService } from '@shared/components/loaders/s-loader/service/s-loader.service';
 import { UtilService } from '@shared/services/util.service';
 import { PeriodModel } from 'app/data/models/business/period.model';
 
@@ -22,20 +23,22 @@ export class HeaderExpenseComponent implements OnInit {
     dateEnd : "",
     optionOrigin : "",
     flagIsPendingCollect : false,
-    flagShowAvailableAmoount : false
+    flagShowAvailableAmoount : false,
+    flagIsPeriodFinalized : false
   }
   
   @ViewChild("container_header") container_header : ElementRef | any;
   @Output() emitterHeight= new EventEmitter();
   @Output() redirectToParentFromHeader: EventEmitter<IExpensesSendParams> = new EventEmitter();
   
-  constructor(private _utilitariesService: UtilService) { 
+  constructor(private _utilitariesService: UtilService, private _loaderService : SLoaderService) { 
       this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
   }
 
   ngOnInit(): void {}
 
   sendOrderToExpenseShow() {
+    this._loaderService.showSpinner();
     let iExpensesSendParams :IExpensesSendParams = { 
       idPeriod : this.period.id,
       dateBegin : this.period.startDate.toString(),

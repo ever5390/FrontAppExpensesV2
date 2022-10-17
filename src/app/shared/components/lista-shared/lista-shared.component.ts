@@ -5,6 +5,7 @@ import { CONSTANTES } from 'app/data/constantes';
 import { FormControl } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { SLoaderService } from '../loaders/s-loader/service/s-loader.service';
 
 @Component({
   selector: 'app-lista-shared',
@@ -32,7 +33,8 @@ export class ListaSharedComponent implements OnInit {
   @ViewChild('idFormShared') idFormShared: ElementRef | any;
 
   constructor(
-    private _renderer: Renderer2
+    private _renderer: Renderer2,
+    private _loadSpinnerService: SLoaderService
   ) {
   }
 
@@ -87,6 +89,7 @@ export class ListaSharedComponent implements OnInit {
   }
 
   redirectToFormulario(objectSelected: any) {
+    this._loadSpinnerService.showSpinner();
     this.structureFormSend = new DataStructureFormShared();
     this.structureFormSend.component = this.dataStructureListReceived.component;
     this.structureFormSend.title = this.dataStructureListReceived.title;

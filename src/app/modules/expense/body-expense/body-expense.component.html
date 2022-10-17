@@ -1,7 +1,9 @@
 <div #contentList class="st_container_list_expense" >
     <ng-container *ngIf="sendListExpensesToBodyList.length > 0; else templateNoRows">
-        <div class="st_block_expense" *ngFor="let expense of sendListExpensesToBodyList; let i = index;">
-            <div class="st_expense_header" [ngStyle]="{'color':(expense.accordingType.id == 3) ? '#95A5A6' : '#000'}">
+        <div class="st_block_expense" 
+        [ngStyle]="{'background-color':(expense.pendingPayment == false && expense.accordingType.name == 'CON REPOSICION')? '#d6d6d69a' : '#ffffff00'}" 
+        *ngFor="let expense of sendListExpensesToBodyList; let i = index;" >
+            <div class="st_expense_header" [ngStyle]="{'color':(expense.pendingPayment == false && expense.accordingType.name == 'CON REPOSICION')? '#706262' : '#000'}">
                 <div>COD: G{{expense.id}} S/ {{expense.amountShow | number : '1.2-2'}}</div>
                 <div>{{expense.createAt | date: 'EEE dd MMM  HH:mm:ss' | uppercase}}
                     <label *ngIf="!expense.editable && expense.period.statusPeriod" (click)="updateExpense(expense)"> <i class="fas fa-edit"></i></label>

@@ -6,4 +6,5 @@ export interface IExpenseReceivedShowHeaderExpense {
     optionOrigin : string;
     flagIsPendingCollect : boolean;
     flagShowAvailableAmoount : boolean;
+    flagIsPeriodFinalized : boolean;
 }

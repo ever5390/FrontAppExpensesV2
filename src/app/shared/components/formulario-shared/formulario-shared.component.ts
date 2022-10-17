@@ -51,6 +51,7 @@ export class FormularioSharedComponent implements OnInit {
     this.owner = JSON.parse(localStorage.getItem('lcstrg_owner')!);
     this.switchDecideFormByComponent();
     this.seteoByComponentParent();
+    this._loadSpinnerService.hideSpinner();
   }
 
   seteoByComponentParent() {

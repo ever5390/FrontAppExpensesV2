@@ -159,6 +159,7 @@ export class DetailBodyPeriodComponent implements OnInit {
         this.accountListReceived = response;
         this.catchAccountParent();
         this.catchAccountChilds();
+        
         Swal.fire("",actionResponse.message,actionResponse.status);
       },
       error => {
@@ -172,7 +173,6 @@ export class DetailBodyPeriodComponent implements OnInit {
   confirmAccount() {
     this._accountService.confirmAccountStatus(this.period.id).subscribe(
       response => {
-        // Swal.fire("",response.message,response.status);
         this.getAllAccountByPeriodSelected(this.period.id, response);
       },
       error => {
@@ -210,14 +210,13 @@ export class DetailBodyPeriodComponent implements OnInit {
     this._loadSpinnerService.showSpinner();
     this._accountService.deleteAccount(account.id).subscribe(
       response => {
-        // Swal.fire(response.title, response.message, response.status);
         this._periodService.saveToLocalStorage(response.object);
+        this.sendUpdateAmountInitialHeader.emit();
         this.getAllAccountByPeriodSelected(this.period.id, response);
       },
       error => {
         console.log(error);
         Swal.fire(error.error.title, error.error.message, error.error.status);
-        //this.getAllAccountByPeriodSelected(this.period.id);
       }
     );
   }
@@ -275,8 +274,11 @@ export class DetailBodyPeriodComponent implements OnInit {
   }
 
   receiveToSonComponent(response:any) {
+    if(response == null) {
+      this.flagFormulario = false;
+      return; //Al salir del formulario sin hacer nada. Click fuera para oculatar formulario
+    }
     this.getAllAccountByPeriodSelected(this.period.id, response);
-    if(response == null)  return;
     this.sendUpdateAmountInitialHeader.emit();
   }
 

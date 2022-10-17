@@ -442,19 +442,23 @@ export class ManageExpenseComponent implements OnInit, OnDestroy {
     switch (element.component) {
       case CONSTANTES.CONST_COMPONENT_MEDIOSDEPAGO:
         this.itemPaymentMethod = element.itemSelected;
+        this._loadSpinnerService.hideSpinner();
         break;
       case CONSTANTES.CONST_COMPONENT_CATEGORIAS:
         this.itemCategory = element.itemSelected;
+        this._loadSpinnerService.hideSpinner();
         this.catchAccountByCategorySelected();
         break;
       case CONSTANTES.CONST_COMPONENT_ACUERDOS:
         this.itemAccording = element.itemSelected;
+        this._loadSpinnerService.hideSpinner();
         this.validateResizeHeightForm();
         break;
       case CONSTANTES.CONST_COMPONENT_CALENDAR:
         this.dateRangeCalendarSelected = element.dateRange.finalDate;
         break;
       case CONSTANTES.CONST_COMPONENT_CUENTAS:
+        this._loadSpinnerService.hideSpinner();
         if(element.itemSelected.name == "redirectToAccount"){
           this.flagIsSaveOK = false;          
           this._router.navigate(["/period/period-detail/"+this.period.id]);

@@ -5,7 +5,7 @@
             <div class="st_fc_header mt-1 d-flex align-items-center justify-content-center w-100">
                 <img class="mx-2" src="../../../../assets/images/icon calendar.png" alt="" srcset="">
                 <ng-container *ngIf="this.periodDetailHeaderReceived.period.activate; else elsePeriodActivateEqualsFalse;">
-                    <span>Del {{periodShow.startDate | date: 'EEE dd MMM  HH:mm:ss' | uppercase}}
+                    <span >Del {{periodShow.startDate | date: 'EEE dd MMM  HH:mm:ss' | uppercase}}
                         hasta {{periodShow.finalDate | date: 'EEE dd MMM  HH:mm:ss' | uppercase}}
                    </span>
                 </ng-container>

@@ -125,6 +125,7 @@ export class ListPaymentMethodComponent implements OnInit {
   }
   
   delete(element: PaymentMethodModel) {
+    this._loadSpinnerService.showSpinner();
     this._paymentMethodService.delete(this.period.id, element.id).subscribe(
       response => {
         Swal.fire(
@@ -148,6 +149,7 @@ export class ListPaymentMethodComponent implements OnInit {
 
 
   updateElement(element: PaymentMethodModel) {
+    this._loadSpinnerService.showSpinner();
     this._paymentMethodService.update(element, element.id).subscribe(
       response => {
         Swal.fire(
@@ -171,6 +173,7 @@ export class ListPaymentMethodComponent implements OnInit {
   }
 
   createNewElement(element: PaymentMethodModel) {
+    this._loadSpinnerService.showSpinner();
     this._paymentMethodService.create(element).subscribe(
       response => {
         Swal.fire(

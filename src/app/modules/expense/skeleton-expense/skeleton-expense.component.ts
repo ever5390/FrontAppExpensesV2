@@ -35,7 +35,8 @@ export class SkeletonExpenseComponent implements OnInit, OnDestroy {
     dateEnd : "",
     optionOrigin : "",
     flagIsPendingCollect : false,
-    flagShowAvailableAmoount : false
+    flagShowAvailableAmoount : false,
+    flagIsPeriodFinalized : false
   }
 
   orderReceivedToShowExpenses : IExpensesSendParams = { 
@@ -92,6 +93,7 @@ export class SkeletonExpenseComponent implements OnInit, OnDestroy {
 
   filterToSendExpenses(idPeriod : number, dateBegin: string, dateEnd: string, optionOrigin: string) {
     this.showBody = false;
+    this.dataSendToShowHeaderExpenses.flagIsPeriodFinalized = false;
     let accountIsNecessary =  false;
     switch (optionOrigin) {
       case CONSTANTES.CONST_TYPE_REQUEST_EXPENSES_SHOW_EXPENSES_ACTUAL_PERIOD:
@@ -110,7 +112,10 @@ export class SkeletonExpenseComponent implements OnInit, OnDestroy {
         dateEnd = this._utilitariesService.convertDateGMTToString(new Date(), "final");
         break;
       case CONSTANTES.CONST_TYPE_REQUEST_EXPENSES_SHOW_LAST_PERIODS:
+        this.dataSendToShowHeaderExpenses.flagIsPeriodFinalized = true;
         //El periodo pasado por parámetro.
+        // dateBegin = this._utilitariesService.convertDateGMTToString(new Date(dateBegin), "start");
+        // dateEnd = this._utilitariesService.convertDateGMTToString(new Date(), "final");
         break;
       default:
         //carga inicial
@@ -142,6 +147,7 @@ export class SkeletonExpenseComponent implements OnInit, OnDestroy {
                                                   CONSTANTES.CONST_TYPE_REQUEST_EXPENSES_SHOW_EXPENSES_ACTUAL_PERIOD );
         },
         error => {
+          console.log("ssds");
           this.getAllExpensesByWorkspaceAndPeriodId(this.period.id, 
             this.period.startDate.toString(), 
             this.period.finalDate.toString(), 

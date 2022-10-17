@@ -1,9 +1,8 @@
 <div #idPeriod class="container-fluid_period">
     <!-- *ngIf="flagShowHeader" -->
-    <app-detail-header-period  *ngIf="flagShowHeader"
+    <app-detail-header-period *ngIf="flagShowHeader"
         [periodDetailHeaderReceived]="periodDetailHeaderSend"
     ></app-detail-header-period>
-    <!-- <h3>text</h3> -->
     <app-detail-body-period *ngIf="flagShowBody && blockAccount"
         [accountListReceived]="accountListSend"
         (sendUpdateAmountInitialHeader)="receivedUpdateAmountInitialHeader()"
