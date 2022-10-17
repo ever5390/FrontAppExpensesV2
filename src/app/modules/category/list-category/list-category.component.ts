@@ -88,7 +88,8 @@ export class ListCategoryComponent implements OnInit {
         this._loadSpinnerService.hideSpinner();
       },
       error => {
-        console.log(error);
+        Swal.fire("Error","Se produjo un error al ejecutar la solicitud, recargue la aplicación e intente nuevamente","error")
+        this._loadSpinnerService.hideSpinner();
       }
     );
   }

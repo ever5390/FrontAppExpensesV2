@@ -19,19 +19,19 @@ export class PeriodService {
   constructor(private _http: HttpClient) { }
 
   getAllPeriodaByWorkspace(workspaceId: number): Observable<PeriodModel[]>  {
-    return this._http.get(`${this.URLCOMPL}/list-period/workspace/${workspaceId}`).pipe(
+    return this._http.get(`${this.URLCOMPL}/workspace/${workspaceId}/periods`).pipe(
       map(response => response as PeriodModel[])
     );
   }
 
   getAllPeriodDetailHeaderByWorkspaceId(workspaceId: number): Observable<PeriodDetailHeader[]>  {
-    return this._http.get(`${this.URLCOMPL}/list-period-detail/workspace/${workspaceId}`).pipe(
+    return this._http.get(`${this.URLCOMPL}/workspace/${workspaceId}/list-period-detail`).pipe(
       map(response => response as PeriodDetailHeader[])
     );
   }
 
   getPeriodDetailHeaderByPeriodId(periodId: number, idOwner: number): Observable<PeriodDetailHeader>  {
-    return this._http.get(`${this.URLCOMPL}/owner/${idOwner}/period-detail/${periodId}`).pipe(
+    return this._http.get(`${this.URLCOMPL}/owner/${idOwner}/period/${periodId}/period-detail`).pipe(
       map(response => response as PeriodDetailHeader)
     );
   }
@@ -41,7 +41,7 @@ export class PeriodService {
   }
 
   closePeriod(period: PeriodModel) : Observable<any> {
-    return this._http.post<PeriodModel>(`${this.URLCOMPL}/period-close`,period,{ headers: this.httpHeaders})
+    return this._http.post<PeriodModel>(`${this.URLCOMPL}/period/close-period`,period,{ headers: this.httpHeaders})
   }
 
   savePeriod(period: PeriodModel) : Observable<any> {

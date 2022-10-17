@@ -21,7 +21,7 @@ export class AccountService {
 
 
   getListAccountByIdPeriod(idPeriod: number): Observable<AccountModel[]> {
-    return this._http.get(`${this.URLCOMPL}/list-account/period/${idPeriod}`).pipe(
+    return this._http.get(`${this.URLCOMPL}/period/${idPeriod}/accounts`).pipe(
       map(response => response as AccountModel[])
     );
   }
@@ -31,7 +31,7 @@ export class AccountService {
   }
 
   confirmAccountStatus(idPeriod: number): Observable<any> {
-    return this._http.get(`${this.URLCOMPL}/account/confirm-period/${idPeriod}`);
+    return this._http.get(`${this.URLCOMPL}/period/${idPeriod}/accounts/confirm-status-accounts`);
   }
 
   updateAccount(accountToSave: AccountModel): Observable<AccountModel> {
@@ -47,9 +47,14 @@ export class AccountService {
   }
 
   findAccountByTypeAccountAndStatusAccountAndPeriodId(idAccountType: number, status: TypeSatusAccountOPC, idPeriod: number): Observable<AccountModel>  {
-    return this._http.get(`${this.URLCOMPL}/account/account-main-available-process?idAccountType=${idAccountType}&status=${status}&idPeriod=${idPeriod}`)
+    // return this._http.get(`${this.URLCOMPL}/account/account-main-available-process?idAccountType=${idAccountType}&status=${status}&idPeriod=${idPeriod}`)
+    // .pipe(
+    //   map(response => response as AccountModel)
+    // );
+    return this._http.get(`${this.URLCOMPL}/periodo/${idPeriod}/account/filter-account?idAccountType=${idAccountType}&status=${status}`)
     .pipe(
       map(response => response as AccountModel)
     );
+    
   }
 }

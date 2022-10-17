@@ -63,13 +63,19 @@ export class DetailPeriodComponent implements OnInit {
     //Obtiene lista de periodos.
     this._periodService.getPeriodDetailHeaderByPeriodId(idPeriodReceived, this.owner.id).subscribe(
       response => {
+        console.log(response);
+        if(response.period == null) {
+          Swal.fire("","No se obtuvo datos del periodo buscado","info");
+          this._router.navigate(['/period']);
+          return;
+        }
         this.periodDetailHeaderSend = response;
         this.flagShowHeader = true;
         this.getAllAccountByPeriodSelected(this.periodDetailHeaderSend.period.id);
       },
       error => {
           this._loadSpinnerService.hideSpinner();
-          Swal.fire("","No se obtuvo datos del periodo buscado","error");
+          Swal.fire("","Se produjo un error, recargue la aplicación y pruebe nuevamente","error");
           this._router.navigate(['/period']);
       }
     );

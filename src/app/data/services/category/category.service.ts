@@ -19,7 +19,7 @@ export class CategoryService {
   ) { }
 
   getAllCategories(idOwner: number): Observable<CategoryModel[]>  {
-    return this._http.get(`${this.URLCOMPL}/category/owner/${idOwner}`)
+    return this._http.get(`${this.URLCOMPL}/owner/${idOwner}/category`)
     .pipe(
       map(response => response as CategoryModel[])
     );

@@ -30,7 +30,7 @@ export class NotificationExpenseService {
   }
   
   getAllNotificationByTypeUserAndUserId(idUser: number) : Observable<NotificationExpense[]> {
-    return this._http.get<NotificationExpense[]>(`${this.URLCOMPL}/notification/owner?idUser=${idUser}`);
+    return this._http.get<NotificationExpense[]>(`${this.URLCOMPL}/owner/${idUser}/notifications`);
   }
 
   updateStatusNotificationExpense(notificationUpdate: NotificationExpense) : Observable<any>  {
