@@ -1,7 +1,8 @@
 <div class="st_list_account_origen" [ngStyle]="{'display':(flagShowComponentReceived) ? 'block' : 'none' }">
     <h6 class="d-flex justify-content-between align-items-center">
         <span (click)="backToEmitAccount()" >
-            <i class="fas fa-angle-double-left"></i> Seleccione
+            <!-- <i class="fas fa-angle-double-left"></i>  -->
+            Seleccione
         </span>
         <span *ngIf="componenteReceivedToBackWithoutSelect == 'Cuentas'" (click)="redirectToAccount()" >
              <i class="fas fa-cog"></i>

@@ -1,45 +1,32 @@
-<ng-container *ngIf="show__popup">
-    <div class="container-fluid" #popup__formulario>
-        <div class="container_form" #container_formulario>
-            <div class="st_content">
-                <div class="st_form_control_header">
-                    <div class="st_border">
-                        <label for='myFileC'>
-                            <input *ngIf="flagActivateInputFile" accept=".png, .jpg, .jpeg"  
-                                (change)="uploadFoto($event)" 
-                                type="file" id="myFileC"
-                                class="st_img_upload"
-                                readonly>
-                                <i class="fas fa-pen"></i>
-                        </label>
-                        <img #imgFormulary  *ngIf="dataStructureReceived.imagen" 
-                            src="{{objectToFormShared.image}}" alt="" srcset="">
-                    </div>
-                    <div class="st_form_header">
-                        <label>{{dataStructureReceived.title}}</label>
-                        <input *ngIf="flagInputNameFormulario" type="text" 
-                        [(ngModel)]="objectToFormShared.name"
-                        placeholder="Escribir nombre">
-                    </div>
+<div class="container-fluid" #popup__formulario>
+    <div class="container_form">
+        <div class="st_content">
+            <div class="form_header">
+                <label for='myFileC' >
+                    <input accept=".png, .jpg, .jpeg"  
+                        (change)="uploadFoto($event)" type="file" id="myFileC"
+                        class="d-none">
+                    <img #imgFormulary src="{{dataReceivedFormRegister.object.image}}" alt="loading..." srcset="">
+                </label>
+                <div class="form_input">
+                    <input type="text" 
+                    [(ngModel)]="dataReceivedFormRegister.object.name"
+                    placeholder="Escribir nombre">
                 </div>
-                <div class="form_control" *ngIf="flagGroupSelectFormulario">
-                    <label>Grupo</label>
-                    <select name="cars" [(ngModel)]="selectGroup" id="cars"  (change)="chooseItemGroup()" class="st_aside_dropdown_wrkspc" >
-                        <option value="0">--- Seleccione tipo de categoría ----</option>
-                        <option *ngFor="let itemGroup of this.dataStructureReceived.listGroupOnlyCategory"
-                            value="{{itemGroup.id}}">
-                            {{itemGroup.name}}
-                        </option>
-                    </select>
-                </div>                
             </div>
-            <button (click)="saveOrUpdate()">{{dataStructureReceived.action}}</button>
-            <button style="background-color: rgb(212, 33, 33);" 
-                    *ngIf="dataStructureReceived.action==='Actualizar'"
-                    (click)="delete()">
-                Eliminar
-            </button>
+            <div class="form_body" *ngIf="dataReceivedFormRegister.listaShow">
+                <label>Grupo</label>
+                <select name="cars" class="st_aside_dropdown_wrkspc" 
+                    [(ngModel)]="selectGroup" id="cars" (change)="chooseItemGroup()" >
+                    <option value="0">--- Seleccione tipo de categoría ----</option>
+                    <option *ngFor="let itemGroup of this.dataReceivedFormRegister.lista"
+                        value="{{itemGroup.id}}">
+                        {{itemGroup.name}}
+                    </option>
+                </select>
+            </div>
+            <button (click)="action(1)">{{dataReceivedFormRegister.txtActionBtn}}</button>
+            <button (click)="action(0)" *ngIf="dataReceivedFormRegister.object.id != 0" > Eliminar </button>        
         </div>
     </div>
-</ng-container>
-
+</div>

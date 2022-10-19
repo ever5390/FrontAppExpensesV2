@@ -30,7 +30,7 @@ export class HeaderComponent implements OnInit {
   
   @Output() showMenuNow: EventEmitter<boolean> = new EventEmitter();
   period: PeriodModel = new PeriodModel();
-
+  detectedErrorNotifCharger : boolean = false;
   currentRoute: string = "";
   constructor(
     private _router: Router,
@@ -68,6 +68,11 @@ export class HeaderComponent implements OnInit {
             subscribe.unsubscribe()
             this._router.navigate(["/login"]);
           }
+
+          if(this.detectedErrorNotifCharger) {
+            subscribe.unsubscribe()
+          } 
+
           this.getNotificationRequest(false);
       }
     );
@@ -133,6 +138,7 @@ export class HeaderComponent implements OnInit {
 
       },
       error => {
+        this.detectedErrorNotifCharger = true;
         if(error.error.error_description != null && error.error.error_description.includes("token expired")) {
           Swal.fire("","Su sessión ha expirado, ingrese nuevamente","info");
           this._userService.logoutSession();

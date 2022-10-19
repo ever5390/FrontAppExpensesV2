@@ -2,7 +2,7 @@
     <div class="container-fluid" #popup__formulario>
         <div class="container_form" #formRegisterContainerToAccountListBlock>
             <!-- <i class="far fa-times" (click)="this.sendHiddenFormRegister.emit(false);this.show__popup = false;"></i> -->
-            <div #formRegister class="container_form_controls">
+           <div #formRegister class="container_form_controls">
                 <div class="form_control pt-1">
                     <label>Monto</label>
                     <div>(Ingrese monto)</div>
@@ -11,7 +11,7 @@
                         <input type="text" placeholder="0.00" [(ngModel)]="expense.amountShow" [readOnly]="flagReceiveNotificationParamRoute">
                     </div>
                 </div>
-                <div class="form_control pt-1">
+               <div class="form_control pt-1">
                     <label>Descripción(optional)</label>
                     <div class="form_contain_textarea">
                         <textarea rows="2" type="text" [(ngModel)]="expense.description"></textarea>
@@ -45,9 +45,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="form_control pt-1">
+               <div class="form_control pt-1">
                     <div class="st_content_attach">
-                        <label *ngIf="flagShowBtnSelectCalendar" (click)="showCalendar()" class="st_button_upload_voucher">
+                       <label *ngIf="flagShowBtnSelectCalendar" (click)="showCalendar()" class="st_button_upload_voucher">
                                 <span>Fecha: </span>
                                 <span>{{dateRangeCalendarSelected | date: 'EEE dd MMM  HH:mm:ss' | uppercase}}</span>
                                 <i class="fas fa-calendar"></i>
@@ -59,7 +59,7 @@
                                 <i class="fas fa-hashtag"></i>
                             </label>
                         </ng-container>
-                        <ng-container *ngIf="itemAccording.id == 2 || itemAccording.id == 3 || itemAccording.id == 4 || itemAccording.id == 7">
+                         <ng-container *ngIf="itemAccording.id == 2 || itemAccording.id == 3 || itemAccording.id == 4 || itemAccording.id == 7">
                             <label *ngIf="payerSelected == ''; else ownerSelected;"
                                 (click)="showListOptionsSelect('payer')" class="st_button_upload_voucher st_bgcolor_whopay">
                                 <span>Quien paga</span>
@@ -67,7 +67,7 @@
                                 <i class="fas fa-envelope-open-dollar"></i>
                             </label>
                         </ng-container>
-                        <ng-container *ngIf="accountListSelected.length>0">
+                        <ng-container *ngIf="accountListSelected.length>0 && itemCategory.id > 0">
                             <label *ngIf="itemAccount.id==0; else accountSelected;"
                                 (click)="showListOptionsSelect('accounts')" class="st_button_upload_voucher st_bgcolor_whopay">
                                 <span>Account:</span>
@@ -86,10 +86,6 @@
                                 <i class="fas fa-arrow-alt-square-up"></i>
                         </label>
                         <div class="container-vouchers" >
-                            <!-- <span class="st_voucher" *ngFor="let voucher of vouchersListToShow; let i = index" >
-                                <img src="{{voucher}}"  accept="image/png, image/jpeg, image/jpg"  alt="" srcset="">
-                                <i class="close-voucher fas fa-times st_delete_voucher" (click)="removeVoucherFromList(i)"></i>
-                            </span> -->
                             <span class="st_voucher" *ngFor="let voucher of expense.vouchers; let i = index" >
                                 <img src="{{voucher.name}}"  accept="image/png, image/jpeg, image/jpg"  alt="" srcset="">
                                 <i class="close-voucher fas fa-times st_delete_voucher" (click)="removeVoucherFromList(i)"></i>
@@ -97,21 +93,19 @@
                         </div>
                     </div>
                 </div>
-               
+                
             </div>
             <button (click)="registerOrUpdateExpense(expense.id)">{{textActionButton}}</button>
 
-
-
             <!-- Lista de items POP-UP-->
-            <div class="st_lista_items_select" *ngIf="show__list__items">
-                <!-- <i class="fas fa-times" (click)="hiddenPopUp()"></i> -->
+            <div class="st_lista_items_select" #lista_options_select *ngIf="show__list__items">
+                <i class="close-block fas fa-times" (click)="hiddenPopUp()"></i>
                     <app-list-payment-method 
                         [receivedOrderSelectedItem]="flagShowListPaymentMethod"
                         (sendItemSelectedToFormExpense)="receivedItemSelectedaFromPopUp($event)" 
                         *ngIf="flagShowListPaymentMethod">
                     </app-list-payment-method>
-                    <app-list-category       
+                    <app-list-category
                         [receivedOrderSelectedItem]="flagShowListCategories"
                         (sendItemSelectedToFormExpense)="receivedItemSelectedaFromPopUp($event)" 
                         *ngIf="flagShowListCategories">

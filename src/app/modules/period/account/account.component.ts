@@ -64,7 +64,6 @@ export class AccountComponent implements OnInit, OnDestroy {
   flagActivateInputFile: boolean = true;
   flagShowListCategories: boolean = false;
 
-
   categoriesSelected: CategoryModel[] = [];
   categoriesChecked: CategoryModel[] = [];
   newCategory: CategoryModel = new CategoryModel();

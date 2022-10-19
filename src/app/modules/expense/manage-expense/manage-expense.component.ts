@@ -79,7 +79,8 @@ export class ManageExpenseComponent implements OnInit, OnDestroy {
   @ViewChild('formRegister') formRegister: ElementRef | any;
   @ViewChild('popup__formulario') popup__formulario: ElementRef | any;
   @ViewChild('formRegisterContainerToAccountListBlock') formRegisterContainerToAccountListBlock: ElementRef | any;
-
+  @ViewChild('lista_options_select') lista_options_select: ElementRef | any;
+  
   constructor(
     private _renderer: Renderer2,
     private _router: Router,
@@ -105,6 +106,27 @@ export class ManageExpenseComponent implements OnInit, OnDestroy {
       this._expenseService.saveExpenseToLocalStorage(this.expense);
     }
   }
+
+  ngAfterViewInit() {
+    this.validateResizeHeightForm();
+  }
+
+  sendHeightFormRegister: number = 0;
+  private validateResizeHeightForm() {
+
+    this.heightFormRegisterExpense = this.formRegisterContainerToAccountListBlock.nativeElement.clientHeight;
+    let windowHeight = window.innerHeight;
+    let pop = this.popup__formulario.nativeElement.clientHeight;
+    
+    if (this.heightFormRegisterExpense > windowHeight - 200) {
+      this.sendHeightFormRegister = windowHeight - 200;
+      this._renderer.setStyle(this.formRegister.nativeElement, "height", (windowHeight * 0.7) + "px");
+      this._renderer.setStyle(this.formRegister.nativeElement, "overflow-y", "scroll");
+    } else {
+      this.sendHeightFormRegister = this.heightFormRegisterExpense;
+    }
+  }
+
 
   ngOnInit(): void {
     this.getAllAccording();
@@ -344,22 +366,10 @@ export class ManageExpenseComponent implements OnInit, OnDestroy {
     );
   }
 
-  ngAfterViewInit() {
-    this.validateResizeHeightForm();
-  }
-
-  private validateResizeHeightForm() {
-      this.heightFormRegisterExpense = this.formRegisterContainerToAccountListBlock.nativeElement.clientHeight;
-      let windowHeight = window.innerHeight;
-      let heightFormRegister = this.formRegister.nativeElement.clientHeight;
-      if (heightFormRegister > windowHeight - 200) {
-        this._renderer.setStyle(this.formRegister.nativeElement, "height", (windowHeight * 0.7) + "px");
-        this._renderer.setStyle(this.formRegister.nativeElement, "overflow-y", "scroll");
-      }
-  }
-
   showListCategories() {
     this.show__list__items = true;
+    this.sendHeightFormRegister = 1;
+    this.validateResizeHeightForm();
     this.flagShowListCategories = true;
     this.dataStructure.component=CONSTANTES.CONST_COMPONENT_CATEGORIAS;
     this.dataStructure.title=CONSTANTES.CONST_TITLE_SELECCIONE_ITEM_CATEGORIAS;
@@ -462,6 +472,13 @@ export class ManageExpenseComponent implements OnInit, OnDestroy {
           this.flagIsSaveOK = false;          
           this._router.navigate(["/period/period-detail/"+this.period.id]);
           return;
+        }
+
+        this.catchAccountByCategorySelected();
+        
+        if(this.itemAccount.id != 0 && this.itemAccount.id != element.itemSelected.id) {
+          Swal.fire("","No es posible seleccionar esa cuenta debido a que ya existe una asociada a la categoría que registró.","info");
+          break;
         }
 
         this.itemAccount.id = element.itemSelected.id;
@@ -591,7 +608,7 @@ export class ManageExpenseComponent implements OnInit, OnDestroy {
     voucherNews.forEach(voucher => {
       let imgBase64 = voucher.name;
       this._storageService.uploadImage( "IMG_" + Date.now(), imgBase64,
-                            "expenses"+ "/"+ this.owner.username)
+                        this.owner.username + "/" + CONSTANTES.CONST_COMPONENT_EXPENSEREGISTER)
         .then(
         urlImagen => {
           countIteration++;

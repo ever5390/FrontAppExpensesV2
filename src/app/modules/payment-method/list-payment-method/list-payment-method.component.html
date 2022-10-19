@@ -1,12 +1,33 @@
-<div class="container-fluid"  *ngIf="flagListShared">
-    <app-lista-shared
-        [dataStructureListReceived]="dataStructureToListShared"
-        (emitResponseToForm)="receiveItemSelectedFromListShared($event)">
-    </app-lista-shared>
+<div class="container-fluid">
+    <div class="box_container">
+        <div class="box_header">
+            <div class="box_item">
+                <img src="{{imagenDefault}}" alt="" srcset="">
+            </div>
+             <h6>Configuración de Medios de pago</h6>
+        </div>
+        <!-- BEGIN componente seach filter -->
+        <app-search [receivedDataFromFather]="listaPaymentsSendSearch" (sendDataFromSearchToFather)="receivedDataFromSearch($event)"></app-search>
+        <!-- END componente seach filter -->
+        <div class="box_body">
+            <div class="box_item" (click) = "showRegisterForm(paymentMehtodEmpty)">
+                <i class="far fa-plus"></i>
+                <span>Crear Nuevo</span>
+            </div>
+            <!-- ngFor -->
+            <div class="box_item" *ngFor="let item of listaPaymentMethods" (click) = "showRegisterForm(item)">
+                <!-- <img *ngIf="!loadImageFull" src="../../../../assets/images/loading.PNG" alt="" srcset=""> -->
+                <img src="{{item.image}}" (load)="onImageLoad()" />
+                <span>{{item.name | lowercase}}</span>
+            </div>
+        </div>
+    </div>
 </div>
 
 <app-formulario-shared *ngIf="flagFormulario"
     (responseToFatherComponent)="receiveFromFormShared($event)"
-    [dataStructureReceived]="dataStructureToForm"
+    [dataReceivedFormRegister]="dataSendFormRegister"
 >
 </app-formulario-shared>
+
+

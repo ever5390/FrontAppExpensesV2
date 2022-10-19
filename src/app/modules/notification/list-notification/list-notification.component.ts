@@ -101,7 +101,7 @@ export class ListNotificationComponent implements OnInit {
     this._loadSpinnerService.showSpinner();
     this._notificationExpenseService.updateStatusNotificationExpense(notificationSelected).subscribe(
       response => {
-
+        this._loadSpinnerService.hideSlow();
         if(this.orderTypeUpdate == 1 || this.orderTypeUpdate == 3){
           this._router.navigate(["/"]);
           // let dataSend:any = [];

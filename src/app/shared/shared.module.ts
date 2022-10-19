@@ -4,14 +4,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http'
 //import * as fromComponents from './components';
 import { FormularioSharedComponent } from './components/formulario-shared/formulario-shared.component';
-import { ListaSharedComponent } from './components/lista-shared/lista-shared.component';
-import { FilterByItemSharedComponent } from './components/filter-by-item-shared/filter-by-item-shared.component';
 import { SLoaderComponent } from './components/loaders/s-loader/s-loader.component';
 import { CalendarComponent } from './components/calendar/calendar.component';
 import { ListCategoryComponent } from '@modules/category/list-category/list-category.component';
 import { ListAccountsSharedComponent } from './components/list-accounts-shared/list-accounts-shared.component';
 import { VisualizadorVoucherComponent } from './components/visualizador-voucher/visualizador-voucher.component';
 import { NumberDirective } from './directives/numbers-only.directive';
+import { SearchComponent } from './components/search/search.component';
 
 @NgModule({
   imports: [
@@ -23,13 +22,12 @@ import { NumberDirective } from './directives/numbers-only.directive';
   declarations: [
     NumberDirective,
     FormularioSharedComponent,
-    ListaSharedComponent,
-    FilterByItemSharedComponent,
     SLoaderComponent,
     CalendarComponent,
     ListCategoryComponent,
     ListAccountsSharedComponent,
     VisualizadorVoucherComponent,
+    SearchComponent,
     
        // ...fromComponents.components, FormularioSharedComponent
   ],
@@ -40,13 +38,12 @@ import { NumberDirective } from './directives/numbers-only.directive';
     CommonModule,
     
     FormularioSharedComponent,
-    ListaSharedComponent,
-    FilterByItemSharedComponent,
     SLoaderComponent,
     CalendarComponent,
     ListCategoryComponent,
     ListAccountsSharedComponent,
-    VisualizadorVoucherComponent
+    VisualizadorVoucherComponent,
+    SearchComponent
 
     //...fromComponents.components
   ]

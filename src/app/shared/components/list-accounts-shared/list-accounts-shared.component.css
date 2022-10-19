@@ -6,9 +6,12 @@
     width: 100%;
     height: 100%;
     padding: 10px;
-    background-color: #fff;
     border-radius: 10px;
     display: block;
+    background-color: rgb(255, 255, 255);
+    -webkit-box-shadow: 1px 1px 9px -1px rgba(14, 14, 14, 0.48);
+    -moz-box-shadow: 1px 1px 9px -1px rgba(14, 14, 14, 0.48);
+    box-shadow: 1px 1px 9px -1px rgba(14, 14, 14, 0.48);
 }
 
 .st_list_account_origen h6 {

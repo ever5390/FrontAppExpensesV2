@@ -59,7 +59,7 @@ export class SkeletonComponent implements OnInit {
         this.getAllPeriodsByWorskpaceId();
 
       }, error => {
-
+        Swal.fire("Error","Se produjo un error al ejecutar la solicitud, recargue la aplicación e intente nuevamente","error")
         this._loadSpinnerService.hideSpinner();
       }
     );

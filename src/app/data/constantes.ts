@@ -2,7 +2,7 @@ export class CONSTANTES {
 
     public static CONST_COMPONENT_HEADER = 'header';
     public static CONST_COMPONENT_PERIOD = 'periodo';
-    public static CONST_COMPONENT_EXPENSEREGISTER = 'expenseregister';
+    public static CONST_COMPONENT_EXPENSEREGISTER = 'expenses';
     public static CONST_COMPONENT_CATEGORIAS = 'categories';
     public static CONST_COMPONENT_ACUERDOS = 'according';
     public static CONST_COMPONENT_MEDIOSDEPAGO = 'paymentmethod';

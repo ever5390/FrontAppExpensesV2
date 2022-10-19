@@ -9,6 +9,7 @@ import { SharedModule } from 'app/shared/shared.module';
 import { ListPaymentMethodComponent } from '@modules/payment-method/list-payment-method/list-payment-method.component';
 import { ListAccordingComponent } from '@modules/according/list-according/list-according.component';
 import { SearchingComponent } from './searching/searching.component';
+import { FilterByItemSharedComponent } from './filter-by-item-shared/filter-by-item-shared.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { SearchingComponent } from './searching/searching.component';
 
     ListPaymentMethodComponent,
     ListAccordingComponent,
-    SearchingComponent
+    SearchingComponent,
+    FilterByItemSharedComponent
     
   ],
   imports: [

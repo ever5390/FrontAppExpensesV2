@@ -10,8 +10,8 @@
             
         </div>
         <div *ngIf="showBlockHourMinute" class="st_hour_minute">
-            <input (keyup)="detectedPressKey($event)" (keypress)="detectedPressKey($event)" type="text" [(ngModel)]="hour" /> :
-            <input (keyup)="detectedPressKey($event)" (keypress)="detectedPressKey($event)" type="text" [(ngModel)]="minute" />
+            <input (keyup)="detectedPressKey($event)" (keypress)="detectedPressKey($event)" type="number" [(ngModel)]="hour" /> :
+            <input (keyup)="detectedPressKey($event)" (keypress)="detectedPressKey($event)" type="number" [(ngModel)]="minute" />
         </div>
         <div class="st_content_days_weeks">
             <div class="weekdays">

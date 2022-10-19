@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ListAccountsSharedComponent } from './list-accounts-shared.component';
+import { SearchComponent } from './search.component';
 
-describe('ListAccountsSharedComponent', () => {
-  let component: ListAccountsSharedComponent;
-  let fixture: ComponentFixture<ListAccountsSharedComponent>;
+describe('SearchComponent', () => {
+  let component: SearchComponent;
+  let fixture: ComponentFixture<SearchComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ListAccountsSharedComponent ]
+      declarations: [ SearchComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ListAccountsSharedComponent);
+    fixture = TestBed.createComponent(SearchComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
