@@ -63,6 +63,7 @@ export class UserComponent implements OnInit {
 
     this._usuarioService.login(this.usuario).subscribe(
         response => {
+                this._sloader.hideSpinner();
                 this._usuarioService.guardarUsuario(response.access_token);
                 this._usuarioService.guardarToken(response.access_token);
                 let usuario = this._usuarioService.usuario;
@@ -70,7 +71,6 @@ export class UserComponent implements OnInit {
                 this._router.navigate(['/']);                
             }, err => {
                 Swal.fire("Error Login",err.message,"error")
-                this._sloader.hideSlow();
                 console.log(err);
                 if(err.status = 400) {
                 
@@ -80,8 +80,8 @@ export class UserComponent implements OnInit {
                     }
 
                     Swal.fire("Login",`${message}`,"info")
-                
                 }
+                this._sloader.hideSpinner();
             }
         )
     }
@@ -213,10 +213,12 @@ export class UserComponent implements OnInit {
     //}
     if(this.usuario.username == "" || this.usuario.username == null) {
       Swal.fire("Advertencia","Campo username no puede estar vacío", "info");
+      this._sloader.hideSpinner();
       return false;
     }
     if(this.usuario.password == "" || this.usuario.password == null) {
         Swal.fire("Advertencia","Campo password no puede estar vacío", "info");
+        this._sloader.hideSpinner(); 
         return false;
     }
 

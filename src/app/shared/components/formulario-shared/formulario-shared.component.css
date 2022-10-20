@@ -23,6 +23,11 @@
     border-radius: 10px;
 }
 
+
+.btn-delete {
+    background-color: crimson;
+}
+
 .form_header {
     display: flex;
     align-items: center;

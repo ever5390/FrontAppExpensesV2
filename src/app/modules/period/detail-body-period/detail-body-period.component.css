@@ -85,12 +85,12 @@
 
     .st_list_account {
         /* padding: 20px 0; */
-        margin-top: 15px;
+        /* margin-top: 15px; */
         padding-bottom: 0px;
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
-        align-items: center;
+        align-items: flex-start;
     }
 
         .st_card_account {

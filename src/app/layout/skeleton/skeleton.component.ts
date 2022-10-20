@@ -28,8 +28,6 @@ export class SkeletonComponent implements OnInit {
   period : PeriodModel = new PeriodModel();
   dateFinalAutomaticCatch: Date = new Date();
 
-  
-
   constructor(
     private _router: Router,
     private _usuarioService: UserService,
@@ -59,8 +57,10 @@ export class SkeletonComponent implements OnInit {
         this.getAllPeriodsByWorskpaceId();
 
       }, error => {
+        console.log(error);
         Swal.fire("Error","Se produjo un error al ejecutar la solicitud, recargue la aplicación e intente nuevamente","error")
         this._loadSpinnerService.hideSpinner();
+        this._router.navigate(["/"]);
       }
     );
   }

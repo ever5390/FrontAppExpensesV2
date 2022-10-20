@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { URL_BASE_HOST } from "app/config/global.url";
 import { Observable, Subject } from "rxjs";
 
 
@@ -13,29 +14,40 @@ export class UtilService {
 
     constructor() { }
 
-    convertDateToString(inputDate:Date): string {
-        //expense?dateBegin=2022-07-19T17:42:53&dateEnd=2022-07-19T17:42:59
-        
-        let date = new Date(inputDate);
-        return date.getUTCFullYear() + "-" + this.setAndGetTwoDigits(date.getUTCMonth()+1, "") + "-" + 
-               this.setAndGetTwoDigits(date.getUTCDate(), "")+ "T" + this.setAndGetTwoDigits(date.getUTCHours(), "hour") + ":" + 
-               this.setAndGetTwoDigits(date.getUTCMinutes(), "") + ":" + this.setAndGetTwoDigits(date.getUTCSeconds(), "");
-    }
-
     convertDateGMTToString(inputDate:Date, type: string): string {
         //expense?dateBegin=2022-07-19T17:42:53&dateEnd=2022-07-19T17:42:59
+        let sumHour = 0;
+        if(!URL_BASE_HOST.includes("localhost")) {
+            sumHour+=5;
+        }
         
         let date = new Date(inputDate);
         let dateFormattedInitial = date.getFullYear() + "-" + this.setAndGetTwoDigits(date.getMonth()+1, "") + "-" + 
         this.setAndGetTwoDigits(date.getDate(), "") + "T00:00:00";
 
         let dateFormattedFinal = date.getFullYear() + "-" + this.setAndGetTwoDigits(date.getMonth()+1, "") + "-" + 
-        this.setAndGetTwoDigits(date.getDate(), "") + "T" + this.setAndGetTwoDigits(date.getHours(), "hour") + ":" + 
-        this.setAndGetTwoDigits(date.getMinutes(), "") + ":" + this.setAndGetTwoDigits(date.getSeconds(), "");
+        this.setAndGetTwoDigits(date.getDate(), "") + "T" + this.setAndGetTwoDigits(date.getHours() + sumHour, "hour") + ":" + 
+        this.setAndGetTwoDigits(date.getMinutes(), "") + ":" + this.setAndGetTwoDigits(date.getSeconds(), "");        
 
         return  (type == "final")?dateFormattedFinal:dateFormattedInitial;
     }
 
+    sustractFiveHoursOnlyShowDataBySeachCalendar(inputDate:Date): string {
+        let date = new Date(inputDate);
+        let dateFormattedFinal = date.getFullYear() + "-" + this.setAndGetTwoDigits(date.getMonth()+1, "") + "-" + 
+        this.setAndGetTwoDigits(date.getDate(), "") + "T" + this.setAndGetTwoDigits(date.getHours() - 5, "hour") + ":" + 
+        this.setAndGetTwoDigits(date.getMinutes(), "") + ":" + this.setAndGetTwoDigits(date.getSeconds(), "");        
+        return  dateFormattedFinal;
+    }
+
+
+    setAndGetTwoDigits(valueTime: number, isHourParam: string) : string {
+        let isHour = (isHourParam != "")?23:59;
+        let valueTimeResponse = (valueTime<10)?"0"+valueTime:valueTime;
+        let response = (valueTime == 0)?isHour.toString():valueTimeResponse.toString();
+        return response;
+    }
+    
     getDateAddHoursOffset(value: string, order : string): Date {
 
         //Validate order :: plus or minus
@@ -59,13 +71,6 @@ export class UtilService {
         }
     
         return date;
-    }
-
-    setAndGetTwoDigits(valueTime: number, isHourParam: string) : string {
-        let isHour = (isHourParam != "")?23:59;
-        let valueTimeResponse = (valueTime<10)?"0"+valueTime:valueTime;
-        let response = (valueTime == 0)?isHour.toString():valueTimeResponse.toString();
-        return response;
     }
 
     sendTotalSpentToHeaderFromExpenseListMessage(objectSend:any) {

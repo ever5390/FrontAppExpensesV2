@@ -4,7 +4,7 @@
             <div class="st_account_principal">
                 <div class="st_acc_principal_header">
                     <span>Principal
-                        <label>{{accountParentShow.statusAccount}}</label>
+                        <label *ngIf="accountParentShow.statusAccount != 'PROCESS'">{{accountParentShow.statusAccount}}</label>
                     </span>
                     <span class="icons" *ngIf="accountParentShow.statusAccount != 'CLOSED'">
                         <i class="far fa-plus" (click)="showFormularyRegisterOrUpdate('Registrar', 'child')"></i>
@@ -18,75 +18,137 @@
                         <label for="">S/{{accountParentShow.balance | number: '1.2-2'}}</label>
                         <span style="color:rgb(99, 99, 99);">Disponible</span>
                     </div>
-                    <span style="color:rgb(99, 99, 99);">S/ {{accountParentShow.balanceFlow | number: '1.2-2'}}</span>
+                    <div class="d-flex justify-content-end flex-column align-items-end">
+                        <span style="color:rgb(99, 99, 99);" *ngIf="!showBlockTransfer && transferences.length > 0" (click)="viewBTransferences()"> {{transferences.length}} transferencias <i class="fas fa-eye" style="margin-left: 5px"></i></span>
+                        <span style="color:rgb(99, 99, 99);" *ngIf="showBlockTransfer" (click)="viewBTransferences()"> {{accountListReceived.length / 2}} Accounts <i class="fas fa-eye" style="margin-left: 5px"></i></span>
+                        <span style="color:rgb(99, 99, 99);">S/ {{accountParentShow.balanceFlow | number: '1.2-2'}}</span>
+                    </div>
                 </div>
+
+                <div *ngIf="showBlockTransfer">
+                    <div class="mt-3 mb-3 d-flex justify-content-between">
+                        <span>Transferencias externas</span>
+                        <span>S./ {{totalTransferencesExtern}}</span>
+                    </div>
+                    <div class="st_list_account">
+                        <ng-container *ngFor="let item of transferences; let i = index;">
+                            <div class="st_card_account" *ngIf="item.typeEntryExtern">
+                                <div class="st_block d-flex justify-content-between">
+                                    <span><b>Origen</b></span>
+                                    <span *ngIf="item.accountOrigin == null"><b>Externo</b></span>
+                                    <span *ngIf="item.accountOrigin != null">{{item.accountOrigin.accountName}}</span>
+                                </div>
+                                <div class="st_block d-flex justify-content-between">
+                                    <span><b>Destino</b></span>
+                                    <span>{{item.accountDestiny.accountName}}</span>
+                                </div>
+                                <div class="st_block">
+                                    <p>{{item.reason}}</p>
+                                </div>
+                                <div class="st_block d-flex justify-content-between">
+                                    <!-- <i class="fas fa-exchange-alt"></i> -->
+                                    <span>{{item.createDate | date: 'EEE dd MMM  HH:mm:ss' | uppercase}}</span>
+                                    <span>S./ {{item.amount}}</span>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+                
                 <div *ngIf="accountParentShow.statusAccount == 'INITIAL'" 
                     (click)="confirmAccount()" class="st_btn_confirm_account">
                     Confirmar estado de las cuentas
                 </div>
             </div>
-            <ng-container *ngIf="accountClosedStructureList.length > 0; else templateElseWithoutAccountChild">
-            </ng-container>
-        </ng-container>
-        <div #listAccount class="st_list_account">
-            <div class="st_card_account" 
-                [ngClass]="item.account.balanceFlow == '0'?'st_card_account_saldo_cero':'st_card_account'"
-                *ngFor="let item of accountClosedStructureList; let i = index;">
+            <ng-container *ngIf="accountClosedStructureList.length > 0; else templateElseWithoutAccountChild"></ng-container>
+        </ng-container>        
+        <ng-container *ngIf="!showBlockTransfer">
+            <div #listAccount class="st_list_account">
+                <div class="st_card_account mt-3 mb-3" [ngClass]="item.account.balanceFlow == '0'?'st_card_account_saldo_cero':'st_card_account'"
+                    *ngFor="let item of accountClosedStructureList; let i = index;">
 
-                <span class="icons icons-float-card"  *ngIf="accountParentShow.statusAccount != 'CLOSED'">
-                    <!-- <i *ngIf="accountParentShow.statusAccount == 'INITIAL'" class="fas fa-edit" (click)="showFormularyRegisterOrUpdate('Actualizar', account)"></i> -->
-                    <i class="fas fa-edit" (click)="showFormularyRegisterOrUpdate('Actualizar', item.account)"></i>
-                    <i *ngIf="accountParentShow.statusAccount == 'PROCESS'" class="far fa-exchange-alt" (click)="redirectToTransfer('Transferencia interna', item.account)"></i>
-                    <i (click)="deleteConfirmAccount(item.account)" class="fas fa-minus-circle"></i>
-                </span>
+                    <span class="icons icons-float-card"  *ngIf="accountParentShow.statusAccount != 'CLOSED'">
+                        <!-- <i *ngIf="accountParentShow.statusAccount == 'INITIAL'" class="fas fa-edit" (click)="showFormularyRegisterOrUpdate('Actualizar', account)"></i> -->
+                        <i class="fas fa-edit" (click)="showFormularyRegisterOrUpdate('Actualizar', item.account)"></i>
+                        <i *ngIf="accountParentShow.statusAccount == 'PROCESS'" class="far fa-exchange-alt" (click)="redirectToTransfer('Transferencia interna', item.account)"></i>
+                        <i (click)="deleteConfirmAccount(item.account)" class="fas fa-minus-circle"></i>
+                    </span>
 
-                <p>{{item.account.accountName}}</p>
-                <div class="st_account_actual">
-                    <div class="st_acc_act_data">
-                        <label>{{item.account.statusAccount}}</label>
-                        <span>S/ {{item.account.balance | number: '1.2-2'}}</span>
-                    </div>
-                    <div class="st_acc_act_data">
-                        <label>Disponible</label>
-                        <span  [ngStyle]="{'color':(item.account.balanceFlow == '0') ? 'red' : 'none' }">
-                            S/ {{item.account.balanceFlow | number: '1.2-2'}}
-                        </span>
-                    </div>
-                </div>
-                <div class="st_account_estimated" *ngIf="item.account.statusAccount=='CLOSED'">
-                    <div class="st_acc_act_data">
-                        <label>Estimación inicial</label>
-                        <span>S/ {{item.amountInitial | number: '1.2-2'}}</span>
-                    </div>
-                    <div class="st_acc_act_data">
-                        <div *ngIf="item.diferenciaAmountByStatus < 0">
-                            <span>T: S/ {{item.diferenciaAmountByStatus | number: '1.2-2'}}</span>
-                            <i style="color: rgb(202, 41, 41);" class="fas fa-caret-down"></i>
-                            <!-- <i style="color: rgb(66, 170, 66);" class="far fa-arrow-up"></i> -->
+                    <p>{{item.account.accountName}}</p>
+                    <div class="st_account_actual">
+                        <div class="st_acc_act_data">
+                            <label *ngIf="accountParentShow.statusAccount != 'PROCESS'">{{item.account.statusAccount}}</label>
+                            <span>S/ {{item.account.balance | number: '1.2-2'}}</span>
                         </div>
-                        <div>
-                            <span>G: S/ {{item.spent | number: '1.2-2'}}</span>
-                            <i style="color: rgb(202, 41, 41);" class="far fa-arrow-down"></i>
-                            <!-- <i *ngIf="item.amountInitial<=item.account.balance" style="color: rgb(66, 170, 66);" class="fas fa-caret-up"></i> -->
+                        <div class="st_acc_act_data">
+                            <label>Disponible</label>
+                            <span  [ngStyle]="{'color':(item.account.balanceFlow == '0') ? 'red' : 'none' }">
+                                S/ {{item.account.balanceFlow | number: '1.2-2'}}
+                            </span>
                         </div>
                     </div>
-                </div>
-                <div *ngIf="item.account.categories.length>0">
-                    <p>categorías asociadas</p>
-                    <div  class="st_list_categ_selected">
-                        <ng-container *ngFor="let categ of item.account.categories">
-                            <div>
-                                <img src="{{categ.image}}" alt="" srcset="">
-                                <label for="">{{categ.name}}</label>
+                    <div class="st_account_estimated" *ngIf="item.account.statusAccount=='CLOSED'">
+                        <div class="st_acc_act_data">
+                            <label>Estimación inicial</label>
+                            <span>S/ {{item.amountInitial | number: '1.2-2'}}</span>
+                        </div>
+                        <div class="st_acc_act_data">
+                            <div *ngIf="item.diferenciaAmountByStatus < 0">
+                                <span>T: S/ {{item.diferenciaAmountByStatus | number: '1.2-2'}}</span>
+                                <i style="color: rgb(202, 41, 41);" class="fas fa-caret-down"></i>
+                                <!-- <i style="color: rgb(66, 170, 66);" class="far fa-arrow-up"></i> -->
                             </div>
-                        </ng-container>
+                            <div>
+                                <span>G: S/ {{item.spent | number: '1.2-2'}}</span>
+                                <i style="color: rgb(202, 41, 41);" class="far fa-arrow-down"></i>
+                                <!-- <i *ngIf="item.amountInitial<=item.account.balance" style="color: rgb(66, 170, 66);" class="fas fa-caret-up"></i> -->
+                            </div>
+                        </div>
                     </div>
-                    
+                    <div *ngIf="item.account.categories.length>0">
+                        <p>categorías asociadas</p>
+                        <div  class="st_list_categ_selected">
+                            <ng-container *ngFor="let categ of item.account.categories">
+                                <div>
+                                    <img src="{{categ.image}}" alt="" srcset="">
+                                    <label for="">{{categ.name}}</label>
+                                </div>
+                            </ng-container>
+                        </div>
+                        
+                    </div>
                 </div>
             </div>
-        </div>
+        </ng-container>
+        <ng-container *ngIf="showBlockTransfer">
+            <p class="mt-3 mb-3"><b>Transferencias internas</b></p>
+            <div #listAccount class="st_list_account" >
+                <ng-container *ngFor="let item of transferences; let i = index;">
+                    <div class="st_card_account" *ngIf="!item.typeEntryExtern">
+                        <div class="st_block d-flex justify-content-between">
+                            <span><b>Origen</b></span>
+                            <span *ngIf="item.accountOrigin == null"><b>Ingreso</b></span>
+                            <span *ngIf="item.accountOrigin != null">{{item.accountOrigin.accountName}}</span>
+                        </div>
+                        <div class="st_block d-flex justify-content-between">
+                            <span><b>Destino</b></span>
+                            <span>{{item.accountDestiny.accountName}}</span>
+                        </div>
+                        <div class="st_block">
+                            <p>{{item.reason}}</p>
+                        </div>
+                        <div class="st_block d-flex justify-content-between">
+                            <!-- <i class="fas fa-exchange-alt"></i> -->
+                            <span>{{item.createDate | date: 'EEE dd MMM  HH:mm:ss' | uppercase}}</span>
+                            <span>S./ {{item.amount}}</span>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+        </ng-container>
     </div>
 </div>
+
 <app-account *ngIf="flagFormulario" 
     (responseToFatherComponent)="receiveToSonComponent($event)" 
     [dataStructureReceived]="dataStructure" 

@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { AccountClosedStructure } from '@data/models/Structures/data-account.model';
 import { PeriodService } from '@data/services/period/period.service';
+import { TransferenceService } from '@data/services/transferences/transferences.service';
 import { SLoaderService } from '@shared/components/loaders/s-loader/service/s-loader.service';
 import { CONSTANTES } from 'app/data/constantes';
 import { AccountModel, TypeSatusAccountOPC } from 'app/data/models/business/account.model';
@@ -32,6 +33,9 @@ export class DetailBodyPeriodComponent implements OnInit {
   accountListChildsInit: AccountModel[] = [];
   accountListChildsProcess: AccountModel[] = [];
   accountListChildsClosed: AccountModel[] = [];
+  transferences: TransferenciaModel[] = [];
+
+  getIDPeriodByParamReceived : number = 0;
 
   period: PeriodModel = new PeriodModel();
 
@@ -39,6 +43,8 @@ export class DetailBodyPeriodComponent implements OnInit {
   sendBtnText:string='';
   flagFormulario: boolean = false;
   blockAccount: boolean = false;
+
+  showBlockTransfer : boolean = false;
 
   dataStructure: DataStructureFormShared = new DataStructureFormShared();
 
@@ -49,15 +55,17 @@ export class DetailBodyPeriodComponent implements OnInit {
     private _accountService: AccountService,
     private _loadSpinnerService: SLoaderService,
     private _periodService: PeriodService,
+    private _transferService: TransferenceService,
     private _router: Router
   ) {
   }
 
   ngOnInit(): void {
-    this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
+    // this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
     this.catchAccountParent();
     this.catchAccountChilds();
     this.validateShowBlockAccounts();
+    this.getAllTransferencesByIdPeriod();
     this._loadSpinnerService.hideSpinner();
   }
 
@@ -65,6 +73,79 @@ export class DetailBodyPeriodComponent implements OnInit {
     this.blockAccount = true;
     if(!this.accountParentShow.period.statusPeriod && this.accountClosedStructureList.length == 0) {
       this.blockAccount = false;
+    }
+  }
+
+  viewBTransferences() {
+    this.showBlockTransfer = !this.showBlockTransfer;
+    this.getAllTransferencesByIdPeriod();
+  }
+  totalTransferencesExtern: number = 0;
+  getAllTransferencesByIdPeriod() {
+    console.log("this.getIDPeriodByParamReceived "+this.getIDPeriodByParamReceived);
+    this._transferService.getAllTransferencesByIdPeriod(this.getIDPeriodByParamReceived).subscribe(
+      response => {
+        console.log(response);
+        this.transferences = response;
+        this.totalTransferencesExtern = 0;
+        this.transferences.forEach(element => {
+          if(element.typeEntryExtern) {
+            this.totalTransferencesExtern += Number(element.amount);
+          }
+        });
+
+      },
+      error => {
+        console.log(error);
+        if(!error.error.error.includes("Not Found")) {
+          Swal.fire("", "Se encontró un error al intentar obtener los registros solicitados", "info");
+        }
+      }
+    );
+  }
+
+  catchAccountParent() {
+    this.accountParentInit = new AccountModel();
+    this.accountParentProcess = new AccountModel();
+    this.accountParentClosed = new AccountModel();
+    this.accountParentShow = new AccountModel();
+
+    this.accountListReceived.forEach(account => {
+        this.getIDPeriodByParamReceived = account.period.id;
+  
+        if(account.accountType.id == 1 && account.statusAccount.toString() == 'INITIAL'){
+          this.accountParentInit = account;
+        }
+
+        if(account.accountType.id == 1 && account.statusAccount.toString() == 'PROCESS'){
+          this.accountParentProcess = account;
+          return;
+        }
+
+        if(account.accountType.id == 1 && account.statusAccount.toString() == 'CLOSED'){
+          this.accountParentClosed = account;
+          return;
+        }
+    });
+
+    //Caso No existe ParentInitial
+    if(this.accountParentInit.id == 0) {
+      return;
+    }
+
+    //Caso existe ParentInitial
+    if(this.accountParentInit.id != 0) {
+      this.accountParentShow = this.accountParentInit;
+    }
+
+    //Caso existe ParentProcess
+    if(this.accountParentProcess.id != 0) {
+      this.accountParentShow = this.accountParentProcess;
+    }
+
+    //Caso existe accountParentClosed
+    if(this.accountParentClosed.id != 0) {
+      this.accountParentShow = this.accountParentClosed;
     }
   }
 
@@ -108,49 +189,6 @@ export class DetailBodyPeriodComponent implements OnInit {
 
   }
 
-  catchAccountParent() {
-    this.accountParentInit = new AccountModel();
-    this.accountParentProcess = new AccountModel();
-    this.accountParentClosed = new AccountModel();
-    this.accountParentShow = new AccountModel();
-
-    this.accountListReceived.forEach(account => {
-        if(account.accountType.id == 1 && account.statusAccount.toString() == 'INITIAL'){
-          this.accountParentInit = account;
-        }
-
-        if(account.accountType.id == 1 && account.statusAccount.toString() == 'PROCESS'){
-          this.accountParentProcess = account;
-          return;
-        }
-
-        if(account.accountType.id == 1 && account.statusAccount.toString() == 'CLOSED'){
-          this.accountParentClosed = account;
-          return;
-        }
-    });
-
-    //Caso No existe ParentInitial
-    if(this.accountParentInit.id == 0) {
-      return;
-    }
-
-    //Caso existe ParentInitial
-    if(this.accountParentInit.id != 0) {
-      this.accountParentShow = this.accountParentInit;
-    }
-
-    //Caso existe ParentProcess
-    if(this.accountParentProcess.id != 0) {
-      this.accountParentShow = this.accountParentProcess;
-    }
-
-    //Caso existe accountParentClosed
-    if(this.accountParentClosed.id != 0) {
-      this.accountParentShow = this.accountParentClosed;
-    }
-  }
-
   getAllAccountByPeriodSelected(idPeriodReceived: number, actionResponse : any) {
     this._accountService.getListAccountByIdPeriod(idPeriodReceived).subscribe(
       response => {
@@ -171,9 +209,9 @@ export class DetailBodyPeriodComponent implements OnInit {
   }
 
   confirmAccount() {
-    this._accountService.confirmAccountStatus(this.period.id).subscribe(
+    this._accountService.confirmAccountStatus(this.getIDPeriodByParamReceived).subscribe(
       response => {
-        this.getAllAccountByPeriodSelected(this.period.id, response);
+        this.getAllAccountByPeriodSelected(this.getIDPeriodByParamReceived, response);
       },
       error => {
         this._loadSpinnerService.hideSpinner();
@@ -212,7 +250,7 @@ export class DetailBodyPeriodComponent implements OnInit {
       response => {
         this._periodService.saveToLocalStorage(response.object);
         this.sendUpdateAmountInitialHeader.emit();
-        this.getAllAccountByPeriodSelected(this.period.id, response);
+        this.getAllAccountByPeriodSelected(this.getIDPeriodByParamReceived, response);
       },
       error => {
         console.log(error);
@@ -278,7 +316,8 @@ export class DetailBodyPeriodComponent implements OnInit {
       this.flagFormulario = false;
       return; //Al salir del formulario sin hacer nada. Click fuera para oculatar formulario
     }
-    this.getAllAccountByPeriodSelected(this.period.id, response);
+    this.getAllAccountByPeriodSelected(this.getIDPeriodByParamReceived, response);
+    this.getAllTransferencesByIdPeriod();
     this.sendUpdateAmountInitialHeader.emit();
   }
 

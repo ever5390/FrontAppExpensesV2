@@ -107,6 +107,7 @@ export class SkeletonExpenseComponent implements OnInit, OnDestroy {
         dateEnd = this._utilitariesService.convertDateGMTToString(new Date(dateEnd), "final");
         break;
       case CONSTANTES.CONST_TYPE_REQUEST_EXPENSES_SHOW_PENDING_COLLECT:
+        console.log("PCOLECT" + dateBegin);
         this.dataSendToShowHeaderExpenses.flagIsPendingCollect = true;
         dateBegin = this._utilitariesService.convertDateGMTToString(new Date(dateBegin), "start");
         dateEnd = this._utilitariesService.convertDateGMTToString(new Date(), "final");
@@ -147,7 +148,7 @@ export class SkeletonExpenseComponent implements OnInit, OnDestroy {
                                                   CONSTANTES.CONST_TYPE_REQUEST_EXPENSES_SHOW_EXPENSES_ACTUAL_PERIOD );
         },
         error => {
-          console.log("ssds");
+          console.log("error" + error);
           this.getAllExpensesByWorkspaceAndPeriodId(this.period.id, 
             this.period.startDate.toString(), 
             this.period.finalDate.toString(), 
@@ -208,7 +209,7 @@ export class SkeletonExpenseComponent implements OnInit, OnDestroy {
         this.dataSendToShowHeaderExpenses.total = this.totalGastadoSend;
         this.dataSendToShowHeaderExpenses.availableAmount = 0;
         this.dataSendToShowHeaderExpenses.dateBegin = dateBegin;
-        this.dataSendToShowHeaderExpenses.dateEnd = dateEnd;
+        this.dataSendToShowHeaderExpenses.dateEnd = this._utilitariesService.sustractFiveHoursOnlyShowDataBySeachCalendar(new Date(dateEnd));
         this.dataSendToShowHeaderExpenses.optionOrigin = optionOrigin;
         this.createNewColumnWithDataBySearching();
       },
