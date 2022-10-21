@@ -93,6 +93,7 @@ export class CalendarComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this._loaderService.hideSpinner();
     //this.catchDate(1,0,1);
 
     this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);

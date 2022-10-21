@@ -6,6 +6,7 @@ import { PeriodModel } from '@data/models/business/period.model';
 import { DataOptionsSelectExpense } from '@data/models/Structures/data-expense-options';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import { SLoaderService } from '../loaders/s-loader/service/s-loader.service';
 
 @Component({
   selector: 'app-list-accounts-shared',
@@ -43,10 +44,12 @@ export class ListAccountsSharedComponent implements OnInit {
   period: PeriodModel = new PeriodModel();
 
   constructor(
-    private _renderer: Renderer2
+    private _renderer: Renderer2,
+    private _loaderService : SLoaderService
   ) { }
 
   ngOnInit(): void {
+    this._loaderService.hideSpinner();
     this.period = JSON.parse(localStorage.getItem("lcstrg_periodo")!);
     this.searchActivateFunction();
     this.catchWithSetTime();

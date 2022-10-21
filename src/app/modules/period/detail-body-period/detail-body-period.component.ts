@@ -81,12 +81,13 @@ export class DetailBodyPeriodComponent implements OnInit {
     this.getAllTransferencesByIdPeriod();
   }
   totalTransferencesExtern: number = 0;
+
   getAllTransferencesByIdPeriod() {
     console.log("this.getIDPeriodByParamReceived "+this.getIDPeriodByParamReceived);
     this._transferService.getAllTransferencesByIdPeriod(this.getIDPeriodByParamReceived).subscribe(
       response => {
         console.log(response);
-        this.transferences = response;
+        this.transferences = response.reverse();
         this.totalTransferencesExtern = 0;
         this.transferences.forEach(element => {
           if(element.typeEntryExtern) {

@@ -367,6 +367,7 @@ export class ManageExpenseComponent implements OnInit, OnDestroy {
   }
 
   showListCategories() {
+    this._loadSpinnerService.showSpinner();
     this.show__list__items = true;
     this.sendHeightFormRegister = 1;
     this.validateResizeHeightForm();
@@ -377,6 +378,7 @@ export class ManageExpenseComponent implements OnInit, OnDestroy {
   }
 
   showListAccording() {
+    this._loadSpinnerService.showSpinner();
     if(!this.flagReceiveNotificationParamRoute) {
       this.show__list__items = true;
       this.flagShowListAccording = true;
@@ -387,6 +389,7 @@ export class ManageExpenseComponent implements OnInit, OnDestroy {
   }
 
   showListPaymentMethods() {
+    this._loadSpinnerService.showSpinner();
     this.show__list__items = true;
     this.flagShowListPaymentMethod = true;
     this.dataStructure.component=CONSTANTES.CONST_COMPONENT_MEDIOSDEPAGO;
@@ -395,11 +398,13 @@ export class ManageExpenseComponent implements OnInit, OnDestroy {
   }
 
   showCalendar() {
+    this._loadSpinnerService.showSpinner();
     this.show__list__items = true;
     this.flagShowCalendar = true;
   }
 
   showListOptionsSelect(sender: string) {
+    this._loadSpinnerService.showSpinner();
     this.show__list__items = true;
     this.dataOptionsSelectExpenseList = [];
     switch (sender) {
