@@ -302,14 +302,15 @@ export class DetailBodyPeriodComponent implements OnInit {
     this.dataStructure.object = this.transferObject;
     this.dataStructure.action = 'Transferir';
 
+    this.dataStructure.listAccoutOrigen = this.accountListChildsShow.filter(item => {
+      return item.id != object.id; 
+    });
+
     if(titleTransferInternOrExtern=='Transferencia interna') {
       this.transferObject.typeEntryExtern = true; //Intern
-      this.dataStructure.listAccoutOrigen = this.accountListChildsShow.filter(item => {
-        return item.id != object.id; 
-      });
-
       this.dataStructure.listAccoutOrigen.push(this.accountParentShow);
     }
+
   }
 
   receiveToSonComponent(response:any) {

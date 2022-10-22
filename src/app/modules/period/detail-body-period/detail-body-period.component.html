@@ -48,8 +48,8 @@
                                     <span><b>Destino</b></span>
                                     <span>{{item.accountDestiny.accountName}}</span>
                                 </div>
-                                <div class="st_block">
-                                    <p>{{item.reason}}</p>
+                                <div *ngIf="item.reason" class="st_block">
+                                    <span>{{item.reason}}</span>
                                 </div>
                                 <div class="st_block d-flex justify-content-between">
                                     <!-- <i class="fas fa-exchange-alt"></i> -->
@@ -140,7 +140,7 @@
                             <span><b>Destino</b></span>
                             <span>{{item.accountDestiny.accountName}}</span>
                         </div>
-                        <div class="st_block">
+                        <div *ngIf="item.reason" class="st_block">
                             <p>{{item.reason}}</p>
                         </div>
                         <div class="st_block d-flex justify-content-between">

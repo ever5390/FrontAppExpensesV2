@@ -182,6 +182,7 @@ export class AccountComponent implements OnInit, OnDestroy {
       this.dataStructureReceived.object.accountDestiny  = this.objectToFormShared.destino;
       this.dataStructureReceived.object.accountOrigin  = this.objectToFormShared.origen;
       this.dataStructureReceived.object.amount = this.objectToFormShared.monto;
+      this.dataStructureReceived.object.reason = this.objectToFormShared.reason;
       
       this.registerTransference(this.dataStructureReceived.object);
       return;
@@ -239,6 +240,7 @@ export class AccountComponent implements OnInit, OnDestroy {
       },
       error => {
         console.log(error);
+        this._loadSpinnerService.hideSpinner();
         Swal.fire(error.error.title,error.error.message,error.error.status);
       }
     );
