@@ -6,6 +6,7 @@ export class ObjectFormularioShared {
     constructor(
         public name:string = '',
         public monto:string = '',
+        public reason: string = '',
         public image: string = CONSTANTES.CONST_IMAGEN_DEFAULT,
         public inputDisabled: boolean = false,
         public group: GroupModel = new GroupModel(),

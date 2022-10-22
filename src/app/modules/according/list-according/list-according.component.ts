@@ -1,4 +1,4 @@
-  import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+  import { Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { AccordingModel } from '@data/models/business/according.model';
 import { AccordingService } from '@data/services/according/according.service';
   import { StorageService } from '@data/services/storage_services/storage.service';
@@ -34,6 +34,7 @@ import { AccordingService } from '@data/services/according/according.service';
     };
     //Receive from ExpenseManager: order selected item
     @Input() receivedOrderSelectedItem: boolean = false;
+    @Input() heightShared: number = 0;
     //Send to ExpenseManager: item selected
     @Output() sendItemSelectedToFormExpense = new EventEmitter();
   
@@ -44,7 +45,8 @@ import { AccordingService } from '@data/services/according/according.service';
     constructor(
       private _accordingService: AccordingService,
       private _loadSpinnerService: SLoaderService,
-      private _storageService :StorageService
+      private _storageService :StorageService,
+      private _renderer: Renderer2
     ) {
       this.owner = JSON.parse(localStorage.getItem("lcstrg_owner")!);
      }
@@ -53,14 +55,48 @@ import { AccordingService } from '@data/services/according/according.service';
       this._loadSpinnerService.showSpinner();
       this.getAllAccording("");
     }
-  
+
+    ngAfterViewInit() {
+      // setTimeout(() => {
+      //   this.validateResizeHeightForm();
+      // }, 1000);
+    }
+
     onImageLoad() {
       // Do what you need in here
+      //this.validateResizeHeightForm();
       setTimeout(() => {
         this.loadImageFull = true;
+        
       }, 200)
     }
   
+    sendHeightFormRegister: number = 0;
+    @ViewChild('container_all') containerAll: ElementRef | any;
+    @ViewChild('container_block') containerBlock: ElementRef | any;
+    @ViewChild('container_block_items') containerBlockItems: ElementRef | any;
+    heigthContainerAll: number = 0;
+    heigthContainerBlock: number = 0;
+    heigthContainerBlockItems: number = 0;
+    private validateResizeHeightForm() {
+      let windowHeight = window.innerHeight;
+      this.heigthContainerAll = this.containerAll.nativeElement.clientHeight;
+      this.heigthContainerBlock = this.containerBlock.nativeElement.clientHeight;
+      this.heigthContainerBlockItems = this.containerBlockItems.nativeElement.clientHeight;
+      this._renderer.setStyle(this.containerAll.nativeElement, "height",  (windowHeight - 42) + "px");
+      if(this.receivedOrderSelectedItem)
+        this._renderer.setStyle(this.containerAll.nativeElement, "height", (this.heightShared) + "px");
+      
+      let newHeigthContainerAll = this.containerAll.nativeElement.clientHeight;
+      if(this.heigthContainerBlock > newHeigthContainerAll)
+        this._renderer.setStyle(this.containerBlock.nativeElement, "height", (newHeigthContainerAll*0.9) + "px");
+      
+      let newHeigthContainerBlock = this.containerBlock.nativeElement.clientHeight;
+      this._renderer.setStyle(this.containerBlock.nativeElement, "overflow-y", "hidden");
+      this._renderer.setStyle(this.containerBlockItems.nativeElement, "height", (newHeigthContainerBlock - 150) + "px");
+      this._renderer.setStyle(this.containerBlockItems.nativeElement, "overflow-y", "scroll");
+    }
+    
     showRegisterForm(accordingSelected : AccordingModel) {
       if(this.receivedOrderSelectedItem == true) {
         this.sendItemSelectedToFormExpense.emit({component: CONSTANTES.CONST_COMPONENT_ACUERDOS, itemSelected: accordingSelected});
@@ -87,6 +123,9 @@ import { AccordingService } from '@data/services/according/according.service';
           this.listAccording = response;
           this._loadSpinnerService.hideSpinner();
           this.flagFormulario = false;
+          setTimeout(() => {
+            this.validateResizeHeightForm();
+          }, 500)
           if(responseOut == "") return;
           Swal.fire(
             responseOut.title,

@@ -1,5 +1,5 @@
-<div class="container-fluid">
-    <div class="box_container">
+<div class="container-fluid" #container_all>
+    <div class="box_container" #container_block>
         <div class="box_header">
             <div class="box_item">
                 <img src="{{imagenDefault}}" alt="" srcset="">
@@ -9,7 +9,7 @@
         <!-- BEGIN componente seach filter -->
         <app-search [receivedDataFromFather]="listaAccordingSendSearch" (sendDataFromSearchToFather)="receivedDataFromSearch($event)"></app-search>
         <!-- END componente seach filter -->
-        <div class="box_body">
+        <div class="box_body" #container_block_items>
             <!-- <div class="box_item" (click) = "showRegisterForm(paymentMehtodEmpty)">
                 <i class="far fa-plus"></i>
                 <span>Crear Nuevo</span>

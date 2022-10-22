@@ -102,16 +102,19 @@
                 <i class="close-block fas fa-times" (click)="hiddenPopUp()"></i>
                     <app-list-payment-method 
                         [receivedOrderSelectedItem]="flagShowListPaymentMethod"
+                        [heightShared]="heightFormRegisterExpense"
                         (sendItemSelectedToFormExpense)="receivedItemSelectedaFromPopUp($event)" 
                         *ngIf="flagShowListPaymentMethod">
                     </app-list-payment-method>
                     <app-list-category
                         [receivedOrderSelectedItem]="flagShowListCategories"
+                        [heightShared]="heightFormRegisterExpense"
                         (sendItemSelectedToFormExpense)="receivedItemSelectedaFromPopUp($event)" 
                         *ngIf="flagShowListCategories">
                     </app-list-category>
                     <app-list-according      
                         [receivedOrderSelectedItem]="flagShowListAccording"
+                        [heightShared]="heightFormRegisterExpense"
                         (sendItemSelectedToFormExpense)="receivedItemSelectedaFromPopUp($event)" 
                         *ngIf="flagShowListAccording">
                     </app-list-according>

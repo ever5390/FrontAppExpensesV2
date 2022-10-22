@@ -6,7 +6,6 @@
     align-items: center;
     justify-content: center;
     height: 100vh;
-    /* height: calc(100vh - 70px ); */
     width: 100%;
     background-color: rgba(150, 149, 149, 0.226);
     z-index: 2;
@@ -15,7 +14,7 @@
 }
 
 .container_form {
-    /* position: relative; */
+    position: relative;
     background-color: #fff;
     margin: 0 auto;
     max-width: 450px;
@@ -185,33 +184,31 @@ button {
 
 .close-block {
     position: absolute;
-    bottom: 10px;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
     border: 2px solid #71aa9b;
     background-color: #5c998bb9;
     border-radius: 50%;
     color: #fff;
     padding: 8px 8px 5px 8px;
-    left: 50%;
     transform: translate(-50%);
     z-index: 5;
 }
 
 .st_lista_items_select {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
+    top: 0;
+    left: 0;
     max-width: 500px;
-    width: 98%;
+    width: 100%;
+    height: 100%;
     border-radius: 10px;
-    height: 90%;
-    background-color: rgba(255, 255, 255, 0.24);
-
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
     padding: 0 5px;
+    overflow: hidden;
 }
 
 /* Block account selected */
@@ -262,33 +259,28 @@ button {
 
 @media (max-width: 480px) {
 
-.container-fluid {
-    padding: 0;
-    margin: 0;
-}
+    .container-fluid {
+        padding: 0;
+        margin: 0;
+    }
 
-.container_form {
-    width: 95%;
-    padding: 10px 15px;
-}
+    .container_form {
+        width: 95%;
+        padding: 10px 15px;
+    }
 
-.form_control {
-    padding-left: 0;
-    padding-right: 0;
-}
+    .form_control {
+        padding-left: 0;
+        padding-right: 0;
+    }
 
-.st_item {
-    font-size: .7rem;
-}
+    .st_item {
+        font-size: .7rem;
+    }
 
-img {
-    width: 40px;
-    height: 40px;
-}
-
-.st_lista_items_select {
-    width: 95%;
-    height: 85%;
-}
+    img {
+        width: 40px;
+        height: 40px;
+    }
 
 }

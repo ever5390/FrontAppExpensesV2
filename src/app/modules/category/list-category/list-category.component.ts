@@ -1,3 +1,4 @@
+import { ThisReceiver } from '@angular/compiler';
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { StorageService } from '@data/services/storage_services/storage.service';
 import { SLoaderService } from '@shared/components/loaders/s-loader/service/s-loader.service';
@@ -8,6 +9,7 @@ import { CategoryModel } from 'app/data/models/business/category.model';
 import { GroupModel } from 'app/data/models/business/group.model';
 import { OwnerModel } from 'app/data/models/business/owner.model';
 import { CategoryService } from 'app/data/services/category/category.service';
+import { Console } from 'console';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -35,14 +37,20 @@ export class ListCategoryComponent implements OnInit {
   };
   //Receive from ExpenseManager: order selected item
   @Input() receivedOrderSelectedItem: boolean = false;
+  @Input() heightShared: number = 0;
   
   //Send to ExpenseManager: item selected
   @Output() sendItemSelectedToFormExpense = new EventEmitter();
 
+  @ViewChild('container_all') containerAll: ElementRef | any;
+  @ViewChild('container_block') containerBlock: ElementRef | any;
+  @ViewChild('container_block_items') containerBlockItems: ElementRef | any;
+
   constructor(
     private _categoryService: CategoryService,
     private _loadSpinnerService: SLoaderService,
-    private _storageService :StorageService
+    private _storageService :StorageService,
+    private _renderer: Renderer2,
   ) {
     this.owner = JSON.parse(localStorage.getItem("lcstrg_owner")!);
    }
@@ -52,19 +60,50 @@ export class ListCategoryComponent implements OnInit {
     this.owner = JSON.parse(localStorage.getItem('lcstrg_owner')!);
     this.getAllGroups();
     this.getAllCategories("");
+    
   }
 
   onImageLoad() {
     // Do what you need in here
+    //this.validateResizeHeightForm();
     setTimeout(() => {
       this.loadImageFull = true;
-    }, 150);
+    }, 200);
    
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      //this.validateResizeHeightForm();
+    }, 100);
+  }
+
+  sendHeightFormRegister: number = 0;
+  heigthContainerAll: number = 0;
+  heigthContainerBlock: number = 0;
+  heigthContainerBlockItems: number = 0;
+  private validateResizeHeightForm() {
+    let windowHeight = window.innerHeight;
+    this.heigthContainerAll = this.containerAll.nativeElement.clientHeight;
+    this.heigthContainerBlock = this.containerBlock.nativeElement.clientHeight;
+    this.heigthContainerBlockItems = this.containerBlockItems.nativeElement.clientHeight;
+    this._renderer.setStyle(this.containerAll.nativeElement, "height",  (windowHeight - 42) + "px");
+    if(this.receivedOrderSelectedItem)
+      this._renderer.setStyle(this.containerAll.nativeElement, "height", (this.heightShared) + "px");
+    
+    let newHeigthContainerAll = this.containerAll.nativeElement.clientHeight;
+    if(this.heigthContainerBlock > newHeigthContainerAll)
+      this._renderer.setStyle(this.containerBlock.nativeElement, "height", (newHeigthContainerAll*0.9) + "px");
+    
+    let newHeigthContainerBlock = this.containerBlock.nativeElement.clientHeight;
+    this._renderer.setStyle(this.containerBlock.nativeElement, "overflow-y", "hidden");
+    this._renderer.setStyle(this.containerBlockItems.nativeElement, "height", (newHeigthContainerBlock - 150) + "px");
+    this._renderer.setStyle(this.containerBlockItems.nativeElement, "overflow-y", "scroll");
   }
 
   showRegisterForm(categorySelected : CategoryModel) {
 
-    if(this.receivedOrderSelectedItem == true) {
+    if(this.receivedOrderSelectedItem == true && categorySelected.id != 0) {
       this.sendItemSelectedToFormExpense.emit({component: CONSTANTES.CONST_COMPONENT_CATEGORIAS, itemSelected: categorySelected});
     }
 
@@ -81,7 +120,7 @@ export class ListCategoryComponent implements OnInit {
     this.listaCategories = data;
     setTimeout(() => {
       this.loadImageFull = true;
-    }, 150);
+    }, 200);
   }
 
   getAllCategories(responseOut : any) {
@@ -91,6 +130,9 @@ export class ListCategoryComponent implements OnInit {
         this.listaCategories = response;
         this._loadSpinnerService.hideSpinner();
         this.flagFormulario = false;
+        setTimeout(() => {
+          this.validateResizeHeightForm();
+        }, 500)
         if(responseOut == "") return;
         Swal.fire(
           responseOut.title,
